@@ -1,0 +1,85 @@
+<div class="min-h-screen grid lg:grid-cols-2">
+
+  <!-- Left Section -->
+  <div
+    class="hidden lg:flex flex-col justify-between bg-[#0F4C81] text-white p-12">
+
+    <!-- Logo -->
+    <div>
+      <h1 class="text-5xl font-extrabold tracking-wide">
+        PolicyGPT
+      </h1>
+
+      <p class="mt-3 text-blue-100 text-lg">
+        AI-Powered Government Policy Assistant
+      </p>
+    </div>
+
+    <!-- Features -->
+    <div class="space-y-6">
+
+      <div class="flex items-center gap-4">
+        <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+          📄
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-xl">
+            Policy Search
+          </h3>
+
+          <p class="text-blue-100">
+            Search thousands of government policies instantly.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+          🤖
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-xl">
+            AI Summaries
+          </h3>
+
+          <p class="text-blue-100">
+            Understand lengthy policy documents in seconds.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+          🔒
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-xl">
+            Secure Access
+          </h3>
+
+          <p class="text-blue-100">
+            Role-based authentication with secure login.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-sm text-blue-200">
+      © 2026 PolicyGPT
+    </div>
+
+  </div>
+
+  <!-- Right Section -->
+  <div class="flex items-center justify-center bg-slate-100 px-6">
+
+    <router-outlet></router-outlet>
+
+  </div>
+
+</div>
