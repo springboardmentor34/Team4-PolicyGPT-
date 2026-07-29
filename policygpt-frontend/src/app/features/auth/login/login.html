@@ -1,0 +1,99 @@
+<div class="w-full max-w-md rounded-2xl bg-white p-10 shadow-xl">
+
+  <div class="mb-8 text-center">
+
+    <h2 class="text-3xl font-bold text-slate-800">
+      Welcome Back
+    </h2>
+
+    <p class="mt-2 text-slate-500">
+      Sign in to continue
+    </p>
+
+  </div>
+
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="login()"
+    class="space-y-5">
+
+    <mat-form-field appearance="outline" class="w-full">
+
+      <mat-label>Email</mat-label>
+
+      <input
+        matInput
+        type="email"
+        formControlName="email">
+
+      <mat-icon matSuffix>email</mat-icon>
+
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+
+      <mat-label>Password</mat-label>
+
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password">
+
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hidePassword = !hidePassword">
+
+        <mat-icon>
+
+          {{ hidePassword ? 'visibility_off' : 'visibility' }}
+
+        </mat-icon>
+
+      </button>
+
+    </mat-form-field>
+
+    <div class="flex justify-between items-center">
+
+      <mat-checkbox formControlName="remember">
+        Remember Me
+      </mat-checkbox>
+
+      <a
+        routerLink="/forgot-password"
+        class="text-sm text-[#0F4C81] font-medium hover:underline">
+
+        Forgot Password?
+
+      </a>
+
+    </div>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="w-full! rounded-xl! py-6!">
+
+      Sign In
+
+    </button>
+
+  </form>
+
+  <div class="mt-6 text-center">
+
+    Don't have an account?
+
+    <a
+      routerLink="/register"
+      class="font-semibold text-[#0F4C81]">
+
+      Register
+
+    </a>
+
+  </div>
+
+</div>

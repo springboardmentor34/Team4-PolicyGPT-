@@ -1,0 +1,115 @@
+<div class="p-8">
+
+  <!-- Welcome -->
+
+  <section class="mb-10">
+
+    <h1 class="text-4xl font-bold text-slate-800">
+      Welcome 👋
+    </h1>
+
+    <p class="mt-2 text-slate-500">
+      Find and apply for government policies with ease.
+    </p>
+
+  </section>
+  <section class="mb-10">
+
+    <mat-form-field appearance="outline" class="w-full">
+
+        <mat-label>Search Government Policies</mat-label>
+
+        <input
+            matInput
+            placeholder="Search by policy name...">
+
+        <mat-icon matSuffix>search</mat-icon>
+
+    </mat-form-field>
+
+</section>
+
+  <!-- Quick Actions -->
+
+  <section>
+
+    <h2 class="mb-6 text-2xl font-semibold text-slate-800">
+      Quick Actions
+    </h2>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+      @for(action of quickActions; track action.title){
+
+      <mat-card
+        class="cursor-pointer rounded-2xl p-6 shadow-md transition hover:-translate-y-1 hover:shadow-xl">
+
+        <mat-icon
+          class="text-5xl! h-12! w-12! text-blue-700">
+
+          {{ action.icon }}
+
+        </mat-icon>
+
+        <h3 class="mt-5 text-xl font-semibold">
+          {{ action.title }}
+        </h3>
+
+        <p class="mt-2 text-sm text-gray-500">
+          {{ action.description }}
+        </p>
+
+      </mat-card>
+
+      }
+
+    </div>
+
+  </section>
+  <section class="mt-12">
+
+    <h2 class="mb-6 text-2xl font-semibold text-slate-800">
+        Recommended Policies
+    </h2>
+
+    <div class="space-y-4">
+
+        @for(policy of recommendedPolicies; track policy.title){
+
+        <mat-card class="p-5 hover:shadow-lg transition cursor-pointer">
+
+            <div class="flex justify-between items-center">
+
+                <div>
+
+                    <h3 class="text-lg font-semibold">
+
+                        {{ policy.title }}
+
+                    </h3>
+
+                    <p class="text-gray-500">
+
+                        {{ policy.category }}
+
+                    </p>
+
+                </div>
+
+                <button mat-flat-button color="primary">
+
+                    View
+
+                </button>
+
+            </div>
+
+        </mat-card>
+
+        }
+
+    </div>
+
+</section>
+
+</div>

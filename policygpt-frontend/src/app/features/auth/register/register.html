@@ -1,0 +1,147 @@
+<div class="w-full max-w-3xl rounded-2xl bg-white p-10 shadow-xl">
+  <div class="mb-8 text-center">
+    <h2 class="text-3xl font-bold text-slate-800">Create Account</h2>
+
+    <p class="mt-2 text-slate-500">Join PolicyGPT today</p>
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="register()" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <!-- Full Name -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Full Name</mat-label>
+
+      <input matInput formControlName="fullName" />
+
+      <mat-icon matSuffix>person</mat-icon>
+      @if (
+        registerForm.get('fullName')?.hasError('required') && registerForm.get('fullName')?.touched
+      ) {
+        <mat-error> Full Name is required </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Email</mat-label>
+
+      <input matInput type="email" formControlName="email" />
+
+      <mat-icon matSuffix>email</mat-icon>
+      @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
+        <mat-error> Email is required </mat-error>
+      }
+
+      @if (registerForm.get('email')?.hasError('email')) {
+        <mat-error> Enter a valid email </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Phone -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Phone Number</mat-label>
+
+      <input matInput type="tel" formControlName="phone" />
+
+      <mat-icon matSuffix>phone</mat-icon>
+      @if (registerForm.get('phone')?.hasError('required') && registerForm.get('phone')?.touched) {
+        <mat-error> Enter a valid phone number </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Role -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Select Role</mat-label>
+
+      <mat-select formControlName="role">
+        @for (role of roles; track role) {
+          <mat-option [value]="role">
+            {{ role }}
+          </mat-option>
+        }
+      </mat-select>
+
+      <mat-icon matSuffix>badge</mat-icon>
+      @if (registerForm.get('role')?.hasError('required') && registerForm.get('role')?.touched) {
+        <mat-error> Please select a role </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Password -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Password</mat-label>
+
+      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+
+      <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+        <mat-icon>
+          {{ hidePassword ? 'visibility_off' : 'visibility' }}
+        </mat-icon>
+      </button>
+      @if (
+        registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched
+      ) {
+        <mat-error> Password is required </mat-error>
+      }
+
+      @if (registerForm.get('password')?.hasError('minlength')) {
+        <mat-error> Password should be at least 8 characters </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Confirm Password -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Confirm Password</mat-label>
+
+      <input
+        matInput
+        [type]="hideConfirmPassword ? 'password' : 'text'"
+        formControlName="confirmPassword"
+      />
+
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hideConfirmPassword = !hideConfirmPassword"
+      >
+        <mat-icon>
+          {{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}
+        </mat-icon>
+      </button>
+      @if (
+        registerForm.get('confirmPassword')?.hasError('required') &&
+        registerForm.get('confirmPassword')?.touched
+      ) {
+        <mat-error> Please confirm your password </mat-error>
+      }
+      @if (
+        registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched
+      ) {
+        <mat-error> Passwords do not match </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="md:col-span-2">
+
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="registerForm.invalid"
+      class="w-full! rounded-xl! py-6!"
+    >
+      @if (registerForm.valid) {
+        Register
+      } @else {
+        Complete the Form
+      }
+    </button>
+
+</div>
+  </form>
+
+  <div class="md:col-span-2 mt-3 text-center">
+    Already have an account?
+
+    <a routerLink="/login" class="font-semibold text-[#0F4C81]"> Sign In </a>
+  </div>
+</div>
