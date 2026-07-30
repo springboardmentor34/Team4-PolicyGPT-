@@ -1,12 +1,15 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr
+from app.models.user import UserRole
 
 
 class RegisterRequest(BaseModel):
     full_name: str
     email: EmailStr
-    phone: str
-    role: str
     password: str
+    role: UserRole = UserRole.citizen
+    phone: Optional[str] = None
+    state: Optional[str] = None
 
 
 class LoginRequest(BaseModel):
