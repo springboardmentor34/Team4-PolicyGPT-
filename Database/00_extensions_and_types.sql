@@ -18,7 +18,14 @@ DROP TYPE IF EXISTS application_status;
 DROP TYPE IF EXISTS policy_status;
 
 -- Adjust these values to match what your app actually uses.
-CREATE TYPE user_role            AS ENUM ('citizen', 'officer', 'admin');
+CREATE TYPE user_role AS ENUM (
+    'administrator',
+    'government_official',
+    'citizen',
+    'researcher',
+    'organization',
+    'guest_user'
+);
 CREATE TYPE scheme_status        AS ENUM ('draft', 'active', 'inactive', 'expired');
 CREATE TYPE notification_type    AS ENUM ('info', 'alert', 'reminder', 'approval');
 CREATE TYPE notification_channel AS ENUM ('in_app', 'email', 'sms');
