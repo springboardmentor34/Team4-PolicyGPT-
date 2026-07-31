@@ -1,0 +1,17 @@
+.card{
+    border-radius:12px;
+}
+
+.card-header{
+    font-size:20px;
+    font-weight:600;
+}
+
+.table th{
+    background:#f8f9fa;
+}
+
+.badge{
+    font-size:13px;
+    padding:8px 12px;
+}

@@ -1,0 +1,79 @@
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-dark text-white">
+
+        <h4 class="mb-0">
+
+            Recommended Schemes & Application Guidance
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div
+            class="col-md-4 mb-4"
+            *ngFor="let scheme of recommendedSchemes">
+
+                <div class="card h-100 border-primary">
+
+                    <div class="card-body">
+
+                        <h5 class="text-primary">
+
+                            {{scheme.name}}
+
+                        </h5>
+
+                        <p>
+
+                            <strong>Department :</strong>
+
+                            {{scheme.department}}
+
+                        </p>
+
+                        <p>
+
+                            {{scheme.description}}
+
+                        </p>
+
+                        <hr>
+
+                        <h6>
+
+                            Required Documents
+
+                        </h6>
+
+                        <p>
+
+                            {{scheme.documents}}
+
+                        </p>
+
+                    </div>
+
+                    <div class="card-footer text-center">
+
+                        <button class="btn btn-primary">
+
+                            View Details
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

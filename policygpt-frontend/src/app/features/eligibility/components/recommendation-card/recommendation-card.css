@@ -1,0 +1,20 @@
+.card{
+    border-radius:12px;
+}
+
+.card-header{
+    font-size:20px;
+    font-weight:600;
+}
+
+h5{
+    font-weight:bold;
+}
+
+.card-footer{
+    background:white;
+}
+
+button{
+    width:100%;
+}

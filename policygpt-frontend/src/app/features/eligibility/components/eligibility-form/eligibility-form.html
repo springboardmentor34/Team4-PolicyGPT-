@@ -1,0 +1,144 @@
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-primary text-white">
+
+        <h4 class="mb-0">
+            Eligibility Form
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Age</label>
+
+                <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="form.age">
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Gender</label>
+
+                <select
+                class="form-select"
+                [(ngModel)]="form.gender">
+
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Income</label>
+
+                <input
+                type="number"
+                class="form-control"
+                [(ngModel)]="form.income">
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Occupation</label>
+
+                <input
+                class="form-control"
+                [(ngModel)]="form.occupation">
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Education</label>
+
+                <select
+                class="form-select"
+                [(ngModel)]="form.education">
+
+                    <option value="">Select Education</option>
+                    <option>10th</option>
+                    <option>12th</option>
+                    <option>Graduate</option>
+                    <option>Post Graduate</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Location</label>
+
+                <input
+                class="form-control"
+                placeholder="State / District"
+                [(ngModel)]="form.location">
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Social Category</label>
+
+                <select
+                class="form-select"
+                [(ngModel)]="form.socialCategory">
+
+                    <option value="">Select Category</option>
+                    <option>General</option>
+                    <option>OBC</option>
+                    <option>SC</option>
+                    <option>ST</option>
+                    <option>EWS</option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">Disability Status</label>
+
+                <select
+                class="form-select"
+                [(ngModel)]="form.disabilityStatus">
+
+                    <option value="">Select</option>
+                    <option>Yes</option>
+                    <option>No</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="text-center">
+
+            <button
+            class="btn btn-success px-5"
+            (click)="checkEligibility()">
+
+                Check Eligibility
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
