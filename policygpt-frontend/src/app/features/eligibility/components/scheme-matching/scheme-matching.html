@@ -1,0 +1,58 @@
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-success text-white">
+
+        <h4 class="mb-0">
+            Scheme Matching
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-bordered table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Scheme</th>
+
+                    <th>Department</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let scheme of matchedSchemes">
+
+                    <td>{{scheme.name}}</td>
+
+                    <td>{{scheme.department}}</td>
+
+                    <td>
+
+                        <span
+                        class="badge"
+                        [class.bg-success]="scheme.status==='Eligible'"
+                        [class.bg-warning]="scheme.status==='Partially Eligible'">
+
+                            {{scheme.status}}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

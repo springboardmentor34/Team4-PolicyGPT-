@@ -1,0 +1,55 @@
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-warning">
+
+        <h4 class="mb-0">
+            Eligibility Summary
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+            <div class="col-md-3 mb-3">
+
+                <h5>Overall Status</h5>
+
+                <span class="badge bg-success fs-6">
+                    {{ summary.overallStatus }}
+                </span>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+                <h5>Matched Schemes</h5>
+
+                <h3>{{ summary.matchedSchemes }}</h3>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+                <h5>Eligibility Score</h5>
+
+                <h3>{{ summary.eligibilityScore }}</h3>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+                <h5>Confidence</h5>
+
+                <span class="badge bg-primary fs-6">
+                    {{ summary.confidence }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

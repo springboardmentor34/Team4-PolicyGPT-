@@ -1,1 +1,183 @@
-<p>admin works!</p>
+<div class="container mt-4">
+
+    <h2>Admin Dashboard</h2>
+
+    <p>Welcome, {{adminName}}</p>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Total Users</h5>
+                <h3>{{totalUsers}}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Total Policies</h5>
+                <h3>{{totalPolicies}}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Reports</h5>
+                <h3>{{totalReports}}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Audit Logs</h5>
+                <h3>{{auditLogs}}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <h3>User Management</h3>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let user of users">
+
+                <td>{{user.name}}</td>
+                <td>{{user.role}}</td>
+                <td>{{user.status}}</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <h3>Policy Management</h3>
+
+    <table class="table table-striped">
+
+        <thead class="table-primary">
+            <tr>
+
+                <th>Policy</th>
+                <th>Department</th>
+                <th>Status</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let policy of policies">
+
+                <td>{{policy.title}}</td>
+                <td>{{policy.department}}</td>
+                <td>{{policy.status}}</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <h3>Analytics</h3>
+
+    <table class="table table-bordered">
+
+        <thead class="table-success">
+
+            <tr>
+
+                <th>Category</th>
+                <th>Value</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let item of analytics">
+
+                <td>{{item.category}}</td>
+                <td>{{item.value}}</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <h3>Reports</h3>
+
+    <table class="table table-bordered">
+
+        <thead class="table-warning">
+
+            <tr>
+
+                <th>Report</th>
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let report of reports">
+
+                <td>{{report.report}}</td>
+                <td>{{report.date}}</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <h3>Audit Logs</h3>
+
+    <table class="table table-bordered">
+
+        <thead class="table-danger">
+
+            <tr>
+
+                <th>User</th>
+                <th>Action</th>
+                <th>Time</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let log of auditLogList">
+
+                <td>{{log.user}}</td>
+                <td>{{log.action}}</td>
+                <td>{{log.time}}</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

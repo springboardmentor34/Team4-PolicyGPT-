@@ -1,1 +1,58 @@
-<p>official works!</p>
+<div class="container mt-4">
+
+    <h2>Government Official Dashboard</h2>
+
+    <p>Welcome, {{officialName}}</p>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Total Policies</h5>
+                <h3>{{totalPolicies}}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Active Schemes</h5>
+                <h3>{{activeSchemes}}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Departments</h5>
+                <h3>{{totalDepartments}}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 shadow-sm">
+                <h5>Notifications</h5>
+                <h3>{{notifications}}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h3>Policy Statistics</h3>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+
+        <tr *ngFor="let policy of policyStats">
+            <td>{{policy.title}}</td>
+            <td>{{policy.count}}</td>
+        </tr>
+
+    </table>
+
+</div>

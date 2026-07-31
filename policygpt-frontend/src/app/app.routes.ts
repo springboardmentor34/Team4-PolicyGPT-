@@ -14,6 +14,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: '',
+    loadChildren: () =>
+      import('./features/policy/policy.routes').then(
+        (m) => m.POLICY_ROUTES
+      ),
+  },
+  {
+  path: '',
+  loadChildren: () =>
+    import('./features/eligibility/eligibility.routes').then(
+      (m) => m.ELIGIBILITY_ROUTES
+    ),
+},
+  {
     path: '**',
     redirectTo: '',
   },

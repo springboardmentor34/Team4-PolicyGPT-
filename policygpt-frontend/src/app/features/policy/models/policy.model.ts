@@ -1,0 +1,21 @@
+export interface Policy{
+
+    id:number;
+
+    policyName:string;
+
+    schemeName:string;
+
+    department:string;
+
+    ministry:string;
+
+    state:string;
+
+    sector:string;
+
+    publicationDate:string;
+
+    status:string;
+
+}
