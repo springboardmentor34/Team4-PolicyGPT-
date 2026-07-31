@@ -1,58 +1,99 @@
-<div class="container mt-4">
+<main class="min-h-screen bg-slate-100 px-6 py-8">
+  <section class="mx-auto max-w-7xl">
+    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
+          Government Workspace
+        </p>
+        <h1 class="mt-2 text-4xl font-bold text-slate-900">
+          Government Official Dashboard
+        </h1>
+        <p class="mt-2 text-slate-500">
+          Welcome, {{ officialName }}. Review policy activity, scheme usage, and department updates.
+        </p>
+      </div>
 
-    <h2>Government Official Dashboard</h2>
-
-    <p>Welcome, {{officialName}}</p>
-
-    <hr>
-
-    <div class="row">
-
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Total Policies</h5>
-                <h3>{{totalPolicies}}</h3>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Active Schemes</h5>
-                <h3>{{activeSchemes}}</h3>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Departments</h5>
-                <h3>{{totalDepartments}}</h3>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Notifications</h5>
-                <h3>{{notifications}}</h3>
-            </div>
-        </div>
-
+      <button mat-flat-button color="primary" class="rounded-xl! px-5! py-5!">
+        <mat-icon>add_circle</mat-icon>
+        New Policy
+      </button>
     </div>
 
-    <hr>
+    <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <mat-card class="rounded-2xl! p-6 shadow-md!">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-slate-500">Total Policies</p>
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ totalPolicies }}</h2>
+          </div>
+          <mat-icon class="text-4xl! text-blue-700">policy</mat-icon>
+        </div>
+      </mat-card>
 
-    <h3>Policy Statistics</h3>
+      <mat-card class="rounded-2xl! p-6 shadow-md!">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-slate-500">Active Schemes</p>
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ activeSchemes }}</h2>
+          </div>
+          <mat-icon class="text-4xl! text-emerald-600">verified</mat-icon>
+        </div>
+      </mat-card>
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Status</th>
-            <th>Count</th>
-        </tr>
+      <mat-card class="rounded-2xl! p-6 shadow-md!">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-slate-500">Departments</p>
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ totalDepartments }}</h2>
+          </div>
+          <mat-icon class="text-4xl! text-amber-600">account_balance</mat-icon>
+        </div>
+      </mat-card>
 
-        <tr *ngFor="let policy of policyStats">
-            <td>{{policy.title}}</td>
-            <td>{{policy.count}}</td>
-        </tr>
+      <mat-card class="rounded-2xl! p-6 shadow-md!">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-slate-500">Notifications</p>
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ notifications }}</h2>
+          </div>
+          <mat-icon class="text-4xl! text-rose-600">notifications_active</mat-icon>
+        </div>
+      </mat-card>
+    </div>
 
-    </table>
+    <div class="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <mat-card class="rounded-2xl! p-6 shadow-md!">
+        <h2 class="text-2xl font-semibold text-slate-900">Policy Statistics</h2>
 
-</div>
+        <div class="mt-5 space-y-4">
+          @for (policy of policyStats; track policy.title) {
+            <div class="flex items-center justify-between rounded-xl bg-slate-50 p-4">
+              <span class="font-medium text-slate-700">{{ policy.title }}</span>
+              <span class="rounded-full bg-blue-100 px-4 py-1 font-semibold text-blue-800">
+                {{ policy.count }}
+              </span>
+            </div>
+          }
+        </div>
+      </mat-card>
+
+      <mat-card class="rounded-2xl! p-6 shadow-md!">
+        <h2 class="text-2xl font-semibold text-slate-900">Department Reports</h2>
+
+        <div class="mt-5 space-y-4">
+          @for (report of departmentReports; track report.department) {
+            <div class="rounded-xl border border-slate-200 p-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-slate-800">{{ report.department }}</h3>
+                <mat-icon class="text-blue-700">analytics</mat-icon>
+              </div>
+              <p class="mt-2 text-sm text-slate-500">
+                {{ report.policies }} policies and {{ report.schemes }} schemes tracked
+              </p>
+            </div>
+          }
+        </div>
+      </mat-card>
+    </div>
+  </section>
+</main>

@@ -1,58 +1,28 @@
-<div class="card shadow-sm mb-4">
-
-    <div class="card-header bg-success text-white">
-
-        <h4 class="mb-0">
-            Scheme Matching
-        </h4>
-
+<section class="rounded-2xl bg-white p-6 shadow-md">
+  <div class="mb-5 flex items-center gap-3">
+    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+      <mat-icon>hub</mat-icon>
+    </span>
+    <div>
+      <h2 class="text-xl font-semibold text-slate-900">Scheme Matching</h2>
+      <p class="text-sm text-slate-500">Schemes matched against the submitted profile.</p>
     </div>
+  </div>
 
-    <div class="card-body">
+  <div class="space-y-3">
+    @for (scheme of matchedSchemes; track scheme.name) {
+      <div class="rounded-xl border border-slate-200 p-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 class="font-semibold text-slate-900">{{ scheme.name }}</h3>
+            <p class="mt-1 text-sm text-slate-500">{{ scheme.department }}</p>
+          </div>
 
-        <table class="table table-bordered table-hover">
-
-            <thead>
-
-                <tr>
-
-                    <th>Scheme</th>
-
-                    <th>Department</th>
-
-                    <th>Status</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr *ngFor="let scheme of matchedSchemes">
-
-                    <td>{{scheme.name}}</td>
-
-                    <td>{{scheme.department}}</td>
-
-                    <td>
-
-                        <span
-                        class="badge"
-                        [class.bg-success]="scheme.status==='Eligible'"
-                        [class.bg-warning]="scheme.status==='Partially Eligible'">
-
-                            {{scheme.status}}
-
-                        </span>
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
+          <mat-chip [class.bg-amber-100]="scheme.status === 'Partially Eligible'">
+            {{ scheme.status }}
+          </mat-chip>
+        </div>
+      </div>
+    }
+  </div>
+</section>

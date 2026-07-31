@@ -1,59 +1,34 @@
-<div class="card shadow-sm mb-4">
-
-    <div class="card-header bg-info text-white">
-
-        <h4 class="mb-0">
-            User Profile Analysis
-        </h4>
-
+<section class="rounded-2xl bg-white p-6 shadow-md">
+  <div class="mb-5 flex items-center gap-3">
+    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-100 text-cyan-700">
+      <mat-icon>person_search</mat-icon>
+    </span>
+    <div>
+      <h2 class="text-xl font-semibold text-slate-900">User Profile Analysis</h2>
+      <p class="text-sm text-slate-500">Derived profile view for eligibility decisions.</p>
     </div>
+  </div>
 
-    <div class="card-body">
-
-        <div class="row">
-
-            <div class="col-md-6 mb-3">
-
-                <strong>Age Group</strong>
-
-                <p>{{ profile.ageGroup }}</p>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <strong>Income Group</strong>
-
-                <p>{{ profile.incomeGroup }}</p>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <strong>Occupation</strong>
-
-                <p>{{ profile.occupation }}</p>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <strong>Education</strong>
-
-                <p>{{ profile.education }}</p>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <strong>Location</strong>
-
-                <p>{{ profile.location }}</p>
-
-            </div>
-
-        </div>
-
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div class="rounded-xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-500">Age Group</p>
+      <p class="mt-1 font-semibold text-slate-900">{{ profile.ageGroup }}</p>
     </div>
-
-</div>
+    <div class="rounded-xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-500">Income Group</p>
+      <p class="mt-1 font-semibold text-slate-900">{{ profile.incomeGroup }}</p>
+    </div>
+    <div class="rounded-xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-500">Occupation</p>
+      <p class="mt-1 font-semibold text-slate-900">{{ profile.occupation }}</p>
+    </div>
+    <div class="rounded-xl bg-slate-50 p-4">
+      <p class="text-sm text-slate-500">Education</p>
+      <p class="mt-1 font-semibold text-slate-900">{{ profile.education }}</p>
+    </div>
+    <div class="rounded-xl bg-slate-50 p-4 sm:col-span-2">
+      <p class="text-sm text-slate-500">Location</p>
+      <p class="mt-1 font-semibold text-slate-900">{{ profile.location }}</p>
+    </div>
+  </div>
+</section>

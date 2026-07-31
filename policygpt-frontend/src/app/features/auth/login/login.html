@@ -17,6 +17,12 @@
     (ngSubmit)="login()"
     class="space-y-5">
 
+    @if (errorMessage) {
+      <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        {{ errorMessage }}
+      </div>
+    }
+
     <mat-form-field appearance="outline" class="w-full">
 
       <mat-label>Email</mat-label>
@@ -74,9 +80,10 @@
     <button
       mat-flat-button
       color="primary"
+      [disabled]="loginForm.invalid || isLoading"
       class="w-full! rounded-xl! py-6!">
 
-      Sign In
+      {{ isLoading ? 'Signing In...' : 'Sign In' }}
 
     </button>
 

@@ -6,6 +6,11 @@
   </div>
 
   <form [formGroup]="registerForm" (ngSubmit)="register()" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    @if (errorMessage) {
+      <div class="md:col-span-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        {{ errorMessage }}
+      </div>
+    }
     <!-- Full Name -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Full Name</mat-label>
@@ -126,14 +131,10 @@
     <button
       mat-flat-button
       color="primary"
-      [disabled]="registerForm.invalid"
+      [disabled]="registerForm.invalid || isLoading"
       class="w-full! rounded-xl! py-6!"
     >
-      @if (registerForm.valid) {
-        Register
-      } @else {
-        Complete the Form
-      }
+      {{ isLoading ? 'Registering...' : (registerForm.valid ? 'Register' : 'Complete the Form') }}
     </button>
 
 </div>

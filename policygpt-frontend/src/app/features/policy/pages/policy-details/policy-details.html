@@ -1,1 +1,69 @@
-<p>policy-details works!</p>
+<main class="min-h-screen bg-slate-100 px-6 py-8">
+  <section class="mx-auto max-w-6xl">
+    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
+          Policy Details
+        </p>
+        <h1 class="mt-2 text-4xl font-bold text-slate-900">
+          Education Policy 2026
+        </h1>
+        <p class="mt-2 text-slate-500">
+          Department of Education | Telangana | Published on 31 Jul 2026
+        </p>
+      </div>
+
+      <button mat-flat-button color="primary" class="rounded-xl! px-5! py-5!">
+        <mat-icon>bookmark</mat-icon>
+        Save Policy
+      </button>
+    </div>
+
+    <mat-card class="rounded-2xl! p-6 shadow-md!">
+      <div class="mb-5 flex flex-wrap gap-2">
+        <mat-chip>Education</mat-chip>
+        <mat-chip>Active</mat-chip>
+        <mat-chip>Scholarship</mat-chip>
+      </div>
+
+      <h2 class="text-2xl font-semibold text-slate-900">Overview</h2>
+      <p class="mt-3 leading-7 text-slate-600">
+        This policy supports students, institutions, and education departments through targeted benefits,
+        infrastructure support, and digital learning enablement.
+      </p>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        <div class="rounded-xl bg-slate-50 p-5">
+          <mat-icon class="text-blue-700">account_balance</mat-icon>
+          <h3 class="mt-3 font-semibold text-slate-900">Department</h3>
+          <p class="mt-1 text-sm text-slate-500">Education Department</p>
+        </div>
+
+        <div class="rounded-xl bg-slate-50 p-5">
+          <mat-icon class="text-emerald-700">place</mat-icon>
+          <h3 class="mt-3 font-semibold text-slate-900">State</h3>
+          <p class="mt-1 text-sm text-slate-500">Telangana</p>
+        </div>
+
+        <div class="rounded-xl bg-slate-50 p-5">
+          <mat-icon class="text-amber-700">event</mat-icon>
+          <h3 class="mt-3 font-semibold text-slate-900">Publication Date</h3>
+          <p class="mt-1 text-sm text-slate-500">31 Jul 2026</p>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="mt-6 rounded-2xl! p-6 shadow-md!">
+      <h2 class="text-2xl font-semibold text-slate-900">Key Benefits</h2>
+
+      <div class="mt-5 space-y-3">
+        @for (benefit of benefits; track benefit) {
+          <div class="flex items-start gap-3 rounded-xl border border-slate-200 p-4">
+            <mat-icon class="text-emerald-600">check_circle</mat-icon>
+            <span class="text-slate-700">{{ benefit }}</span>
+          </div>
+        }
+      </div>
+    </mat-card>
+  </section>
+</main>

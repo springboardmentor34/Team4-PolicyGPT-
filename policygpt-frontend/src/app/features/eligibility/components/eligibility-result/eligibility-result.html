@@ -1,55 +1,33 @@
-<div class="card shadow-sm mb-4">
+<section class="rounded-2xl bg-white p-6 shadow-md">
+  <div class="mb-5 flex items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-semibold text-slate-900">Eligibility Summary</h2>
+      <p class="text-sm text-slate-500">Current matching score and result confidence.</p>
+    </div>
+    <span class="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
+      {{ summary.overallStatus }}
+    </span>
+  </div>
 
-    <div class="card-header bg-warning">
-
-        <h4 class="mb-0">
-            Eligibility Summary
-        </h4>
-
+  <div class="grid gap-4 sm:grid-cols-3">
+    <div class="rounded-xl bg-slate-50 p-4">
+      <mat-icon class="text-blue-700">apps</mat-icon>
+      <p class="mt-3 text-sm text-slate-500">Matched Schemes</p>
+      <p class="text-2xl font-bold text-slate-900">{{ summary.matchedSchemes }}</p>
     </div>
 
-    <div class="card-body">
-
-        <div class="row text-center">
-
-            <div class="col-md-3 mb-3">
-
-                <h5>Overall Status</h5>
-
-                <span class="badge bg-success fs-6">
-                    {{ summary.overallStatus }}
-                </span>
-
-            </div>
-
-            <div class="col-md-3 mb-3">
-
-                <h5>Matched Schemes</h5>
-
-                <h3>{{ summary.matchedSchemes }}</h3>
-
-            </div>
-
-            <div class="col-md-3 mb-3">
-
-                <h5>Eligibility Score</h5>
-
-                <h3>{{ summary.eligibilityScore }}</h3>
-
-            </div>
-
-            <div class="col-md-3 mb-3">
-
-                <h5>Confidence</h5>
-
-                <span class="badge bg-primary fs-6">
-                    {{ summary.confidence }}
-                </span>
-
-            </div>
-
-        </div>
-
+    <div class="rounded-xl bg-slate-50 p-4">
+      <mat-icon class="text-emerald-700">score</mat-icon>
+      <p class="mt-3 text-sm text-slate-500">Eligibility Score</p>
+      <p class="text-2xl font-bold text-slate-900">{{ summary.eligibilityScore }}</p>
     </div>
 
-</div>
+    <div class="rounded-xl bg-slate-50 p-4">
+      <mat-icon class="text-amber-700">verified_user</mat-icon>
+      <p class="mt-3 text-sm text-slate-500">Confidence</p>
+      <p class="text-2xl font-bold text-slate-900">{{ summary.confidence }}</p>
+    </div>
+  </div>
+
+  <mat-progress-bar class="mt-5" mode="determinate" value="85"></mat-progress-bar>
+</section>

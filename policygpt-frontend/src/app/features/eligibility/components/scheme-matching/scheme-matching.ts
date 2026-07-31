@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-scheme-matching',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatChipsModule, MatIconModule],
   templateUrl: './scheme-matching.html',
   styleUrl: './scheme-matching.css',
 })

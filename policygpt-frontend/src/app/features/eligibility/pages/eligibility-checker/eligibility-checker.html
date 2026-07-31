@@ -1,28 +1,31 @@
-<p>eligibility-checker works!</p>
-<div class="container mt-4">
-
-    <h2 class="text-center mb-4">
-
+<main class="min-h-screen bg-slate-100 px-6 py-8">
+  <section class="mx-auto max-w-7xl">
+    <div class="mb-8">
+      <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
+        Scheme Discovery
+      </p>
+      <h1 class="mt-2 text-4xl font-bold text-slate-900">
         Eligibility Checker
+      </h1>
+      <p class="mt-2 max-w-3xl text-slate-500">
+        Capture citizen profile details, analyze eligibility, and show recommended public schemes.
+      </p>
+    </div>
 
-    </h2>
+    <div class="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
+      <div class="space-y-6">
+        <app-eligibility-form></app-eligibility-form>
+        <app-profile-analysis></app-profile-analysis>
+      </div>
 
-    <app-eligibility-form></app-eligibility-form>
+      <div class="space-y-6">
+        <app-eligibility-result></app-eligibility-result>
+        <app-scheme-matching></app-scheme-matching>
+      </div>
+    </div>
 
-    <hr>
-
-    <app-profile-analysis></app-profile-analysis>
-
-    <hr>
-
-    <app-scheme-matching></app-scheme-matching>
-
-    <hr>
-
-    <app-eligibility-result></app-eligibility-result>
-
-    <hr>
-
-    <app-recommendation-card></app-recommendation-card>
-
-</div>
+    <div class="mt-6">
+      <app-recommendation-card></app-recommendation-card>
+    </div>
+  </section>
+</main>

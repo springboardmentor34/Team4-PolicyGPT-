@@ -1,5 +1,8 @@
 export const USER_ROLES = [
+  'Administrator',
+  'Government Official',
   'Citizen',
-  'Official',
-  'Researcher'
+  'Researcher',
+  'Organization',
+  'Guest User'
 ] as const;
