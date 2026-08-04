@@ -1,98 +1,56 @@
-<p>policy-filter works!</p>
-<h4>Advanced Filters</h4>
+<section class="rounded-2xl bg-white p-6 shadow-md">
+  <div class="mb-5 flex items-center gap-3">
+    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+      <mat-icon>tune</mat-icon>
+    </span>
+    <div>
+      <h2 class="text-xl font-semibold text-slate-900">Advanced Filters</h2>
+      <p class="text-sm text-slate-500">Narrow results using the milestone search filters.</p>
+    </div>
+  </div>
 
-<div class="row">
+  <div class="grid gap-4 md:grid-cols-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Policy Name</mat-label>
+      <input matInput [(ngModel)]="filter.policyName" />
+    </mat-form-field>
 
-<div class="col-md-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Scheme Name</mat-label>
+      <input matInput [(ngModel)]="filter.schemeName" />
+    </mat-form-field>
 
-<input
-class="form-control"
-placeholder="Policy Name"
-[(ngModel)]="filter.policyName">
+    <mat-form-field appearance="outline">
+      <mat-label>Department</mat-label>
+      <input matInput [(ngModel)]="filter.department" />
+    </mat-form-field>
 
-</div>
+    <mat-form-field appearance="outline">
+      <mat-label>State</mat-label>
+      <input matInput [(ngModel)]="filter.state" />
+    </mat-form-field>
 
-<div class="col-md-4">
+    <mat-form-field appearance="outline">
+      <mat-label>Sector</mat-label>
+      <input matInput [(ngModel)]="filter.sector" />
+    </mat-form-field>
 
-<input
-class="form-control"
-placeholder="Scheme Name"
-[(ngModel)]="filter.schemeName">
+    <mat-form-field appearance="outline">
+      <mat-label>Publication Date</mat-label>
+      <input matInput type="date" [(ngModel)]="filter.publicationDate" />
+    </mat-form-field>
 
-</div>
+    <mat-form-field appearance="outline" class="md:col-span-2">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="filter.status">
+        <mat-option value="active">Active</mat-option>
+        <mat-option value="draft">Draft</mat-option>
+        <mat-option value="archived">Archived</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-<div class="col-md-4">
-
-<input
-class="form-control"
-placeholder="Department"
-[(ngModel)]="filter.department">
-
-</div>
-
-</div>
-
-<br>
-
-<div class="row">
-
-<div class="col-md-4">
-
-<input
-class="form-control"
-placeholder="State"
-[(ngModel)]="filter.state">
-
-</div>
-
-<div class="col-md-4">
-
-<input
-class="form-control"
-placeholder="Sector"
-[(ngModel)]="filter.sector">
-
-</div>
-
-<div class="col-md-4">
-
-<input
-type="date"
-class="form-control"
-[(ngModel)]="filter.publicationDate">
-
-</div>
-
-</div>
-
-<br>
-
-<div class="row">
-
-<div class="col-md-4">
-
-<select
-class="form-select"
-[(ngModel)]="filter.status">
-
-<option>Active</option>
-
-<option>Draft</option>
-
-<option>Archived</option>
-
-</select>
-
-</div>
-
-</div>
-
-<br>
-
-<button
-class="btn btn-success"
-(click)="applyFilters()">
-
-Apply Filters
-
-</button>
+  <button mat-flat-button color="primary" class="mt-2 rounded-xl! px-6! py-5!" (click)="applyFilters()">
+    Apply Filters
+  </button>
+</section>

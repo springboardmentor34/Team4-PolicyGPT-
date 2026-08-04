@@ -1,97 +1,65 @@
-# Database Setup (PostgreSQL)
+# Today's Changelog & Technical Summary
 
-## Overview
+## 1. Authentication & API Integration
 
-This folder contains the PostgreSQL database scripts for the PolicyGPT project.
+### Frontend & Backend API Route Connections
 
-The database scripts include:
+* **Login Flow (`/login`):** Connected the Angular login form directly to the backend authentication endpoint (`/api/auth/login` or equivalent). Managed token/session handling upon successful user verification.
+* **Registration Flow (`/register`):** Integrated the registration form with the user signup API (`/api/auth/register`), mapping request payloads to match the updated database role definitions (`administrator`, `government_official`, `citizen`, etc.).
 
-* PostgreSQL extensions and custom enum types
-* Table creation scripts
-* Index creation
-* Database initialization script
+---
 
-## Database Structure
+## 2. Database Schema & Migration Updates
 
-```
-Database/
-│
-├── 00_extensions_and_types.sql
-├── run_all.sql
-│
-└── tables/
-    ├── users.sql
-    ├── schemes.sql
-    ├── eligibility_rules.sql
-    ├── notifications.sql
-    ├── feedback.sql
-    ├── reports.sql
-    ├── audit_logs.sql
-    ├── search_history.sql
-    ├── applications.sql
-    ├── policies.sql
-    ├── policy_versions.sql
-    └── saved_policies.sql
-```
+### Updated Database Enum Types
 
-## Prerequisites
-
-Install:
-
-* PostgreSQL
-* pgAdmin 4 (optional)
-* PostgreSQL command line tools (`psql`)
-
-## Create Database
-
-Create a PostgreSQL database:
-
+* Modified the custom PostgreSQL enum `user_role` in `Database/00_extensions_and_types.sql` to align with the new role taxonomy.
+* **Updated SQL Definition:**
 ```sql
-CREATE DATABASE government_scheme_portal;
+CREATE TYPE user_role AS ENUM (
+    'administrator',
+    'government_official',
+    'citizen',
+    'researcher',
+    'organization',
+    'guest_user'
+);
+
 ```
 
-Connect to the database:
 
+
+### Data Migration for Existing Users
+
+* Updated legacy role records in the `users` table to maintain compatibility with updated role schemas:
 ```sql
-\c government_scheme_portal
+UPDATE users SET role = 'administrator' WHERE role = 'admin';
+UPDATE users SET role = 'government_official' WHERE role = 'officer';
+
 ```
 
-## Run Database Scripts
-
-Navigate to the Database folder:
-
-```bash
-cd Database
-```
-
-Run the master script:
-
-```bash
-psql -U postgres -d government_scheme_portal -f run_all.sql
-```
-
-This will automatically:
-
-1. Create required PostgreSQL extensions
-2. Create enum types
-3. Create all tables
-4. Create indexes
-
-## Database Tables
-
-The database contains the following tables:
-
-* Users
-* Schemes
-* Eligibility Rules
-* Notifications
-* Feedback
-* Reports
-* Audit Logs
-* Search History
-* Applications
-* Policies
-* Policy Versions
-* Saved Policies
 
 
+---
+
+## 3. Frontend & UI Audit Findings
+
+### Unstyled Routes & Missing CSS Root Cause
+
+Identified why `/official`, `/policies`, `/policies/1`, and `/eligibility` lacked styling:
+
+* **Missing Bootstrap Imports:** Pages like `/official` and `/policies` relied on Bootstrap layout classes (`container`, `row`, `card`, `btn`), but Bootstrap CSS was not loaded in the Angular build setup.
+* **Placeholder Components:** `/policies/1` contained placeholder strings; `/eligibility` had an empty CSS file.
+* **Fix Strategy:** Plan to standardize all unstyled pages using Tailwind CSS + Angular Material (matching the setup on `/login` and `/register`).
+
+### Milestone 1 Wireframe Audit
+
+* **Present Routes:** `/` (Login), `/register`, `/citizen`, `/official`, `/admin`, `/policies`, `/policies/1`, `/eligibility`.
+* **Missing Routes to Implement:**
+* Scheme Details Page
+* Reports Dashboard
+* Notification Screen
+
+
+
+---

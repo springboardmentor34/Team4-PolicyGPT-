@@ -1,144 +1,75 @@
-<div class="card shadow-sm mb-4">
-
-    <div class="card-header bg-primary text-white">
-
-        <h4 class="mb-0">
-            Eligibility Form
-        </h4>
-
+<section class="rounded-2xl bg-white p-6 shadow-md">
+  <div class="mb-5 flex items-center gap-3">
+    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+      <mat-icon>fact_check</mat-icon>
+    </span>
+    <div>
+      <h2 class="text-xl font-semibold text-slate-900">Eligibility Form</h2>
+      <p class="text-sm text-slate-500">Enter profile parameters used for scheme matching.</p>
     </div>
+  </div>
 
-    <div class="card-body">
+  <div class="grid gap-4 md:grid-cols-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Age</mat-label>
+      <input matInput type="number" [(ngModel)]="form.age" />
+    </mat-form-field>
 
-        <div class="row">
+    <mat-form-field appearance="outline">
+      <mat-label>Gender</mat-label>
+      <mat-select [(ngModel)]="form.gender">
+        <mat-option value="Male">Male</mat-option>
+        <mat-option value="Female">Female</mat-option>
+        <mat-option value="Other">Other</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-            <div class="col-md-6 mb-3">
+    <mat-form-field appearance="outline">
+      <mat-label>Income</mat-label>
+      <input matInput type="number" [(ngModel)]="form.income" />
+    </mat-form-field>
 
-                <label class="form-label">Age</label>
+    <mat-form-field appearance="outline">
+      <mat-label>Occupation</mat-label>
+      <input matInput [(ngModel)]="form.occupation" />
+    </mat-form-field>
 
-                <input
-                type="number"
-                class="form-control"
-                [(ngModel)]="form.age">
+    <mat-form-field appearance="outline">
+      <mat-label>Education</mat-label>
+      <mat-select [(ngModel)]="form.education">
+        <mat-option value="10th">10th</mat-option>
+        <mat-option value="12th">12th</mat-option>
+        <mat-option value="Graduate">Graduate</mat-option>
+        <mat-option value="Post Graduate">Post Graduate</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-            </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput placeholder="State / District" [(ngModel)]="form.location" />
+    </mat-form-field>
 
-            <div class="col-md-6 mb-3">
+    <mat-form-field appearance="outline">
+      <mat-label>Social Category</mat-label>
+      <mat-select [(ngModel)]="form.socialCategory">
+        <mat-option value="General">General</mat-option>
+        <mat-option value="OBC">OBC</mat-option>
+        <mat-option value="SC">SC</mat-option>
+        <mat-option value="ST">ST</mat-option>
+        <mat-option value="EWS">EWS</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-                <label class="form-label">Gender</label>
+    <mat-form-field appearance="outline">
+      <mat-label>Disability Status</mat-label>
+      <mat-select [(ngModel)]="form.disabilityStatus">
+        <mat-option value="Yes">Yes</mat-option>
+        <mat-option value="No">No</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-                <select
-                class="form-select"
-                [(ngModel)]="form.gender">
-
-                    <option value="">Select Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">Income</label>
-
-                <input
-                type="number"
-                class="form-control"
-                [(ngModel)]="form.income">
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">Occupation</label>
-
-                <input
-                class="form-control"
-                [(ngModel)]="form.occupation">
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">Education</label>
-
-                <select
-                class="form-select"
-                [(ngModel)]="form.education">
-
-                    <option value="">Select Education</option>
-                    <option>10th</option>
-                    <option>12th</option>
-                    <option>Graduate</option>
-                    <option>Post Graduate</option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">Location</label>
-
-                <input
-                class="form-control"
-                placeholder="State / District"
-                [(ngModel)]="form.location">
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">Social Category</label>
-
-                <select
-                class="form-select"
-                [(ngModel)]="form.socialCategory">
-
-                    <option value="">Select Category</option>
-                    <option>General</option>
-                    <option>OBC</option>
-                    <option>SC</option>
-                    <option>ST</option>
-                    <option>EWS</option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">Disability Status</label>
-
-                <select
-                class="form-select"
-                [(ngModel)]="form.disabilityStatus">
-
-                    <option value="">Select</option>
-                    <option>Yes</option>
-                    <option>No</option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-        <div class="text-center">
-
-            <button
-            class="btn btn-success px-5"
-            (click)="checkEligibility()">
-
-                Check Eligibility
-
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
+  <button mat-flat-button color="primary" class="mt-2 rounded-xl! px-6! py-5!" (click)="checkEligibility()">
+    Check Eligibility
+  </button>
+</section>
