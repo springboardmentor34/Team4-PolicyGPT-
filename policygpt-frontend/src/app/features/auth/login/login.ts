@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Auth } from '../../../core/services/auth';
 import {
   FormBuilder,
   FormGroup,
