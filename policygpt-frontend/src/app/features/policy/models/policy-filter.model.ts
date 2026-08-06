@@ -1,23 +1,10 @@
-export interface Policy {
-  id: number;
-
+export interface PolicyFilter {
   policyName: string;
-
   schemeName: string;
-
-  description: string;
-
-  category: string;
-
   department: string;
-
   ministry: string;
-
   state: string;
-
   sector: string;
-
   publicationDate: string;
-
   status: string;
 }
