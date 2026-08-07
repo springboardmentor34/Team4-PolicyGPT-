@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-  selector: 'app-add-policy',
+  selector: 'app-policy-upload',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,10 +22,10 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatIconModule
   ],
-  templateUrl: './add-policy.html',
-  styleUrl: './add-policy.css'
+  templateUrl: './policy-upload.html',
+  styleUrl: './policy-upload.css'
 })
-export class AddPolicy {
+export class PolicyUpload {
 
   policy = {
     policyName: '',
@@ -98,19 +98,13 @@ export class AddPolicy {
   ];
 
   saveDraft(): void {
-
     console.log('Draft Saved');
-
     console.log(this.policy);
-
   }
 
   publishPolicy(): void {
-
     console.log('Policy Published');
-
     console.log(this.policy);
-
   }
 
 }

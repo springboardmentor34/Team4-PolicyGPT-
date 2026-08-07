@@ -79,5 +79,61 @@ export class SearchService {
     return filtered;
 
   }
+  sortPolicies(
+  policies: Policy[],
+  sortBy: string
+): Policy[] {
+
+  const sorted = [...policies];
+
+  switch (sortBy) {
+
+    case 'newest':
+
+      sorted.sort((a, b) =>
+        new Date(b.publicationDate).getTime() -
+        new Date(a.publicationDate).getTime()
+      );
+
+      break;
+
+    case 'oldest':
+
+      sorted.sort((a, b) =>
+        new Date(a.publicationDate).getTime() -
+        new Date(b.publicationDate).getTime()
+      );
+
+      break;
+
+    case 'nameAsc':
+
+      sorted.sort((a, b) =>
+        a.policyName.localeCompare(b.policyName)
+      );
+
+      break;
+
+    case 'nameDesc':
+
+      sorted.sort((a, b) =>
+        b.policyName.localeCompare(a.policyName)
+      );
+
+      break;
+
+    case 'status':
+
+      sorted.sort((a, b) =>
+        a.status.localeCompare(b.status)
+      );
+
+      break;
+
+  }
+
+  return sorted;
+
+}
 
 }

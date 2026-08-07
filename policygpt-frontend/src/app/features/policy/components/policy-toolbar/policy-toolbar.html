@@ -1,0 +1,20 @@
+<div class="flex items-center gap-3">
+
+  <label class="text-sm font-medium text-slate-600">
+    Sort By
+  </label>
+
+  <select
+    class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+    [(ngModel)]="sortBy"
+    (change)="changeSort()">
+
+    <option value="newest">Newest First</option>
+    <option value="oldest">Oldest First</option>
+    <option value="nameAsc">Policy Name (A-Z)</option>
+    <option value="nameDesc">Policy Name (Z-A)</option>
+    <option value="status">Status</option>
+
+  </select>
+
+</div>

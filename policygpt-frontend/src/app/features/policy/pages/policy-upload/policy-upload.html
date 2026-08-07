@@ -9,11 +9,11 @@
       </p>
 
       <h1 class="mt-2 text-4xl font-bold text-slate-900">
-        Add New Policy
+        Upload New Policy
       </h1>
 
       <p class="mt-2 text-slate-500">
-        Create and publish a new government policy or scheme.
+        Create and publish new government policies and schemes.
       </p>
 
     </div>
@@ -22,34 +22,21 @@
 
       <div class="grid gap-6 md:grid-cols-2">
 
-        <!-- Policy Name -->
-
         <mat-form-field appearance="outline">
-
           <mat-label>Policy Name</mat-label>
-
           <input
             matInput
             [(ngModel)]="policy.policyName">
-
         </mat-form-field>
 
-        <!-- Scheme Name -->
-
         <mat-form-field appearance="outline">
-
           <mat-label>Scheme Name</mat-label>
-
           <input
             matInput
             [(ngModel)]="policy.schemeName">
-
         </mat-form-field>
 
-        <!-- Category -->
-
         <mat-form-field appearance="outline">
-
           <mat-label>Category</mat-label>
 
           <mat-select [(ngModel)]="policy.category">
@@ -65,8 +52,6 @@
           </mat-select>
 
         </mat-form-field>
-
-        <!-- Department -->
 
         <mat-form-field appearance="outline">
 
@@ -86,8 +71,6 @@
 
         </mat-form-field>
 
-        <!-- Ministry -->
-
         <mat-form-field appearance="outline">
 
           <mat-label>Ministry</mat-label>
@@ -105,8 +88,6 @@
           </mat-select>
 
         </mat-form-field>
-
-        <!-- State -->
 
         <mat-form-field appearance="outline">
 
@@ -126,8 +107,6 @@
 
         </mat-form-field>
 
-        <!-- Sector -->
-
         <mat-form-field appearance="outline">
 
           <mat-label>Sector</mat-label>
@@ -146,8 +125,6 @@
 
         </mat-form-field>
 
-        <!-- Publication Date -->
-
         <mat-form-field appearance="outline">
 
           <mat-label>Publication Date</mat-label>
@@ -158,8 +135,6 @@
             [(ngModel)]="policy.publicationDate">
 
         </mat-form-field>
-
-        <!-- Status -->
 
         <mat-form-field appearance="outline">
 
@@ -181,8 +156,6 @@
 
       </div>
 
-      <!-- Description -->
-
       <mat-form-field
         appearance="outline"
         class="mt-6 w-full">
@@ -197,8 +170,6 @@
         </textarea>
 
       </mat-form-field>
-
-      <!-- Buttons -->
 
       <div class="mt-8 flex gap-4">
 

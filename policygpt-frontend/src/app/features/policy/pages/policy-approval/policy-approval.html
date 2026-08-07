@@ -1,0 +1,140 @@
+<main class="min-h-screen bg-slate-100 p-8">
+
+  <div class="mx-auto max-w-7xl">
+
+    <div class="mb-8">
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-blue-600">
+        Policy Management
+      </p>
+
+      <h1 class="mt-2 text-4xl font-bold text-slate-900">
+        Policy Approval Dashboard
+      </h1>
+
+      <p class="mt-2 text-slate-500">
+        Review, approve or reject submitted government policies before publication.
+      </p>
+
+    </div>
+
+    <mat-card class="rounded-2xl p-6 shadow-lg">
+
+      <table mat-table [dataSource]="policies" class="w-full">
+
+        <!-- Policy Name -->
+
+        <ng-container matColumnDef="policyName">
+
+          <th mat-header-cell *matHeaderCellDef>
+            Policy Name
+          </th>
+
+          <td mat-cell *matCellDef="let policy">
+            {{ policy.policyName }}
+          </td>
+
+        </ng-container>
+
+        <!-- Department -->
+
+        <ng-container matColumnDef="department">
+
+          <th mat-header-cell *matHeaderCellDef>
+            Department
+          </th>
+
+          <td mat-cell *matCellDef="let policy">
+            {{ policy.department }}
+          </td>
+
+        </ng-container>
+
+        <!-- Status -->
+
+        <ng-container matColumnDef="status">
+
+          <th mat-header-cell *matHeaderCellDef>
+            Status
+          </th>
+
+          <td mat-cell *matCellDef="let policy">
+
+            <mat-chip
+              [color]="
+                policy.status === 'Approved'
+                  ? 'primary'
+                  : policy.status === 'Rejected'
+                  ? 'warn'
+                  : 'accent'
+              "
+              selected>
+
+              {{ policy.status }}
+
+            </mat-chip>
+
+          </td>
+
+        </ng-container>
+
+        <!-- Actions -->
+
+        <ng-container matColumnDef="actions">
+
+          <th mat-header-cell *matHeaderCellDef>
+            Actions
+          </th>
+
+          <td mat-cell *matCellDef="let policy">
+
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="view(policy)">
+
+              <mat-icon>visibility</mat-icon>
+
+            </button>
+
+            <button
+              *ngIf="policy.status === 'Pending'"
+              mat-icon-button
+              color="primary"
+              (click)="approve(policy)">
+
+              <mat-icon>check_circle</mat-icon>
+
+            </button>
+
+            <button
+              *ngIf="policy.status === 'Pending'"
+              mat-icon-button
+              color="warn"
+              (click)="reject(policy)">
+
+              <mat-icon>cancel</mat-icon>
+
+            </button>
+
+          </td>
+
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns">
+        </tr>
+
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+
+      </table>
+
+    </mat-card>
+
+  </div>
+
+</main>
