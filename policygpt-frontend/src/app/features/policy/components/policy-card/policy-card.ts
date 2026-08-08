@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -26,4 +27,9 @@ export class PolicyCard {
   @Input({ required: true })
   policy!: Policy;
 
+  constructor(private router: Router) {}
+
+  viewDetails(): void {
+    this.router.navigate(['/policies', this.policy.id]);
+  }
 }

@@ -1,57 +1,161 @@
-<main class="min-h-screen bg-slate-100 px-6 py-8">
+<div class="policy-page">
 
-  <section class="mx-auto max-w-7xl">
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
 
-    <div class="mb-8">
+  <header class="page-header">
 
-      <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
-        Policy Repository
-      </p>
+    <div class="header-content">
 
-      <h1 class="mt-2 text-4xl font-bold text-slate-900">
+      <div class="breadcrumb">
+        <mat-icon>account_balance</mat-icon>
+        Government Policy Repository
+      </div>
+
+      <h1>
         Policy Search
       </h1>
 
-      <p class="mt-2 max-w-3xl text-slate-500">
-        Search, filter, and review government policies by department,
-        state, sector and status.
+      <p>
+        Search, filter and review government policies from a
+        centralized policy repository.
       </p>
 
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+    <div class="policy-count">
 
-      <!-- Left Panel -->
+      <strong>
+        {{ policies.length }}
+      </strong>
 
-      <div class="space-y-6">
+      <span>
+        Policies
+      </span>
 
-        <app-policy-search
-          (search)="onSearch($event)">
-        </app-policy-search>
+    </div>
 
-       <app-policy-filter
-  (filterApplied)="onFilter($event)"
-  (filtersCleared)="clearFilters()">
-</app-policy-filter>
+  </header>
+
+
+  <!-- =====================================================
+       SEARCH
+  ====================================================== -->
+
+  <section class="search-card">
+
+    <div class="search-heading">
+
+      <div class="heading-icon">
+        <mat-icon>search</mat-icon>
       </div>
 
-      <!-- Right Panel -->
+      <div>
 
-      <section>
+        <h2>
+          Search Policies
+        </h2>
 
-        <div class="mb-4 flex items-center justify-between">
+        <p>
+          Search by policy name, scheme, department or keywords.
+        </p>
 
-          <div>
+      </div>
 
-            <h2 class="text-2xl font-semibold text-slate-900">
-              Search Results
+    </div>
+
+    <app-policy-search
+      (search)="onSearch($event)">
+    </app-policy-search>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILTER + RESULTS
+  ====================================================== -->
+
+  <div class="content-layout">
+
+
+    <!-- ===================================================
+         FILTER SIDEBAR
+    ==================================================== -->
+
+    <aside class="filter-sidebar">
+
+      <div class="filter-header">
+
+        <div>
+
+          <h2>
+            Filters
+          </h2>
+
+          <p>
+            Refine your results
+          </p>
+
+        </div>
+
+        <mat-icon>
+          tune
+        </mat-icon>
+
+      </div>
+
+      <div class="filter-content">
+
+        <app-policy-filter
+          (filterApplied)="onFilter($event)"
+          (filtersCleared)="clearFilters()">
+        </app-policy-filter>
+
+      </div>
+
+    </aside>
+
+
+    <!-- ===================================================
+         RESULTS
+    ==================================================== -->
+
+    <main class="results-area">
+
+
+      <!-- Results Header -->
+
+      <div class="results-header">
+
+        <div>
+
+          <div class="results-title">
+
+            <h2>
+              Policy Results
             </h2>
 
-            <p class="text-sm text-slate-500">
-              {{ policies.length }} Policies Available
-            </p>
+            <span>
+              {{ policies.length }}
+            </span>
 
           </div>
+
+          <p>
+            Government policies matching your search
+          </p>
+
+        </div>
+
+
+        <!-- Sort -->
+
+        <div class="sort-container">
+
+          <span>
+            Sort by
+          </span>
 
           <app-policy-toolbar
             (sortChanged)="onSort($event)">
@@ -59,26 +163,99 @@
 
         </div>
 
-        <div class="space-y-6">
+      </div>
 
-          <app-policy-card
-  *ngFor="let policy of pagedPolicies"
-  [policy]="policy">
-</app-policy-card>
+
+      <!-- =================================================
+           EMPTY STATE
+      ================================================== -->
+
+      @if (pagedPolicies.length === 0) {
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+
+            <mat-icon>
+              search_off
+            </mat-icon>
+
+          </div>
+
+          <h3>
+            No policies found
+          </h3>
+
+          <p>
+            No policies match your current search or filter
+            criteria.
+          </p>
+
+          <button
+            type="button"
+            class="clear-results"
+            (click)="clearFilters()">
+
+            <mat-icon>
+              refresh
+            </mat-icon>
+
+            Clear Filters
+
+          </button>
+
         </div>
-        <mat-paginator
-  [length]="policies.length"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[5, 10, 20]"
-  [pageIndex]="currentPage"
-  (page)="onPageChange($event)"
-  showFirstLastButtons>
-</mat-paginator>
 
-      </section>
+      }
 
-    </div>
 
-  </section>
+      <!-- =================================================
+           POLICY RESULTS
+      ================================================== -->
 
-</main>
+      @else {
+
+        <div class="policy-results">
+
+          @for (
+            policy of pagedPolicies;
+            track policy.id
+          ) {
+
+            <app-policy-card
+              [policy]="policy">
+            </app-policy-card>
+
+          }
+
+        </div>
+
+
+        <!-- ===============================================
+             PAGINATION
+        ================================================ -->
+
+        <div class="pagination">
+
+          <span class="pagination-label">
+            {{ policies.length }} policies available
+          </span>
+
+          <mat-paginator
+            [length]="policies.length"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            [pageIndex]="currentPage"
+            (page)="onPageChange($event)"
+            showFirstLastButtons>
+          </mat-paginator>
+
+        </div>
+
+      }
+
+    </main>
+
+  </div>
+
+</div>

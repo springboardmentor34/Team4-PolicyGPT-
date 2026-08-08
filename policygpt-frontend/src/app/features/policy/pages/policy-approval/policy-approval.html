@@ -1,140 +1,226 @@
-<main class="min-h-screen bg-slate-100 p-8">
+<div class="approval-page">
 
-  <div class="mx-auto max-w-7xl">
+  <!-- Header -->
+  <div class="page-header">
 
-    <div class="mb-8">
-
-      <p class="text-sm font-semibold uppercase tracking-wider text-blue-600">
+    <div>
+      <div class="eyebrow">
         Policy Management
-      </p>
+      </div>
 
-      <h1 class="mt-2 text-4xl font-bold text-slate-900">
-        Policy Approval Dashboard
+      <h1>
+        Policy Approval
       </h1>
 
-      <p class="mt-2 text-slate-500">
-        Review, approve or reject submitted government policies before publication.
+      <p class="subtitle">
+        Review submitted policies and approve or reject them before publication.
       </p>
-
     </div>
 
-    <mat-card class="rounded-2xl p-6 shadow-lg">
+    <div class="header-icon">
+      <mat-icon>verified</mat-icon>
+    </div>
 
-      <table mat-table [dataSource]="policies" class="w-full">
+  </div>
 
-        <!-- Policy Name -->
 
-        <ng-container matColumnDef="policyName">
+  <!-- Summary Cards -->
+  <div class="summary-grid">
 
-          <th mat-header-cell *matHeaderCellDef>
-            Policy Name
-          </th>
+    <mat-card class="summary-card pending-card">
 
-          <td mat-cell *matCellDef="let policy">
-            {{ policy.policyName }}
-          </td>
+      <div class="summary-icon">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
 
-        </ng-container>
+      <div>
+        <p class="summary-label">
+          Pending Review
+        </p>
 
-        <!-- Department -->
+        <p class="summary-value">
+          {{ pendingCount }}
+        </p>
+      </div>
 
-        <ng-container matColumnDef="department">
+    </mat-card>
 
-          <th mat-header-cell *matHeaderCellDef>
-            Department
-          </th>
 
-          <td mat-cell *matCellDef="let policy">
-            {{ policy.department }}
-          </td>
+    <mat-card class="summary-card approved-card">
 
-        </ng-container>
+      <div class="summary-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
 
-        <!-- Status -->
+      <div>
+        <p class="summary-label">
+          Approved
+        </p>
 
-        <ng-container matColumnDef="status">
+        <p class="summary-value">
+          {{ approvedCount }}
+        </p>
+      </div>
 
-          <th mat-header-cell *matHeaderCellDef>
-            Status
-          </th>
+    </mat-card>
 
-          <td mat-cell *matCellDef="let policy">
 
-            <mat-chip
-              [color]="
-                policy.status === 'Approved'
-                  ? 'primary'
-                  : policy.status === 'Rejected'
-                  ? 'warn'
-                  : 'accent'
-              "
-              selected>
+    <mat-card class="summary-card rejected-card">
 
-              {{ policy.status }}
+      <div class="summary-icon">
+        <mat-icon>cancel</mat-icon>
+      </div>
 
-            </mat-chip>
+      <div>
+        <p class="summary-label">
+          Rejected
+        </p>
 
-          </td>
-
-        </ng-container>
-
-        <!-- Actions -->
-
-        <ng-container matColumnDef="actions">
-
-          <th mat-header-cell *matHeaderCellDef>
-            Actions
-          </th>
-
-          <td mat-cell *matCellDef="let policy">
-
-            <button
-              mat-icon-button
-              color="primary"
-              (click)="view(policy)">
-
-              <mat-icon>visibility</mat-icon>
-
-            </button>
-
-            <button
-              *ngIf="policy.status === 'Pending'"
-              mat-icon-button
-              color="primary"
-              (click)="approve(policy)">
-
-              <mat-icon>check_circle</mat-icon>
-
-            </button>
-
-            <button
-              *ngIf="policy.status === 'Pending'"
-              mat-icon-button
-              color="warn"
-              (click)="reject(policy)">
-
-              <mat-icon>cancel</mat-icon>
-
-            </button>
-
-          </td>
-
-        </ng-container>
-
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns">
-        </tr>
-
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns;">
-        </tr>
-
-      </table>
+        <p class="summary-value">
+          {{ rejectedCount }}
+        </p>
+      </div>
 
     </mat-card>
 
   </div>
 
-</main>
+
+  <!-- Approval Section -->
+  <mat-card class="approval-card">
+
+    <div class="section-header">
+
+      <div>
+        <h2>
+          Submitted Policies
+        </h2>
+
+        <p>
+          Review the current approval status of submitted policies.
+        </p>
+      </div>
+
+      <div class="policy-count">
+        {{ policies.length }} policies
+      </div>
+
+    </div>
+
+
+    <!-- Policy List -->
+    <div class="policy-list">
+
+      @for (policy of policies; track policy.id) {
+
+        <div class="policy-row">
+
+          <!-- Policy Information -->
+          <div class="policy-info">
+
+            <div class="policy-icon">
+              <mat-icon>description</mat-icon>
+            </div>
+
+            <div>
+
+              <h3>
+                {{ policy.policyName }}
+              </h3>
+
+              <div class="department">
+
+                <mat-icon>business</mat-icon>
+
+                <span>
+                  {{ policy.department }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Status -->
+          <div class="status-wrapper">
+
+            @if (policy.status === 'Pending') {
+
+              <span class="status status-pending">
+                <span class="status-dot"></span>
+                Pending
+              </span>
+
+            } @else if (policy.status === 'Approved') {
+
+              <span class="status status-approved">
+                <span class="status-dot"></span>
+                Approved
+              </span>
+
+            } @else {
+
+              <span class="status status-rejected">
+                <span class="status-dot"></span>
+                Rejected
+              </span>
+
+            }
+
+          </div>
+
+
+          <!-- Actions -->
+          <div class="policy-actions">
+
+            <button
+              type="button"
+              class="icon-button view-button"
+              title="View policy"
+              (click)="view(policy)"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+
+
+            @if (policy.status === 'Pending') {
+
+              <button
+                type="button"
+                class="action-button approve-button"
+                (click)="approve(policy)"
+              >
+                <mat-icon>check</mat-icon>
+                Approve
+              </button>
+
+              <button
+                type="button"
+                class="action-button reject-button"
+                (click)="reject(policy)"
+              >
+                <mat-icon>close</mat-icon>
+                Reject
+              </button>
+
+            } @else {
+
+              <span class="completed-label">
+                Reviewed
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </mat-card>
+
+</div>

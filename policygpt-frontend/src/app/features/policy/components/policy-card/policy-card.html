@@ -1,56 +1,111 @@
-<mat-card class="rounded-2xl! p-6 shadow-md!">
-  <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+<mat-card class="policy-card">
 
-    <div class="flex-1">
+  <div class="card-top">
 
-      <div class="mb-3 flex flex-wrap gap-2">
-        <mat-chip>{{ policy.category }}</mat-chip>
-        <mat-chip>{{ policy.state }}</mat-chip>
-        <mat-chip>{{ policy.status }}</mat-chip>
+    <div class="chip-group">
+      <span class="category-chip">
+        {{ policy.category }}
+      </span>
+
+      <span class="state-chip">
+        {{ policy.state }}
+      </span>
+    </div>
+
+    <span
+      class="status-badge"
+      [class.status-approved]="policy.status === 'Approved'"
+      [class.status-pending]="policy.status === 'Pending'"
+      [class.status-rejected]="policy.status === 'Rejected'"
+    >
+      <span class="status-dot"></span>
+      {{ policy.status }}
+    </span>
+
+  </div>
+
+
+  <div class="card-content">
+
+    <h3 class="policy-title">
+      {{ policy.policyName }}
+    </h3>
+
+    <p class="policy-description">
+      {{ policy.description }}
+    </p>
+
+
+    <div class="policy-meta">
+
+      <div class="meta-item">
+
+        <span class="meta-icon">
+          <mat-icon>account_balance</mat-icon>
+        </span>
+
+        <div>
+          <span class="meta-label">Department</span>
+          <span class="meta-value">
+            {{ policy.department }}
+          </span>
+        </div>
+
       </div>
 
-      <h3 class="text-2xl font-bold text-slate-900">
-        {{ policy.policyName }}
-      </h3>
 
-      <p class="mt-3 max-w-2xl text-slate-500">
-        {{ policy.description }}
-      </p>
+      <div class="meta-item">
 
-      <div class="mt-5 grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
-
-        <span class="inline-flex items-center gap-2">
-          <mat-icon class="text-base! text-blue-700">
-            account_balance
-          </mat-icon>
-          {{ policy.department }}
+        <span class="meta-icon">
+          <mat-icon>event</mat-icon>
         </span>
 
-        <span class="inline-flex items-center gap-2">
-          <mat-icon class="text-base! text-blue-700">
-            event
-          </mat-icon>
-          {{ policy.publicationDate }}
+        <div>
+          <span class="meta-label">Published</span>
+          <span class="meta-value">
+            {{ policy.publicationDate }}
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="meta-item">
+
+        <span class="meta-icon">
+          <mat-icon>category</mat-icon>
         </span>
 
-        <span class="inline-flex items-center gap-2">
-          <mat-icon class="text-base! text-blue-700">
-            verified
-          </mat-icon>
-          {{ policy.status }}
-        </span>
+        <div>
+          <span class="meta-label">Sector</span>
+          <span class="meta-value">
+            {{ policy.sector }}
+          </span>
+        </div>
 
       </div>
 
     </div>
 
-    <button
-      mat-flat-button
-      color="primary"
-      class="rounded-xl! px-5! py-5!"
-    >
-      View Details
-    </button>
+  </div>
+
+
+  <div class="card-footer">
+
+    <span class="policy-reference">
+      <mat-icon>description</mat-icon>
+      Government Policy
+    </span>
+
+   <button
+  mat-flat-button
+  color="primary"
+  class="rounded-xl! px-5! py-5!"
+  (click)="viewDetails()"
+>
+  View Details
+</button>
 
   </div>
+
 </mat-card>
