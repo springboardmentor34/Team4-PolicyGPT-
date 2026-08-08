@@ -21,10 +21,17 @@ export const routes: Routes = [
       ),
   },
   {
+    path: '',
+    loadChildren: () =>
+      import('./features/eligibility/eligibility.routes').then(
+        (m) => m.ELIGIBILITY_ROUTES
+      ),
+  },
+  {
   path: '',
   loadChildren: () =>
-    import('./features/eligibility/eligibility.routes').then(
-      (m) => m.ELIGIBILITY_ROUTES
+    import('./features/scheme/scheme.routes').then(
+      (m) => m.SCHEME_ROUTES
     ),
 },
   {
