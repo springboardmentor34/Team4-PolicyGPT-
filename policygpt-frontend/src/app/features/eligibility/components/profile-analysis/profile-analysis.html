@@ -1,34 +1,77 @@
-<section class="rounded-2xl bg-white p-6 shadow-md">
-  <div class="mb-5 flex items-center gap-3">
-    <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-100 text-cyan-700">
-      <mat-icon>person_search</mat-icon>
-    </span>
-    <div>
-      <h2 class="text-xl font-semibold text-slate-900">User Profile Analysis</h2>
-      <p class="text-sm text-slate-500">Derived profile view for eligibility decisions.</p>
-    </div>
-  </div>
+@if (profile) {
+  <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div class="mb-5 flex items-start gap-3">
+      <span
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700"
+      >
+        <mat-icon>person_search</mat-icon>
+      </span>
 
-  <div class="grid gap-4 sm:grid-cols-2">
-    <div class="rounded-xl bg-slate-50 p-4">
-      <p class="text-sm text-slate-500">Age Group</p>
-      <p class="mt-1 font-semibold text-slate-900">{{ profile.ageGroup }}</p>
+      <div>
+        <h2 class="text-xl font-semibold text-slate-900">
+          User Profile Analysis
+        </h2>
+
+        <p class="text-sm text-slate-500">
+          Profile information used for eligibility screening.
+        </p>
+      </div>
     </div>
-    <div class="rounded-xl bg-slate-50 p-4">
-      <p class="text-sm text-slate-500">Income Group</p>
-      <p class="mt-1 font-semibold text-slate-900">{{ profile.incomeGroup }}</p>
+
+    <div class="grid gap-3 sm:grid-cols-2">
+      <div class="rounded-xl border border-slate-200 p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Age Group
+        </p>
+        <p class="mt-1 font-semibold text-slate-900">
+          {{ ageGroup }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Income Group
+        </p>
+        <p class="mt-1 font-semibold text-slate-900">
+          {{ incomeGroup }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Occupation
+        </p>
+        <p class="mt-1 font-semibold text-slate-900">
+          {{ profile.occupation }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Education
+        </p>
+        <p class="mt-1 font-semibold text-slate-900">
+          {{ profile.education }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          State
+        </p>
+        <p class="mt-1 font-semibold text-slate-900">
+          {{ profile.location }}
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 p-4">
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Social Category
+        </p>
+        <p class="mt-1 font-semibold text-slate-900">
+          {{ profile.socialCategory }}
+        </p>
+      </div>
     </div>
-    <div class="rounded-xl bg-slate-50 p-4">
-      <p class="text-sm text-slate-500">Occupation</p>
-      <p class="mt-1 font-semibold text-slate-900">{{ profile.occupation }}</p>
-    </div>
-    <div class="rounded-xl bg-slate-50 p-4">
-      <p class="text-sm text-slate-500">Education</p>
-      <p class="mt-1 font-semibold text-slate-900">{{ profile.education }}</p>
-    </div>
-    <div class="rounded-xl bg-slate-50 p-4 sm:col-span-2">
-      <p class="text-sm text-slate-500">Location</p>
-      <p class="mt-1 font-semibold text-slate-900">{{ profile.location }}</p>
-    </div>
-  </div>
-</section>
+  </section>
+}
