@@ -30,10 +30,32 @@ export class Auth {
   constructor(private http: HttpClient) {}
 
   login(payload: LoginRequest): Observable<TokenResponse> {
-    return this.http.post<TokenResponse>(`${this.baseUrl}/auth/login`, payload);
+    return this.http.post<TokenResponse>(
+      `${this.baseUrl}/auth/login`,
+      payload
+    );
   }
 
-  register(payload: RegisterRequest): Observable<unknown> {
-    return this.http.post(`${this.baseUrl}/auth/register`, payload);
+  register(payload: RegisterRequest): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/auth/register`,
+      payload
+    );
+  }
+
+  getRoleFromToken(): string | null {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role ?? null;
+    } catch (error) {
+      console.error('Unable to decode access token:', error);
+      return null;
+    }
   }
 }

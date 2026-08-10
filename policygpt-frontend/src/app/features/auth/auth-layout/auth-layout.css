@@ -1,0 +1,300 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(420px, 0.9fr) minmax(520px, 1.1fr);
+  background: #f6f8fb;
+}
+
+/* =========================
+   BRAND PANEL
+========================= */
+
+.auth-brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 64px 64px 36px;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(255, 255, 255, 0.14),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #0f4c81 0%,
+      #123f69 55%,
+      #0b3153 100%
+    );
+
+  color: white;
+}
+
+.auth-brand::before {
+  content: '';
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  right: -180px;
+  top: -160px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.auth-brand::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  left: -150px;
+  bottom: -130px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.brand-content {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+
+/* Logo */
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo-mark,
+.mobile-logo-mark {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.brand-name {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.brand-tagline {
+  margin-top: 3px;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Intro */
+
+.brand-intro {
+  margin-top: 90px;
+}
+
+.brand-intro h1 {
+  margin: 0;
+
+  max-width: 520px;
+
+  font-size: clamp(36px, 4vw, 54px);
+  line-height: 1.08;
+  letter-spacing: -1.5px;
+  font-weight: 800;
+}
+
+.brand-intro h1 span {
+  display: block;
+  color: #a9d5ff;
+}
+
+.brand-intro p {
+  max-width: 500px;
+  margin-top: 22px;
+
+  font-size: 16px;
+  line-height: 1.7;
+
+  color: rgba(255, 255, 255, 0.76);
+}
+
+/* Features */
+
+.feature-list {
+  margin-top: 55px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.feature-icon {
+  flex-shrink: 0;
+
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.feature-icon mat-icon {
+  font-size: 21px;
+}
+
+.feature-item h3 {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.feature-item p {
+  margin: 3px 0 0;
+
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* Footer */
+
+.brand-footer {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.brand-footer span {
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   AUTH CONTENT
+========================= */
+
+.auth-content {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px;
+}
+
+.auth-card {
+  width: min(100%, 560px);
+
+  padding: 44px;
+
+  background: white;
+
+  border: 1px solid #e8edf3;
+  border-radius: 24px;
+
+  box-shadow:
+    0 24px 70px rgba(15, 76, 129, 0.09),
+    0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+/* Mobile logo */
+
+.mobile-brand {
+  display: none;
+}
+
+/* Responsive */
+
+@media (max-width: 1050px) {
+
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-brand {
+    display: none;
+  }
+
+  .auth-content {
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .auth-card {
+    max-width: 560px;
+  }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-bottom: 28px;
+
+    font-size: 23px;
+    font-weight: 800;
+    color: #0f4c81;
+  }
+
+  .mobile-logo-mark {
+    width: 40px;
+    height: 40px;
+
+    background: #0f4c81;
+    color: white;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .auth-content {
+    padding: 16px;
+  }
+
+  .auth-card {
+    padding: 28px 22px;
+    border-radius: 18px;
+  }
+}
