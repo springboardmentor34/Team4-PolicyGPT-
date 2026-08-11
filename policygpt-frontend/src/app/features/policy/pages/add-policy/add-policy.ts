@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
+import { PolicyService } from '../../../../core/services/policy.service';
 
 @Component({
   selector: 'app-add-policy',
@@ -26,6 +29,9 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './add-policy.css'
 })
 export class AddPolicy {
+
+  private policyService = inject(PolicyService);
+  private router = inject(Router);
 
   policy = {
     policyName: '',
@@ -49,7 +55,9 @@ export class AddPolicy {
     'Employment',
     'Energy',
     'Housing',
-    'Infrastructure'
+    'Infrastructure',
+    'Water',
+    'Food'
   ];
 
   departments = [
@@ -60,7 +68,9 @@ export class AddPolicy {
     'Industry Department',
     'Skill Development Department',
     'Energy Department',
-    'Housing Department'
+    'Housing Department',
+    'Water Resources Department',
+    'Food Department'
   ];
 
   ministries = [
@@ -68,7 +78,11 @@ export class AddPolicy {
     'Ministry of Agriculture',
     'Ministry of Health',
     'Ministry of Electronics',
-    'Ministry of Commerce'
+    'Ministry of Commerce',
+    'Ministry of Skill Development',
+    'Ministry of Renewable Energy',
+    'Ministry of Housing',
+    'Ministry of Jal Shakti'
   ];
 
   states = [
@@ -77,7 +91,11 @@ export class AddPolicy {
     'Karnataka',
     'Tamil Nadu',
     'Maharashtra',
-    'Delhi'
+    'Delhi',
+    'Rajasthan',
+    'Gujarat',
+    'Madhya Pradesh',
+    'Punjab'
   ];
 
   sectors = [
@@ -88,7 +106,10 @@ export class AddPolicy {
     'Business',
     'Employment',
     'Energy',
-    'Housing'
+    'Housing',
+    'Infrastructure',
+    'Water',
+    'Food'
   ];
 
   statuses = [
@@ -97,20 +118,59 @@ export class AddPolicy {
     'Approved'
   ];
 
+  private isValid(): boolean {
+
+    return !!(
+      this.policy.policyName.trim() &&
+      this.policy.schemeName.trim() &&
+      this.policy.category &&
+      this.policy.department &&
+      this.policy.ministry &&
+      this.policy.state &&
+      this.policy.sector &&
+      this.policy.publicationDate &&
+      this.policy.status &&
+      this.policy.description.trim()
+    );
+
+  }
+
   saveDraft(): void {
 
-    console.log('Draft Saved');
+    if (!this.isValid()) {
+      alert('Please complete all policy fields before saving the draft.');
+      return;
+    }
 
-    console.log(this.policy);
+    const newPolicy = this.policyService.addPolicy({
+      ...this.policy,
+      status: 'Draft'
+    });
 
+    console.log('Draft Saved:', newPolicy);
+
+    alert('Policy draft saved successfully.');
+
+    this.router.navigate(['/policies', newPolicy.id]);
   }
 
   publishPolicy(): void {
 
-    console.log('Policy Published');
+    if (!this.isValid()) {
+      alert('Please complete all policy fields before publishing.');
+      return;
+    }
 
-    console.log(this.policy);
+    const newPolicy = this.policyService.addPolicy({
+      ...this.policy,
+      status: 'Pending'
+    });
 
+    console.log('Policy Published:', newPolicy);
+
+    alert('Policy submitted successfully for approval.');
+
+    this.router.navigate(['/policies', newPolicy.id]);
   }
 
 }

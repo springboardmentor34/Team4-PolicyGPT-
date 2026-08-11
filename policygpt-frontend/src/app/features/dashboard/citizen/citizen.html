@@ -3,7 +3,9 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-content">
+
       <div class="hero-text">
+
         <span class="welcome-badge">
           <mat-icon>verified_user</mat-icon>
           Citizen Portal
@@ -19,32 +21,17 @@
           and manage your applications — all in one place.
         </p>
 
-        <div class="hero-actions">
-          <button
-            mat-flat-button
-            class="primary-action"
-            (click)="navigate('/policies')">
-            <mat-icon>search</mat-icon>
-            Explore Policies
-          </button>
-
-          <button
-            mat-stroked-button
-            class="secondary-action"
-            (click)="navigate('/eligibility')">
-            <mat-icon>fact_check</mat-icon>
-            Check Eligibility
-          </button>
-        </div>
       </div>
 
       <div class="hero-visual">
+
         <div class="visual-circle">
           <mat-icon>account_balance</mat-icon>
         </div>
 
         <div class="floating-card floating-card-one">
           <mat-icon>policy</mat-icon>
+
           <div>
             <strong>320+</strong>
             <span>Policies</span>
@@ -53,39 +40,15 @@
 
         <div class="floating-card floating-card-two">
           <mat-icon>check_circle</mat-icon>
+
           <div>
             <strong>Easy</strong>
             <span>Eligibility</span>
           </div>
         </div>
+
       </div>
-    </div>
-  </section>
 
-
-  <!-- Search Section -->
-  <section class="search-section">
-    <div class="section-heading">
-      <div>
-        <span class="section-label">FIND WHAT YOU NEED</span>
-        <h2>Search Government Policies</h2>
-        <p>
-          Search schemes and policies by name, department, or category.
-        </p>
-      </div>
-    </div>
-
-    <div class="search-box">
-      <mat-icon>search</mat-icon>
-
-      <input
-        type="text"
-        placeholder="Search policies, schemes, departments..."
-      />
-
-      <button mat-flat-button>
-        Search
-      </button>
     </div>
   </section>
 
@@ -94,14 +57,21 @@
   <section class="dashboard-section">
 
     <div class="section-heading">
+
       <div>
         <span class="section-label">QUICK ACCESS</span>
-        <h2>What would you like to do?</h2>
+
+        <h2>
+          What would you like to do?
+        </h2>
+
         <p>
           Access frequently used citizen services.
         </p>
       </div>
+
     </div>
+
 
     <div class="action-grid">
 
@@ -116,11 +86,15 @@
           </div>
 
           <div class="action-content">
-            <h3>{{ action.title }}</h3>
+
+            <h3>
+              {{ action.title }}
+            </h3>
 
             <p>
               {{ action.description }}
             </p>
+
           </div>
 
           <mat-icon class="arrow-icon">
@@ -142,14 +116,21 @@
     <div class="section-heading heading-with-action">
 
       <div>
-        <span class="section-label">RECOMMENDED FOR YOU</span>
 
-        <h2>Government Schemes</h2>
+        <span class="section-label">
+          RECOMMENDED FOR YOU
+        </span>
+
+        <h2>
+          Government Schemes
+        </h2>
 
         <p>
           Explore schemes that may be relevant to you.
         </p>
+
       </div>
+
 
       <button
         mat-button
@@ -158,7 +139,9 @@
 
         View All
 
-        <mat-icon>arrow_forward</mat-icon>
+        <mat-icon>
+          arrow_forward
+        </mat-icon>
 
       </button>
 
@@ -167,14 +150,16 @@
 
     <div class="policy-grid">
 
-      @for(policy of recommendedPolicies; track policy.title) {
+      @for(policy of recommendedPolicies; track policy.id) {
 
         <mat-card class="policy-card">
 
           <div class="policy-top">
 
             <div class="policy-icon">
-              <mat-icon>account_balance</mat-icon>
+              <mat-icon>
+                {{ policy.icon }}
+              </mat-icon>
             </div>
 
             <span class="policy-category">
@@ -183,22 +168,27 @@
 
           </div>
 
+
           <h3>
             {{ policy.title }}
           </h3>
 
+
           <p>
-            Government scheme available for eligible citizens.
+            {{ policy.description }}
           </p>
+
 
           <button
             mat-button
             class="policy-button"
-            (click)="navigate('/policies')">
+            (click)="viewPolicy(policy.id)">
 
             View Details
 
-            <mat-icon>arrow_forward</mat-icon>
+            <mat-icon>
+              arrow_forward
+            </mat-icon>
 
           </button>
 
@@ -214,14 +204,22 @@
   <!-- Information Cards -->
   <section class="info-grid">
 
+
+    <!-- Eligibility -->
     <mat-card class="info-card eligibility-info">
 
       <div class="info-icon">
-        <mat-icon>fact_check</mat-icon>
+        <mat-icon>
+          fact_check
+        </mat-icon>
       </div>
 
+
       <div>
-        <h3>Not sure if you're eligible?</h3>
+
+        <h3>
+          Not sure if you're eligible?
+        </h3>
 
         <p>
           Answer a few questions and let PolicyGPT
@@ -233,22 +231,33 @@
           (click)="navigate('/eligibility')">
 
           Check Eligibility
-          <mat-icon>arrow_forward</mat-icon>
+
+          <mat-icon>
+            arrow_forward
+          </mat-icon>
 
         </button>
+
       </div>
 
     </mat-card>
 
 
+    <!-- Applications -->
     <mat-card class="info-card application-info">
 
       <div class="info-icon">
-        <mat-icon>description</mat-icon>
+        <mat-icon>
+          description
+        </mat-icon>
       </div>
 
+
       <div>
-        <h3>Track your applications</h3>
+
+        <h3>
+          Track your applications
+        </h3>
 
         <p>
           Keep track of your submitted applications
@@ -260,12 +269,17 @@
           (click)="navigate('/applications')">
 
           My Applications
-          <mat-icon>arrow_forward</mat-icon>
+
+          <mat-icon>
+            arrow_forward
+          </mat-icon>
 
         </button>
+
       </div>
 
     </mat-card>
+
 
   </section>
 

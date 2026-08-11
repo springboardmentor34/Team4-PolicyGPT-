@@ -1,99 +1,455 @@
-<main class="min-h-screen bg-slate-100 px-6 py-8">
-  <section class="mx-auto max-w-7xl">
-    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
-          Government Workspace
-        </p>
-        <h1 class="mt-2 text-4xl font-bold text-slate-900">
-          Government Official Dashboard
-        </h1>
-        <p class="mt-2 text-slate-500">
-          Welcome, {{ officialName }}. Review policy activity, scheme usage, and department updates.
-        </p>
-      </div>
+<main class="official-dashboard">
 
-      <button mat-flat-button color="primary" class="rounded-xl! px-5! py-5!">
-        <mat-icon>add_circle</mat-icon>
-        New Policy
-      </button>
-    </div>
+  <!-- HERO -->
+  <section class="dashboard-hero">
+    <div>
+      <span class="eyebrow">
+        GOVERNMENT WORKSPACE
+      </span>
 
-    <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-      <mat-card class="rounded-2xl! p-6 shadow-md!">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-slate-500">Total Policies</p>
-            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ totalPolicies }}</h2>
-          </div>
-          <mat-icon class="text-4xl! text-blue-700">policy</mat-icon>
-        </div>
-      </mat-card>
+      <h1>
+        Government Official Dashboard
+      </h1>
 
-      <mat-card class="rounded-2xl! p-6 shadow-md!">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-slate-500">Active Schemes</p>
-            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ activeSchemes }}</h2>
-          </div>
-          <mat-icon class="text-4xl! text-emerald-600">verified</mat-icon>
-        </div>
-      </mat-card>
-
-      <mat-card class="rounded-2xl! p-6 shadow-md!">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-slate-500">Departments</p>
-            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ totalDepartments }}</h2>
-          </div>
-          <mat-icon class="text-4xl! text-amber-600">account_balance</mat-icon>
-        </div>
-      </mat-card>
-
-      <mat-card class="rounded-2xl! p-6 shadow-md!">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-slate-500">Notifications</p>
-            <h2 class="mt-2 text-3xl font-bold text-slate-900">{{ notifications }}</h2>
-          </div>
-          <mat-icon class="text-4xl! text-rose-600">notifications_active</mat-icon>
-        </div>
-      </mat-card>
-    </div>
-
-    <div class="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-      <mat-card class="rounded-2xl! p-6 shadow-md!">
-        <h2 class="text-2xl font-semibold text-slate-900">Policy Statistics</h2>
-
-        <div class="mt-5 space-y-4">
-          @for (policy of policyStats; track policy.title) {
-            <div class="flex items-center justify-between rounded-xl bg-slate-50 p-4">
-              <span class="font-medium text-slate-700">{{ policy.title }}</span>
-              <span class="rounded-full bg-blue-100 px-4 py-1 font-semibold text-blue-800">
-                {{ policy.count }}
-              </span>
-            </div>
-          }
-        </div>
-      </mat-card>
-
-      <mat-card class="rounded-2xl! p-6 shadow-md!">
-        <h2 class="text-2xl font-semibold text-slate-900">Department Reports</h2>
-
-        <div class="mt-5 space-y-4">
-          @for (report of departmentReports; track report.department) {
-            <div class="rounded-xl border border-slate-200 p-4">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-slate-800">{{ report.department }}</h3>
-                <mat-icon class="text-blue-700">analytics</mat-icon>
-              </div>
-              <p class="mt-2 text-sm text-slate-500">
-                {{ report.policies }} policies and {{ report.schemes }} schemes tracked
-              </p>
-            </div>
-          }
-        </div>
-      </mat-card>
+      <p>
+        Welcome, {{ officialName }}. Manage policies, schemes,
+        approvals and citizen services from one place.
+      </p>
     </div>
   </section>
+
+
+  <!-- STATISTICS -->
+  <section class="stats-grid">
+
+    <mat-card class="stat-card">
+      <div class="stat-icon blue">
+        <mat-icon>policy</mat-icon>
+      </div>
+
+      <div>
+        <span>Total Policies</span>
+        <strong>{{ totalPolicies }}</strong>
+        <small>Across government departments</small>
+      </div>
+    </mat-card>
+
+
+    <mat-card class="stat-card">
+      <div class="stat-icon green">
+        <mat-icon>verified</mat-icon>
+      </div>
+
+      <div>
+        <span>Active Schemes</span>
+        <strong>{{ activeSchemes }}</strong>
+        <small>Currently available schemes</small>
+      </div>
+    </mat-card>
+
+
+    <mat-card class="stat-card">
+      <div class="stat-icon orange">
+        <mat-icon>account_balance</mat-icon>
+      </div>
+
+      <div>
+        <span>Departments</span>
+        <strong>{{ totalDepartments }}</strong>
+        <small>Government departments</small>
+      </div>
+    </mat-card>
+
+
+    <mat-card class="stat-card">
+      <div class="stat-icon red">
+        <mat-icon>notifications_active</mat-icon>
+      </div>
+
+      <div>
+        <span>Notifications</span>
+        <strong>{{ notifications }}</strong>
+        <small>Recent system notifications</small>
+      </div>
+    </mat-card>
+
+  </section>
+
+
+  <!-- MANAGEMENT -->
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+      <div>
+        <span class="section-label">
+          MANAGEMENT CENTER
+        </span>
+
+        <h2>
+          Manage Policies &amp; Schemes
+        </h2>
+
+        <p>
+          Access the tools required to manage government policy
+          and scheme operations.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="management-grid">
+
+      @for (action of managementActions; track action.title) {
+
+        <mat-card
+          class="management-card"
+          (click)="navigate(action.route)">
+
+          <div class="management-icon">
+            <mat-icon>
+              {{ action.icon }}
+            </mat-icon>
+          </div>
+
+          <div class="management-content">
+
+            <h3>
+              {{ action.title }}
+            </h3>
+
+            <p>
+              {{ action.description }}
+            </p>
+
+            <button
+              mat-button
+              class="management-button"
+              (click)="$event.stopPropagation(); navigate(action.route)">
+
+              {{ action.label }}
+
+              <mat-icon>
+                arrow_forward
+              </mat-icon>
+
+            </button>
+
+          </div>
+
+        </mat-card>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- POLICY STATUS + DEPARTMENT -->
+  <section class="content-grid">
+
+    <mat-card class="dashboard-card">
+
+      <div class="card-heading">
+
+        <div>
+          <span class="section-label">
+            POLICY WORKFLOW
+          </span>
+
+          <h2>
+            Policy Status
+          </h2>
+        </div>
+
+        <mat-icon>
+          assessment
+        </mat-icon>
+
+      </div>
+
+
+      <div class="status-list">
+
+        @for (policy of policyStats; track policy.title) {
+
+          <div
+            class="status-row"
+            (click)="navigate(policy.route)">
+
+            <div class="status-left">
+
+              <div class="status-icon">
+                <mat-icon>
+                  {{ policy.icon }}
+                </mat-icon>
+              </div>
+
+              <span>
+                {{ policy.title }}
+              </span>
+
+            </div>
+
+            <strong>
+              {{ policy.count }}
+            </strong>
+
+          </div>
+
+        }
+
+      </div>
+
+    </mat-card>
+
+
+    <!-- DEPARTMENTS -->
+    <mat-card class="dashboard-card">
+
+      <div class="card-heading">
+
+        <div>
+          <span class="section-label">
+            DEPARTMENT OVERVIEW
+          </span>
+
+          <h2>
+            Department Reports
+          </h2>
+        </div>
+
+        <mat-icon>
+          account_balance
+        </mat-icon>
+
+      </div>
+
+
+      <div class="department-list">
+
+        @for (report of departmentReports; track report.department) {
+
+          <div class="department-row">
+
+            <div>
+
+              <strong>
+                {{ report.department }}
+              </strong>
+
+              <span>
+                {{ report.policies }} policies ·
+                {{ report.schemes }} schemes
+              </span>
+
+            </div>
+
+            <mat-icon>
+              arrow_forward
+            </mat-icon>
+
+          </div>
+
+        }
+
+      </div>
+
+    </mat-card>
+
+  </section>
+
+
+  <!-- SCHEME ANALYTICS + RECENT ACTIVITY -->
+  <section class="content-grid">
+
+    <mat-card class="dashboard-card">
+
+      <div class="card-heading">
+
+        <div>
+          <span class="section-label">
+            SCHEME ANALYTICS
+          </span>
+
+          <h2>
+            Most Used Schemes
+          </h2>
+        </div>
+
+        <mat-icon>
+          trending_up
+        </mat-icon>
+
+      </div>
+
+
+      <div class="scheme-list">
+
+        @for (scheme of schemeUsage; track scheme.scheme) {
+
+          <div class="scheme-row">
+
+            <div class="scheme-info">
+
+              <div class="scheme-icon">
+                <mat-icon>
+                  account_balance
+                </mat-icon>
+              </div>
+
+              <div>
+
+                <strong>
+                  {{ scheme.scheme }}
+                </strong>
+
+                <span>
+                  Citizen usage
+                </span>
+
+              </div>
+
+            </div>
+
+            <strong class="scheme-users">
+              {{ scheme.users | number }}
+            </strong>
+
+          </div>
+
+        }
+
+      </div>
+
+    </mat-card>
+
+
+    <!-- RECENT ACTIVITY -->
+    <mat-card class="dashboard-card">
+
+      <div class="card-heading">
+
+        <div>
+          <span class="section-label">
+            SYSTEM ACTIVITY
+          </span>
+
+          <h2>
+            Recent Updates
+          </h2>
+        </div>
+
+        <mat-icon>
+          history
+        </mat-icon>
+
+      </div>
+
+
+      <div class="activity-list">
+
+        @for (activity of recentActivity; track activity.title) {
+
+          <div class="activity-row">
+
+            <div class="activity-icon">
+              <mat-icon>
+                {{ activity.icon }}
+              </mat-icon>
+            </div>
+
+            <div>
+
+              <strong>
+                {{ activity.title }}
+              </strong>
+
+              <p>
+                {{ activity.description }}
+              </p>
+
+              <span>
+                {{ activity.time }}
+              </span>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </mat-card>
+
+  </section>
+
+
+  <!-- QUICK MANAGEMENT -->
+  <section class="quick-panel">
+
+    <div>
+
+      <span class="section-label">
+        QUICK MANAGEMENT
+      </span>
+
+      <h2>
+        Need to make a change?
+      </h2>
+
+      <p>
+        Quickly access the most frequently used government
+        management tools.
+      </p>
+
+    </div>
+
+
+    <div class="quick-actions">
+
+      <button
+        mat-stroked-button
+        (click)="navigate('/policies/add')">
+
+        <mat-icon>add</mat-icon>
+        Add Policy
+
+      </button>
+
+
+      <button
+        mat-stroked-button
+        (click)="navigate('/policies/approval')">
+
+        <mat-icon>fact_check</mat-icon>
+        Review Approvals
+
+      </button>
+
+
+      <button
+        mat-stroked-button
+        (click)="navigate('/policies/comparison')">
+
+        <mat-icon>compare_arrows</mat-icon>
+        Compare Policies
+
+      </button>
+
+
+      <button
+        mat-stroked-button
+        (click)="navigate('/schemes')">
+
+        <mat-icon>account_balance</mat-icon>
+        Manage Schemes
+
+      </button>
+
+    </div>
+
+  </section>
+
 </main>

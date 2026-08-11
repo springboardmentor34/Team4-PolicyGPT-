@@ -80,21 +80,24 @@ export class Citizen {
 
   recommendedPolicies = [
     {
-      title: 'PM Kisan Samman Nidhi',
+      id: 2,
+      title: 'PM Kisan Support Policy',
       category: 'Agriculture',
-      description: 'Financial support scheme for eligible farmers.',
+      description: 'Financial assistance for eligible farmers.',
       icon: 'agriculture'
     },
     {
+      id: 3,
       title: 'Ayushman Bharat',
-      category: 'Healthcare',
-      description: 'Health coverage support for eligible families.',
+      category: 'Health',
+      description: 'Health insurance coverage for economically weaker families.',
       icon: 'health_and_safety'
     },
     {
+      id: 8,
       title: 'PM Awas Yojana',
       category: 'Housing',
-      description: 'Housing assistance for eligible beneficiaries.',
+      description: 'Affordable housing assistance for eligible families.',
       icon: 'home'
     }
   ];
@@ -112,8 +115,14 @@ export class Citizen {
     }
   ];
 
+  // General navigation used by the dashboard
   navigate(route: string): void {
     this.router.navigate([route]);
+  }
+
+  // Navigate to the specific policy details page
+  viewPolicy(policyId: number): void {
+    this.router.navigate(['/policies', policyId]);
   }
 
   searchPolicies(): void {

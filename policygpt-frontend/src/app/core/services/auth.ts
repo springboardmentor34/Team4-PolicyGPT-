@@ -58,4 +58,26 @@ export class Auth {
       return null;
     }
   }
+
+  getUserNameFromToken(): string | null {
+  const token = localStorage.getItem('access_token');
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+
+    return (
+      payload.full_name ??
+      payload.name ??
+      payload.username ??
+      null
+    );
+  } catch (error) {
+    console.error('Unable to decode user name from access token:', error);
+    return null;
+  }
+}
 }
