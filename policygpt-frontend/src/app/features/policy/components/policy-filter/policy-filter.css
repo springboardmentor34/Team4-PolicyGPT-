@@ -1,0 +1,340 @@
+/* ================================
+   Filter Header
+================================ */
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.filter-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 13px;
+
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.filter-icon mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.filter-header h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+.filter-header p {
+  margin: 4px 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* ================================
+   Filter Grid
+================================ */
+
+.filter-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  column-gap: 18px;
+  row-gap: 8px;
+
+  width: 100%;
+}
+
+
+/* ================================
+   Material Form Fields
+================================ */
+
+.filter-field {
+  width: 100%;
+}
+
+
+/*
+  Slightly taller fields so the
+  controls don't look cramped.
+*/
+
+.filter-field .mat-mdc-text-field-wrapper {
+  min-height: 54px;
+}
+
+.filter-field .mat-mdc-form-field-flex {
+  min-height: 54px;
+}
+
+.filter-field .mat-mdc-form-field-infix {
+  min-height: 54px;
+
+  padding-top: 15px;
+  padding-bottom: 8px;
+}
+
+
+/* Label */
+
+.filter-field .mat-mdc-floating-label {
+  font-size: 13px;
+}
+
+
+/* Selected value */
+
+.filter-field .mat-mdc-select-value {
+  color: #334155;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+/* Select arrow */
+
+.filter-field .mat-mdc-select-arrow {
+  color: #475569;
+}
+
+
+/* ================================
+   Hover
+================================ */
+
+.filter-field:hover
+.mat-mdc-text-field-wrapper {
+  border-color: #94a3b8;
+}
+
+
+/* ================================
+   Focus
+================================ */
+
+.filter-field
+.mat-mdc-form-field-focus-overlay {
+  background: transparent;
+}
+
+
+/* ================================
+   Date Input
+================================ */
+
+.filter-field input[type="date"] {
+  color: #334155;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filter-field input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.65;
+}
+
+
+/* ================================
+   Buttons
+================================ */
+
+.filter-actions {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 14px;
+  padding-top: 18px;
+
+  border-top: 1px solid #f1f5f9;
+}
+
+
+.apply-button,
+.clear-button {
+  min-height: 44px;
+
+  padding: 0 18px;
+
+  border-radius: 10px !important;
+
+  font-size: 13px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0 !important;
+}
+
+
+.apply-button {
+  box-shadow: none !important;
+}
+
+.apply-button mat-icon,
+.clear-button mat-icon {
+  width: 18px;
+  height: 18px;
+
+  margin-right: 6px;
+
+  font-size: 18px;
+}
+
+
+/* Clear button */
+
+.clear-button {
+  border-color: #cbd5e1 !important;
+
+  color: #475569 !important;
+
+  background: #ffffff !important;
+}
+
+.clear-button:hover {
+  background: #f8fafc !important;
+
+  border-color: #94a3b8 !important;
+}
+
+
+/* ================================
+   Angular Material Dropdown
+================================ */
+
+/*
+  IMPORTANT:
+  mat-select opens its dropdown
+  outside this component.
+
+  panelClass="policy-filter-panel"
+  allows us to style that overlay.
+*/
+
+::ng-deep .policy-filter-panel {
+  min-width: 280px !important;
+
+  max-height: 320px !important;
+
+  margin-top: 6px;
+
+  padding: 6px 0 !important;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 12px !important;
+
+  background: #ffffff !important;
+
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.12),
+    0 4px 10px rgba(15, 23, 42, 0.06) !important;
+}
+
+
+/* Dropdown options */
+
+::ng-deep .policy-filter-panel .mat-mdc-option {
+  min-height: 44px !important;
+
+  padding: 0 16px !important;
+
+  color: #334155;
+
+  font-size: 14px;
+}
+
+
+/* Hover */
+
+::ng-deep
+.policy-filter-panel
+.mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background: #f1f5f9 !important;
+}
+
+
+/* Selected option */
+
+::ng-deep
+.policy-filter-panel
+.mat-mdc-option.mdc-list-item--selected {
+  background: #eff6ff !important;
+
+  color: #1d4ed8 !important;
+}
+
+
+/* Selected check icon */
+
+::ng-deep
+.policy-filter-panel
+.mat-pseudo-checkbox {
+  margin-right: 8px;
+}
+
+
+/* ================================
+   Responsive
+================================ */
+
+@media (max-width: 850px) {
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .filter-header {
+    align-items: flex-start;
+  }
+
+  .filter-icon {
+    flex-shrink: 0;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .apply-button,
+  .clear-button {
+    width: 100%;
+  }
+
+  ::ng-deep .policy-filter-panel {
+    min-width: 240px !important;
+  }
+
+}

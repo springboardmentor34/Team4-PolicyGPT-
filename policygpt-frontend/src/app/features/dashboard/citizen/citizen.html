@@ -1,115 +1,286 @@
-<div class="p-8">
+<div class="citizen-dashboard">
 
-  <!-- Welcome -->
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
 
-  <section class="mb-10">
+      <div class="hero-text">
 
-    <h1 class="text-4xl font-bold text-slate-800">
-      Welcome 👋
-    </h1>
+        <span class="welcome-badge">
+          <mat-icon>verified_user</mat-icon>
+          Citizen Portal
+        </span>
 
-    <p class="mt-2 text-slate-500">
-      Find and apply for government policies with ease.
-    </p>
+        <h1>
+          Welcome back,
+          <span>{{ userName }}</span> 👋
+        </h1>
 
-  </section>
-  <section class="mb-10">
-
-    <mat-form-field appearance="outline" class="w-full">
-
-        <mat-label>Search Government Policies</mat-label>
-
-        <input
-            matInput
-            placeholder="Search by policy name...">
-
-        <mat-icon matSuffix>search</mat-icon>
-
-    </mat-form-field>
-
-</section>
-
-  <!-- Quick Actions -->
-
-  <section>
-
-    <h2 class="mb-6 text-2xl font-semibold text-slate-800">
-      Quick Actions
-    </h2>
-
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-
-      @for(action of quickActions; track action.title){
-
-      <mat-card
-        class="cursor-pointer rounded-2xl p-6 shadow-md transition hover:-translate-y-1 hover:shadow-xl">
-
-        <mat-icon
-          class="text-5xl! h-12! w-12! text-blue-700">
-
-          {{ action.icon }}
-
-        </mat-icon>
-
-        <h3 class="mt-5 text-xl font-semibold">
-          {{ action.title }}
-        </h3>
-
-        <p class="mt-2 text-sm text-gray-500">
-          {{ action.description }}
+        <p>
+          Discover government schemes, check your eligibility,
+          and manage your applications — all in one place.
         </p>
 
-      </mat-card>
+      </div>
+
+      <div class="hero-visual">
+
+        <div class="visual-circle">
+          <mat-icon>account_balance</mat-icon>
+        </div>
+
+        <div class="floating-card floating-card-one">
+          <mat-icon>policy</mat-icon>
+
+          <div>
+            <strong>320+</strong>
+            <span>Policies</span>
+          </div>
+        </div>
+
+        <div class="floating-card floating-card-two">
+          <mat-icon>check_circle</mat-icon>
+
+          <div>
+            <strong>Easy</strong>
+            <span>Eligibility</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- Quick Actions -->
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="section-label">QUICK ACCESS</span>
+
+        <h2>
+          What would you like to do?
+        </h2>
+
+        <p>
+          Access frequently used citizen services.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="action-grid">
+
+      @for(action of quickActions; track action.title) {
+
+        <mat-card
+          class="action-card"
+          (click)="navigate(action.route)">
+
+          <div class="action-icon">
+            <mat-icon>{{ action.icon }}</mat-icon>
+          </div>
+
+          <div class="action-content">
+
+            <h3>
+              {{ action.title }}
+            </h3>
+
+            <p>
+              {{ action.description }}
+            </p>
+
+          </div>
+
+          <mat-icon class="arrow-icon">
+            arrow_forward
+          </mat-icon>
+
+        </mat-card>
 
       }
 
     </div>
 
   </section>
-  <section class="mt-12">
 
-    <h2 class="mb-6 text-2xl font-semibold text-slate-800">
-        Recommended Policies
-    </h2>
 
-    <div class="space-y-4">
+  <!-- Recommended Policies -->
+  <section class="dashboard-section">
 
-        @for(policy of recommendedPolicies; track policy.title){
+    <div class="section-heading heading-with-action">
 
-        <mat-card class="p-5 hover:shadow-lg transition cursor-pointer">
+      <div>
 
-            <div class="flex justify-between items-center">
+        <span class="section-label">
+          RECOMMENDED FOR YOU
+        </span>
 
-                <div>
+        <h2>
+          Government Schemes
+        </h2>
 
-                    <h3 class="text-lg font-semibold">
+        <p>
+          Explore schemes that may be relevant to you.
+        </p>
 
-                        {{ policy.title }}
+      </div>
 
-                    </h3>
 
-                    <p class="text-gray-500">
+      <button
+        mat-button
+        class="view-all-button"
+        (click)="navigate('/policies')">
 
-                        {{ policy.category }}
+        View All
 
-                    </p>
+        <mat-icon>
+          arrow_forward
+        </mat-icon>
 
-                </div>
-
-                <button mat-flat-button color="primary">
-
-                    View
-
-                </button>
-
-            </div>
-
-        </mat-card>
-
-        }
+      </button>
 
     </div>
 
-</section>
+
+    <div class="policy-grid">
+
+      @for(policy of recommendedPolicies; track policy.id) {
+
+        <mat-card class="policy-card">
+
+          <div class="policy-top">
+
+            <div class="policy-icon">
+              <mat-icon>
+                {{ policy.icon }}
+              </mat-icon>
+            </div>
+
+            <span class="policy-category">
+              {{ policy.category }}
+            </span>
+
+          </div>
+
+
+          <h3>
+            {{ policy.title }}
+          </h3>
+
+
+          <p>
+            {{ policy.description }}
+          </p>
+
+
+          <button
+            mat-button
+            class="policy-button"
+            (click)="viewPolicy(policy.id)">
+
+            View Details
+
+            <mat-icon>
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+        </mat-card>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- Information Cards -->
+  <section class="info-grid">
+
+
+    <!-- Eligibility -->
+    <mat-card class="info-card eligibility-info">
+
+      <div class="info-icon">
+        <mat-icon>
+          fact_check
+        </mat-icon>
+      </div>
+
+
+      <div>
+
+        <h3>
+          Not sure if you're eligible?
+        </h3>
+
+        <p>
+          Answer a few questions and let PolicyGPT
+          find schemes that match your profile.
+        </p>
+
+        <button
+          mat-button
+          (click)="navigate('/eligibility')">
+
+          Check Eligibility
+
+          <mat-icon>
+            arrow_forward
+          </mat-icon>
+
+        </button>
+
+      </div>
+
+    </mat-card>
+
+
+    <!-- Applications -->
+    <mat-card class="info-card application-info">
+
+      <div class="info-icon">
+        <mat-icon>
+          description
+        </mat-icon>
+      </div>
+
+
+      <div>
+
+        <h3>
+          Track your applications
+        </h3>
+
+        <p>
+          Keep track of your submitted applications
+          and their current status.
+        </p>
+
+        <button
+          mat-button
+          (click)="navigate('/applications')">
+
+          My Applications
+
+          <mat-icon>
+            arrow_forward
+          </mat-icon>
+
+        </button>
+
+      </div>
+
+    </mat-card>
+
+
+  </section>
 
 </div>

@@ -1,0 +1,307 @@
+<div class="scheme-page">
+
+  <div class="scheme-header">
+
+    <div>
+      <p class="eyebrow">Government Schemes</p>
+
+      <h1>Scheme Repository</h1>
+
+      <p class="subtitle">
+        Manage and explore government welfare schemes.
+      </p>
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="add-button"
+        routerLink="/schemes/create"
+      >
+        <span>+</span>
+        Add Scheme
+      </button>
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="loadSchemes()"
+        [disabled]="loading"
+      >
+        <span class="refresh-icon">↻</span>
+        {{ loading ? 'Refreshing...' : 'Refresh' }}
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- Search & Filters -->
+
+  <section class="filter-panel">
+
+    <div class="filter-heading">
+      <div>
+        <h2>Search Schemes</h2>
+        <p>
+          Find schemes by name, department, state, category or status.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="filter-grid">
+
+      <div class="filter-field keyword-field">
+        <label for="keyword">Keyword</label>
+
+        <input
+          id="keyword"
+          type="text"
+          [(ngModel)]="keyword"
+          placeholder="Search scheme name or benefits"
+          (keyup.enter)="searchSchemes()"
+        />
+      </div>
+
+
+      <div class="filter-field">
+        <label for="department">Department</label>
+
+        <input
+          id="department"
+          type="text"
+          [(ngModel)]="department"
+          placeholder="e.g. Agriculture Department"
+        />
+      </div>
+
+
+      <div class="filter-field">
+        <label for="state">State</label>
+
+        <input
+          id="state"
+          type="text"
+          [(ngModel)]="state"
+          placeholder="e.g. Telangana"
+        />
+      </div>
+
+
+      <div class="filter-field">
+        <label for="category">Category</label>
+
+        <input
+          id="category"
+          type="text"
+          [(ngModel)]="category"
+          placeholder="e.g. Education"
+        />
+      </div>
+
+
+      <div class="filter-field">
+        <label for="status">Status</label>
+
+        <select
+          id="status"
+          [(ngModel)]="status"
+        >
+          <option value="">All Statuses</option>
+          <option value="draft">Draft</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="expired">Expired</option>
+        </select>
+      </div>
+
+    </div>
+
+
+    <div class="filter-actions">
+
+      <button
+        type="button"
+        class="search-button"
+        (click)="searchSchemes()"
+        [disabled]="loading"
+      >
+        Search
+      </button>
+
+      <button
+        type="button"
+        class="clear-button"
+        (click)="clearFilters()"
+        [disabled]="loading"
+      >
+        Clear Filters
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- Statistics -->
+
+  <div class="stats-card">
+
+    <div class="stats-icon">
+      ₹
+    </div>
+
+    <div>
+      <p class="stats-label">Total Schemes</p>
+      <p class="stats-value">{{ totalSchemes }}</p>
+    </div>
+
+  </div>
+
+
+  <!-- Repository -->
+
+  <div class="repository-content">
+
+    @if (loading) {
+
+      <div class="state-card">
+
+        <div class="spinner"></div>
+
+        <h2>Loading schemes...</h2>
+
+        <p>
+          Please wait while we retrieve schemes from the repository.
+        </p>
+
+      </div>
+
+    }
+
+    @else if (schemes.length === 0) {
+
+      <div class="state-card empty-state">
+
+        <div class="empty-icon">
+          📋
+        </div>
+
+        <h2>No schemes found</h2>
+
+        <p>
+          No government schemes match your current search criteria.
+        </p>
+
+        <p class="empty-hint">
+          Try changing your filters or clear the search.
+        </p>
+
+      </div>
+
+    }
+
+    @else {
+
+      <div class="scheme-grid">
+
+        @for (scheme of schemes; track scheme.scheme_id) {
+
+          <article class="scheme-card">
+
+            <div class="scheme-card-header">
+
+              <div>
+
+                <h2>
+                  {{ scheme.name }}
+                </h2>
+
+                @if (scheme.category) {
+
+                  <span class="category">
+                    {{ scheme.category }}
+                  </span>
+
+                }
+
+              </div>
+
+
+              <span
+                class="status"
+                [class.status-active]="scheme.status === 'active'"
+                [class.status-draft]="scheme.status === 'draft'"
+                [class.status-inactive]="scheme.status === 'inactive'"
+                [class.status-expired]="scheme.status === 'expired'"
+              >
+                {{ scheme.status }}
+              </span>
+
+            </div>
+
+
+            @if (scheme.department) {
+
+              <div class="scheme-detail">
+
+                <span class="detail-label">
+                  Department
+                </span>
+
+                <span>
+                  {{ scheme.department }}
+                </span>
+
+              </div>
+
+            }
+
+
+            @if (scheme.state) {
+
+              <div class="scheme-detail">
+
+                <span class="detail-label">
+                  State
+                </span>
+
+                <span>
+                  {{ scheme.state }}
+                </span>
+
+              </div>
+
+            }
+
+
+            @if (scheme.benefits) {
+
+              <div class="benefits">
+
+                <span class="detail-label">
+                  Benefits
+                </span>
+
+                <p>
+                  {{ scheme.benefits }}
+                </p>
+
+              </div>
+
+            }
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

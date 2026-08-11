@@ -1,0 +1,23 @@
+<div class="sort-control">
+
+  <label for="sortBy">
+    <span class="sort-icon">
+      <mat-icon>sort</mat-icon>
+    </span>
+    Sort by
+  </label>
+
+  <select
+    id="sortBy"
+    class="sort-select"
+    [(ngModel)]="sortBy"
+    (change)="changeSort()"
+  >
+    <option value="newest">Newest First</option>
+    <option value="oldest">Oldest First</option>
+    <option value="nameAsc">Policy Name (A-Z)</option>
+    <option value="nameDesc">Policy Name (Z-A)</option>
+    <option value="status">Status</option>
+  </select>
+
+</div>

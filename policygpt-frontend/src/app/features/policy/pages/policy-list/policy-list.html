@@ -1,34 +1,261 @@
-<main class="min-h-screen bg-slate-100 px-6 py-8">
-  <section class="mx-auto max-w-7xl">
-    <div class="mb-8">
-      <p class="text-sm font-semibold uppercase tracking-wide text-blue-700">
-        Policy Repository
-      </p>
-      <h1 class="mt-2 text-4xl font-bold text-slate-900">
-        Policy Search
-      </h1>
-      <p class="mt-2 max-w-3xl text-slate-500">
-        Search, filter, and review government policies by department, state, sector, and status.
-      </p>
-    </div>
+<div class="policy-page">
 
-    <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-      <div class="space-y-6">
-        <app-policy-search></app-policy-search>
-        <app-policy-filter></app-policy-filter>
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <header class="page-header">
+
+    <div class="header-content">
+
+      <div class="breadcrumb">
+        <mat-icon>account_balance</mat-icon>
+        Government Policy Repository
       </div>
 
-      <section>
-        <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-2xl font-semibold text-slate-900">Search Results</h2>
-          <span class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-800">
-            <mat-icon class="text-base!">dataset</mat-icon>
-            1 policy found
-          </span>
+      <h1>
+        Policy Search
+      </h1>
+
+      <p>
+        Search, filter and review government policies from a
+        centralized policy repository.
+      </p>
+
+    </div>
+
+    <div class="policy-count">
+
+      <strong>
+        {{ policies.length }}
+      </strong>
+
+      <span>
+        Policies
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       SEARCH
+  ====================================================== -->
+
+  <section class="search-card">
+
+    <div class="search-heading">
+
+      <div class="heading-icon">
+        <mat-icon>search</mat-icon>
+      </div>
+
+      <div>
+
+        <h2>
+          Search Policies
+        </h2>
+
+        <p>
+          Search by policy name, scheme, department or keywords.
+        </p>
+
+      </div>
+
+    </div>
+
+    <app-policy-search
+      (search)="onSearch($event)">
+    </app-policy-search>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILTER + RESULTS
+  ====================================================== -->
+
+  <div class="content-layout">
+
+
+    <!-- ===================================================
+         FILTER SIDEBAR
+    ==================================================== -->
+
+    <aside class="filter-sidebar">
+
+      <div class="filter-header">
+
+        <div>
+
+          <h2>
+            Filters
+          </h2>
+
+          <p>
+            Refine your results
+          </p>
+
         </div>
 
-        <app-policy-card></app-policy-card>
-      </section>
-    </div>
-  </section>
-</main>
+        <mat-icon>
+          tune
+        </mat-icon>
+
+      </div>
+
+      <div class="filter-content">
+
+        <app-policy-filter
+          (filterApplied)="onFilter($event)"
+          (filtersCleared)="clearFilters()">
+        </app-policy-filter>
+
+      </div>
+
+    </aside>
+
+
+    <!-- ===================================================
+         RESULTS
+    ==================================================== -->
+
+    <main class="results-area">
+
+
+      <!-- Results Header -->
+
+      <div class="results-header">
+
+        <div>
+
+          <div class="results-title">
+
+            <h2>
+              Policy Results
+            </h2>
+
+            <span>
+              {{ policies.length }}
+            </span>
+
+          </div>
+
+          <p>
+            Government policies matching your search
+          </p>
+
+        </div>
+
+
+        <!-- Sort -->
+
+        <div class="sort-container">
+
+          <span>
+            Sort by
+          </span>
+
+          <app-policy-toolbar
+            (sortChanged)="onSort($event)">
+          </app-policy-toolbar>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           EMPTY STATE
+      ================================================== -->
+
+      @if (pagedPolicies.length === 0) {
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+
+            <mat-icon>
+              search_off
+            </mat-icon>
+
+          </div>
+
+          <h3>
+            No policies found
+          </h3>
+
+          <p>
+            No policies match your current search or filter
+            criteria.
+          </p>
+
+          <button
+            type="button"
+            class="clear-results"
+            (click)="clearFilters()">
+
+            <mat-icon>
+              refresh
+            </mat-icon>
+
+            Clear Filters
+
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- =================================================
+           POLICY RESULTS
+      ================================================== -->
+
+      @else {
+
+        <div class="policy-results">
+
+          @for (
+            policy of pagedPolicies;
+            track policy.id
+          ) {
+
+            <app-policy-card
+              [policy]="policy">
+            </app-policy-card>
+
+          }
+
+        </div>
+
+
+        <!-- ===============================================
+             PAGINATION
+        ================================================ -->
+
+        <div class="pagination">
+
+          <span class="pagination-label">
+            {{ policies.length }} policies available
+          </span>
+
+          <mat-paginator
+            [length]="policies.length"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]"
+            [pageIndex]="currentPage"
+            (page)="onPageChange($event)"
+            showFirstLastButtons>
+          </mat-paginator>
+
+        </div>
+
+      }
+
+    </main>
+
+  </div>
+
+</div>

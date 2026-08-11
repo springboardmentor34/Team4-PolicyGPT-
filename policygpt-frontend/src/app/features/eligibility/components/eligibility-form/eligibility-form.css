@@ -1,0 +1,256 @@
+:host {
+  display: block;
+}
+
+/* Main form surface */
+.eligibility-form {
+  width: 100%;
+  padding: 1.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+/* Header */
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.section-eyebrow {
+  margin: 0 0 0.4rem;
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.form-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.form-description {
+  max-width: 720px;
+  margin: 0.55rem 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.form-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.8rem;
+  height: 2.8rem;
+
+  border: 1px solid #dbeafe;
+  border-radius: 0.8rem;
+
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.form-icon mat-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  font-size: 1.35rem;
+}
+
+.form-divider {
+  height: 1px;
+  margin: 1.5rem 0 1.75rem;
+  background: #e2e8f0;
+}
+
+/* Form layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 1.25rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/*
+ * Angular Material field polish.
+ * Keep the fields white so errors don't visually merge
+ * with the page background.
+ */
+mat-form-field {
+  width: 100%;
+}
+
+mat-form-field .mat-mdc-text-field-wrapper {
+  background: #ffffff !important;
+  border-radius: 0.65rem;
+}
+
+mat-form-field .mat-mdc-form-field-flex {
+  background: #ffffff;
+}
+
+/* Better field spacing when mat-error appears */
+mat-form-field {
+  margin-bottom: 0.15rem;
+}
+
+/* Validation message */
+mat-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+
+  margin-top: 0.2rem;
+
+  color: #b42318;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Hint text */
+mat-hint {
+  color: #64748b;
+  font-size: 0.72rem;
+}
+
+/*
+ * Select trigger.
+ * Gives the closed dropdown a clean white surface.
+ */
+mat-select {
+  background: #ffffff;
+}
+
+/* Footer */
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+
+  margin-top: 0.75rem;
+  padding-top: 1.25rem;
+
+  border-top: 1px solid #e2e8f0;
+}
+
+.privacy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  max-width: 520px;
+  margin: 0;
+
+  color: #64748b;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.privacy-note mat-icon {
+  flex-shrink: 0;
+
+  width: 1rem;
+  height: 1rem;
+
+  margin-top: 0.05rem;
+
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  flex-shrink: 0;
+}
+
+.reset-button,
+.submit-button {
+  min-height: 2.75rem;
+  border-radius: 0.55rem !important;
+  font-weight: 600;
+}
+
+.reset-button mat-icon,
+.submit-button mat-icon {
+  margin-right: 0.35rem;
+}
+
+.submit-button {
+  min-width: 175px;
+}
+
+/*
+ * Angular Material select dropdown.
+ *
+ * The select panel is rendered in the overlay container,
+ * so component-local styles alone are not sufficient.
+ * The global rules below will be added to styles.css.
+ */
+
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .form-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  .eligibility-form {
+    padding: 1.25rem;
+    border-radius: 0.85rem;
+  }
+
+  .form-header {
+    gap: 1rem;
+  }
+
+  .form-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .form-title {
+    font-size: 1.2rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .reset-button,
+  .submit-button {
+    width: 100%;
+  }
+}

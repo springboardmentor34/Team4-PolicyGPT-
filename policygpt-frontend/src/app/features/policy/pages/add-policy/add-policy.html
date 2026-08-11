@@ -1,1 +1,347 @@
-<p>add-policy works!</p>
+<main class="add-policy-page">
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="header-content">
+
+      <div class="header-icon">
+        <mat-icon>policy</mat-icon>
+      </div>
+
+      <div>
+        <span class="eyebrow">POLICY MANAGEMENT</span>
+
+        <h1>Add New Policy</h1>
+
+        <p>
+          Create and submit a government policy for review and publication.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="header-status">
+      <mat-icon>verified_user</mat-icon>
+      Government Workspace
+    </div>
+  </section>
+
+
+  <!-- FORM -->
+  <section class="form-wrapper">
+
+    <!-- POLICY INFORMATION -->
+    <mat-card class="form-card">
+
+      <div class="section-header">
+        <div class="section-number">01</div>
+
+        <div>
+          <h2>Policy Information</h2>
+          <p>
+            Enter the basic information about the government policy.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="form-grid">
+
+        <!-- Policy Name -->
+        <mat-form-field appearance="outline">
+          <mat-label>Policy Name</mat-label>
+
+          <mat-icon matPrefix>description</mat-icon>
+
+          <input
+            matInput
+            [(ngModel)]="policy.policyName"
+            placeholder="Enter policy name"
+          />
+
+        </mat-form-field>
+
+
+        <!-- Scheme Name -->
+        <mat-form-field appearance="outline">
+          <mat-label>Scheme Name</mat-label>
+
+          <mat-icon matPrefix>account_balance</mat-icon>
+
+          <input
+            matInput
+            [(ngModel)]="policy.schemeName"
+            placeholder="Enter related scheme name"
+          />
+
+        </mat-form-field>
+
+
+        <!-- Category -->
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+
+          <mat-icon matPrefix>category</mat-icon>
+
+          <mat-select [(ngModel)]="policy.category">
+
+            <mat-option
+              *ngFor="let category of categories"
+              [value]="category">
+
+              {{ category }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+
+        <!-- Sector -->
+        <mat-form-field appearance="outline">
+          <mat-label>Sector</mat-label>
+
+          <mat-icon matPrefix>business</mat-icon>
+
+          <mat-select [(ngModel)]="policy.sector">
+
+            <mat-option
+              *ngFor="let sector of sectors"
+              [value]="sector">
+
+              {{ sector }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+      </div>
+
+    </mat-card>
+
+
+    <!-- GOVERNMENT DETAILS -->
+    <mat-card class="form-card">
+
+      <div class="section-header">
+        <div class="section-number">02</div>
+
+        <div>
+          <h2>Government Details</h2>
+          <p>
+            Specify the department, ministry and geographical coverage.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="form-grid">
+
+        <!-- Department -->
+        <mat-form-field appearance="outline">
+          <mat-label>Department</mat-label>
+
+          <mat-icon matPrefix>account_balance</mat-icon>
+
+          <mat-select [(ngModel)]="policy.department">
+
+            <mat-option
+              *ngFor="let department of departments"
+              [value]="department">
+
+              {{ department }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+
+        <!-- Ministry -->
+        <mat-form-field appearance="outline">
+          <mat-label>Ministry</mat-label>
+
+          <mat-icon matPrefix>corporate_fare</mat-icon>
+
+          <mat-select [(ngModel)]="policy.ministry">
+
+            <mat-option
+              *ngFor="let ministry of ministries"
+              [value]="ministry">
+
+              {{ ministry }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+
+        <!-- State -->
+        <mat-form-field appearance="outline">
+          <mat-label>State / Region</mat-label>
+
+          <mat-icon matPrefix>location_on</mat-icon>
+
+          <mat-select [(ngModel)]="policy.state">
+
+            <mat-option
+              *ngFor="let state of states"
+              [value]="state">
+
+              {{ state }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+
+        <!-- Publication Date -->
+        <mat-form-field appearance="outline">
+          <mat-label>Publication Date</mat-label>
+
+          <mat-icon matPrefix>calendar_today</mat-icon>
+
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="policy.publicationDate"
+          />
+
+        </mat-form-field>
+
+      </div>
+
+    </mat-card>
+
+
+    <!-- PUBLICATION SETTINGS -->
+    <mat-card class="form-card">
+
+      <div class="section-header">
+        <div class="section-number">03</div>
+
+        <div>
+          <h2>Publication Settings</h2>
+          <p>
+            Define the current status of this policy.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="status-field">
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Policy Status</mat-label>
+
+          <mat-icon matPrefix>flag</mat-icon>
+
+          <mat-select [(ngModel)]="policy.status">
+
+            <mat-option
+              *ngFor="let status of statuses"
+              [value]="status">
+
+              {{ status }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+      </div>
+
+    </mat-card>
+
+
+    <!-- DESCRIPTION -->
+    <mat-card class="form-card">
+
+      <div class="section-header">
+        <div class="section-number">04</div>
+
+        <div>
+          <h2>Policy Description</h2>
+          <p>
+            Provide a clear summary of the policy and its objectives.
+          </p>
+        </div>
+      </div>
+
+
+      <mat-form-field
+        appearance="outline"
+        class="description-field">
+
+        <mat-label>Policy Description</mat-label>
+
+        <textarea
+          matInput
+          rows="7"
+          [(ngModel)]="policy.description"
+          placeholder="Describe the purpose, objectives and key provisions of this policy..."
+        ></textarea>
+
+      </mat-form-field>
+
+    </mat-card>
+
+
+    <!-- ACTION BAR -->
+    <div class="form-actions">
+
+      <div class="action-info">
+        <mat-icon>info</mat-icon>
+
+        <span>
+          Save as a draft to continue editing later,
+          or publish the policy when ready.
+        </span>
+      </div>
+
+
+      <div class="action-buttons">
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="draft-button"
+          (click)="saveDraft()">
+
+          <mat-icon>save</mat-icon>
+
+          Save Draft
+
+        </button>
+
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          class="publish-button"
+          (click)="publishPolicy()">
+
+          <mat-icon>publish</mat-icon>
+
+          Publish Policy
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>

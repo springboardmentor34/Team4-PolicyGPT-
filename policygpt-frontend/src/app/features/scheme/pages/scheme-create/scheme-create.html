@@ -1,0 +1,248 @@
+<div class="create-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <span>Scheme Management</span>
+        <span class="separator">/</span>
+        <span>Create Scheme</span>
+      </div>
+
+      <div class="header-content">
+        <div class="header-icon">
+          <span>＋</span>
+        </div>
+
+        <div>
+          <h1>Create Government Scheme</h1>
+          <p>
+            Add a new welfare scheme to the PolicyGPT government repository.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="cancel-top-button"
+      (click)="cancel()"
+      [disabled]="saving"
+    >
+      Cancel
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form
+    class="scheme-form"
+    [formGroup]="schemeForm"
+    (ngSubmit)="submit()"
+  >
+
+    <!-- Basic Information -->
+    <section class="form-card">
+
+      <div class="card-header">
+        <div class="card-icon blue">
+          <span>01</span>
+        </div>
+
+        <div>
+          <h2>Basic Information</h2>
+          <p>
+            Provide the essential details of the government scheme.
+          </p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form-grid">
+
+        <!-- Scheme Name -->
+        <div class="form-field full-width">
+          <label for="name">
+            Scheme Name
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Telangana Student Support Scheme"
+          />
+
+          @if (
+  schemeForm.controls.name.touched &&
+  schemeForm.controls.name.invalid
+) {
+  <div class="field-error">
+    Scheme name is required.
+  </div>
+}
+        </div>
+
+        <!-- Category -->
+        <div class="form-field">
+          <label for="category">Category</label>
+
+          <div class="input-wrapper">
+            <span class="input-icon">▦</span>
+
+            <input
+              id="category"
+              type="text"
+              formControlName="category"
+              placeholder="e.g. Education"
+            />
+          </div>
+        </div>
+
+        <!-- Department -->
+        <div class="form-field">
+          <label for="department">Department</label>
+
+          <div class="input-wrapper">
+            <span class="input-icon">⌂</span>
+
+            <input
+              id="department"
+              type="text"
+              formControlName="department"
+              placeholder="e.g. School Education Department"
+            />
+          </div>
+        </div>
+
+        <!-- State -->
+        <div class="form-field">
+          <label for="state">State / Region</label>
+
+          <div class="input-wrapper">
+            <span class="input-icon">⌖</span>
+
+            <input
+              id="state"
+              type="text"
+              formControlName="state"
+              placeholder="e.g. Telangana"
+            />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- Benefits & Dates -->
+    <section class="form-card">
+
+      <div class="card-header">
+        <div class="card-icon green">
+          <span>02</span>
+        </div>
+
+        <div>
+          <h2>Benefits & Application Period</h2>
+          <p>
+            Define what beneficiaries receive and when applications are open.
+          </p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form-grid">
+
+        <!-- Benefits -->
+        <div class="form-field full-width">
+          <label for="benefits">Scheme Benefits</label>
+
+          <textarea
+            id="benefits"
+            rows="5"
+            formControlName="benefits"
+            placeholder="Describe the financial assistance, services, or benefits provided by this scheme..."
+          ></textarea>
+
+          <span class="helper-text">
+            Keep the description clear and easy for citizens to understand.
+          </span>
+        </div>
+
+        <!-- Start Date -->
+        <div class="form-field">
+          <label for="application_start_date">
+            Application Start Date
+          </label>
+
+          <input
+            id="application_start_date"
+            type="date"
+            formControlName="application_start_date"
+          />
+        </div>
+
+        <!-- End Date -->
+        <div class="form-field">
+          <label for="application_end_date">
+            Application End Date
+          </label>
+
+          <input
+            id="application_end_date"
+            type="date"
+            formControlName="application_end_date"
+          />
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- Error -->
+    @if (errorMessage) {
+      <div class="error-banner">
+        <span class="error-icon">!</span>
+
+        <div>
+          <strong>Unable to create scheme</strong>
+          <p>{{ errorMessage }}</p>
+        </div>
+      </div>
+    }
+
+
+    <!-- Actions -->
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="cancel()"
+        [disabled]="saving"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        class="primary-button"
+        [disabled]="saving"
+      >
+        @if (saving) {
+          <span class="button-spinner"></span>
+          Creating Scheme...
+        } @else {
+          <span class="plus-icon">＋</span>
+          Create Scheme
+        }
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

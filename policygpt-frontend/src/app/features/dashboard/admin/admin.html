@@ -1,183 +1,455 @@
-<div class="container mt-4">
+<div class="admin-page">
 
-    <h2>Admin Dashboard</h2>
+  <!-- Top Header -->
+  <header class="dashboard-header">
 
-    <p>Welcome, {{adminName}}</p>
+    <div class="header-left">
+      <div class="brand-mark">
+        <mat-icon>account_balance</mat-icon>
+      </div>
 
-    <hr>
+      <div>
+        <p class="eyebrow">PolicyGPT Administration</p>
+        <h1>Admin Dashboard</h1>
+      </div>
+    </div>
 
-    <div class="row">
+    <div class="header-right">
 
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Total Users</h5>
-                <h3>{{totalUsers}}</h3>
-            </div>
+      <button class="icon-button" type="button" aria-label="Notifications">
+        <mat-icon>notifications_none</mat-icon>
+        <span class="notification-dot"></span>
+      </button>
+
+      <div class="admin-profile">
+        <div class="profile-avatar">
+          {{ getInitials(adminName) }}
         </div>
 
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Total Policies</h5>
-                <h3>{{totalPolicies}}</h3>
-            </div>
+        <div class="profile-info">
+          <strong>{{ adminName }}</strong>
+          <span>Administrator</span>
         </div>
 
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Reports</h5>
-                <h3>{{totalReports}}</h3>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card p-3 shadow-sm">
-                <h5>Audit Logs</h5>
-                <h3>{{auditLogs}}</h3>
-            </div>
-        </div>
+        <mat-icon class="profile-arrow">expand_more</mat-icon>
+      </div>
 
     </div>
 
-    <br>
+  </header>
 
-    <h3>User Management</h3>
 
-    <table class="table table-bordered table-hover">
+  <!-- Welcome Section -->
+  <section class="welcome-section">
 
-        <thead class="table-dark">
+    <div>
+      <p class="welcome-label">Overview</p>
+
+      <h2>
+        Good morning, {{ adminName }}
+      </h2>
+
+      <p class="welcome-text">
+        Monitor platform activity, policies, users and administrative operations
+        from one place.
+      </p>
+    </div>
+
+    <div class="date-card">
+      <mat-icon>calendar_today</mat-icon>
+
+      <div>
+        <span>Today</span>
+        <strong>10 August 2026</strong>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- KPI Cards -->
+  <section class="stats-grid">
+
+    <article class="stat-card users-card">
+
+      <div class="stat-top">
+        <div class="stat-icon">
+          <mat-icon>group</mat-icon>
+        </div>
+
+        <span class="stat-trend positive">
+          <mat-icon>trending_up</mat-icon>
+          {{ userGrowth }}
+        </span>
+      </div>
+
+      <div class="stat-content">
+        <span>Total Users</span>
+        <strong>{{ totalUsers | number }}</strong>
+      </div>
+
+      <p>Registered platform users</p>
+
+    </article>
+
+
+    <article class="stat-card policies-card">
+
+      <div class="stat-top">
+        <div class="stat-icon">
+          <mat-icon>description</mat-icon>
+        </div>
+
+        <span class="stat-trend positive">
+          <mat-icon>trending_up</mat-icon>
+          {{ policyGrowth }}
+        </span>
+      </div>
+
+      <div class="stat-content">
+        <span>Total Policies</span>
+        <strong>{{ totalPolicies | number }}</strong>
+      </div>
+
+      <p>Policies in repository</p>
+
+    </article>
+
+
+    <article class="stat-card reports-card">
+
+      <div class="stat-top">
+        <div class="stat-icon">
+          <mat-icon>assessment</mat-icon>
+        </div>
+
+        <span class="stat-trend warning">
+          {{ reportStatus }}
+        </span>
+      </div>
+
+      <div class="stat-content">
+        <span>Reports</span>
+        <strong>{{ totalReports | number }}</strong>
+      </div>
+
+      <p>Generated platform reports</p>
+
+    </article>
+
+
+    <article class="stat-card audit-card">
+
+      <div class="stat-top">
+        <div class="stat-icon">
+          <mat-icon>security</mat-icon>
+        </div>
+
+        <span class="stat-trend neutral">
+          {{ auditStatus }}
+        </span>
+      </div>
+
+      <div class="stat-content">
+        <span>Audit Logs</span>
+        <strong>{{ auditLogs | number }}</strong>
+      </div>
+
+      <p>Recent administrative activity</p>
+
+    </article>
+
+  </section>
+
+
+  <!-- Main Content Grid -->
+  <section class="main-grid">
+
+    <!-- User Management -->
+    <article class="panel users-panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="section-label">Administration</span>
+          <h3>User Management</h3>
+          <p>Recently active platform users</p>
+        </div>
+
+        <button class="view-button" type="button">
+          View all
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table class="modern-table">
+
+          <thead>
             <tr>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Status</th>
+              <th>User</th>
+              <th>Role</th>
+              <th>Status</th>
             </tr>
-        </thead>
+          </thead>
 
-        <tbody>
+          <tbody>
 
             <tr *ngFor="let user of users">
 
-                <td>{{user.name}}</td>
-                <td>{{user.role}}</td>
-                <td>{{user.status}}</td>
+              <td>
+                <div class="user-cell">
+
+                  <div class="user-avatar">
+                    {{ getInitials(user.name) }}
+                  </div>
+
+                  <div>
+                    <strong>{{ user.name }}</strong>
+                    <span>User account</span>
+                  </div>
+
+                </div>
+              </td>
+
+              <td>
+                <span
+                  class="role-badge"
+                  [ngClass]="getRoleClass(user.role)">
+                  {{ user.role }}
+                </span>
+              </td>
+
+              <td>
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatusClass(user.status)">
+
+                  <span class="status-dot"></span>
+
+                  {{ user.status }}
+
+                </span>
+              </td>
 
             </tr>
 
-        </tbody>
+          </tbody>
 
-    </table>
+        </table>
 
-    <h3>Policy Management</h3>
+      </div>
 
-    <table class="table table-striped">
+    </article>
 
-        <thead class="table-primary">
-            <tr>
 
-                <th>Policy</th>
-                <th>Department</th>
-                <th>Status</th>
+    <!-- Policy Management -->
+    <article class="panel policy-panel">
 
-            </tr>
-        </thead>
+      <div class="panel-header">
 
-        <tbody>
+        <div>
+          <span class="section-label">Repository</span>
+          <h3>Policy Management</h3>
+          <p>Latest policy activity</p>
+        </div>
 
-            <tr *ngFor="let policy of policies">
+        <button class="view-button" type="button">
+          View all
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
 
-                <td>{{policy.title}}</td>
-                <td>{{policy.department}}</td>
-                <td>{{policy.status}}</td>
+      </div>
 
-            </tr>
 
-        </tbody>
+      <div class="policy-list">
 
-    </table>
+        <div
+          class="policy-item"
+          *ngFor="let policy of policies">
 
-    <h3>Analytics</h3>
+          <div class="policy-icon">
+            <mat-icon>article</mat-icon>
+          </div>
 
-    <table class="table table-bordered">
+          <div class="policy-info">
+            <strong>{{ policy.title }}</strong>
 
-        <thead class="table-success">
+            <span>
+              <mat-icon>business</mat-icon>
+              {{ policy.department }}
+            </span>
+          </div>
 
-            <tr>
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(policy.status)">
 
-                <th>Category</th>
-                <th>Value</th>
+            <span class="status-dot"></span>
 
-            </tr>
+            {{ policy.status }}
 
-        </thead>
+          </span>
 
-        <tbody>
+        </div>
 
-            <tr *ngFor="let item of analytics">
+      </div>
 
-                <td>{{item.category}}</td>
-                <td>{{item.value}}</td>
+    </article>
 
-            </tr>
+  </section>
 
-        </tbody>
 
-    </table>
+  <!-- Analytics -->
+  <section class="analytics-section">
 
-    <h3>Reports</h3>
+    <div class="section-heading">
 
-    <table class="table table-bordered">
+      <div>
+        <span class="section-label">Platform Insights</span>
+        <h3>Analytics</h3>
+        <p>Key activity across the PolicyGPT platform</p>
+      </div>
 
-        <thead class="table-warning">
+    </div>
 
-            <tr>
 
-                <th>Report</th>
-                <th>Date</th>
+    <div class="analytics-grid">
 
-            </tr>
+      <article
+        class="analytics-card"
+        *ngFor="let item of analytics">
 
-        </thead>
+        <div class="analytics-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </div>
 
-        <tbody>
+        <div class="analytics-info">
+          <span>{{ item.category }}</span>
 
-            <tr *ngFor="let report of reports">
+          <strong>
+            {{ item.value | number }}
+          </strong>
+        </div>
 
-                <td>{{report.report}}</td>
-                <td>{{report.date}}</td>
+        <div class="analytics-indicator">
+          <mat-icon>trending_up</mat-icon>
+        </div>
 
-            </tr>
+      </article>
 
-        </tbody>
+    </div>
 
-    </table>
+  </section>
 
-    <h3>Audit Logs</h3>
 
-    <table class="table table-bordered">
+  <!-- Bottom Grid -->
+  <section class="bottom-grid">
 
-        <thead class="table-danger">
+    <!-- Reports -->
+    <article class="panel">
 
-            <tr>
+      <div class="panel-header">
 
-                <th>User</th>
-                <th>Action</th>
-                <th>Time</th>
+        <div>
+          <span class="section-label">Documents</span>
+          <h3>Recent Reports</h3>
+          <p>Latest generated reports</p>
+        </div>
 
-            </tr>
+        <button class="small-icon-button" type="button">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
 
-        </thead>
+      </div>
 
-        <tbody>
 
-            <tr *ngFor="let log of auditLogList">
+      <div class="report-list">
 
-                <td>{{log.user}}</td>
-                <td>{{log.action}}</td>
-                <td>{{log.time}}</td>
+        <div
+          class="report-item"
+          *ngFor="let report of reports">
 
-            </tr>
+          <div class="report-icon">
+            <mat-icon>picture_as_pdf</mat-icon>
+          </div>
 
-        </tbody>
+          <div class="report-info">
+            <strong>{{ report.report }}</strong>
+            <span>Generated {{ report.date }}</span>
+          </div>
 
-    </table>
+          <button
+            class="download-button"
+            type="button"
+            aria-label="Download report">
+
+            <mat-icon>download</mat-icon>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- Audit Logs -->
+    <article class="panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="section-label">Security</span>
+          <h3>Recent Audit Activity</h3>
+          <p>Latest platform actions</p>
+        </div>
+
+        <button class="small-icon-button" type="button">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+
+      </div>
+
+
+      <div class="audit-list">
+
+        <div
+          class="audit-item"
+          *ngFor="let log of auditLogList">
+
+          <div
+            class="audit-avatar"
+            [ngClass]="getAuditClass(log.type)">
+
+            {{ getInitials(log.user) }}
+
+          </div>
+
+          <div class="audit-info">
+
+            <strong>{{ log.action }}</strong>
+
+            <span>
+              {{ log.user }} · {{ log.time }}
+            </span>
+
+          </div>
+
+          <mat-icon class="audit-arrow">
+            chevron_right
+          </mat-icon>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
 
 </div>
