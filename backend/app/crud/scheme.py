@@ -45,7 +45,7 @@ def count_schemes(db: Session) -> int:
 def create_scheme(
     db: Session,
     scheme_data: SchemeCreate,
-    created_by: UUID,
+    created_by: Optional[UUID] = None,
 ) -> Scheme:
     """Create a new scheme record with draft status."""
     scheme = Scheme(
@@ -88,7 +88,7 @@ def update_scheme_status(
     new_status: SchemeStatus,
 ) -> Scheme:
     """Update the lifecycle status of a scheme."""
-    scheme.status = new_status
+    scheme.status = new_status  # type: ignore
     db.commit()
     db.refresh(scheme)
     return scheme

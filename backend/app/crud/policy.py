@@ -40,7 +40,7 @@ def count_policies(db: Session) -> int:
 def create_policy(
     db: Session,
     policy_data: PolicyCreate,
-    uploaded_by: UUID,
+    uploaded_by: Optional[UUID] = None,
 ) -> Policy:
     """Create a new policy record with pending status."""
     policy = Policy(
@@ -84,10 +84,10 @@ def update_policy_status(
     approved_by: Optional[UUID] = None,
 ) -> Policy:
     """Update the approval/publishing status of a policy."""
-    policy.status = new_status
+    policy.status = new_status  # type: ignore
 
     if approved_by:
-        policy.approved_by = approved_by
+        policy.approved_by = approved_by  # type: ignore
 
     db.commit()
     db.refresh(policy)
@@ -96,7 +96,7 @@ def update_policy_status(
 
 def archive_policy(db: Session, policy: Policy) -> Policy:
     """Archive a policy (set status to archived)."""
-    policy.status = PolicyStatus.archived
+    policy.status = PolicyStatus.archived  # type: ignore
     db.commit()
     db.refresh(policy)
     return policy

@@ -41,7 +41,7 @@ class PolicyResponse(PolicyBase):
 
     policy_id: UUID
     status: PolicyStatus
-    uploaded_by: UUID
+    uploaded_by: Optional[UUID] = None
     approved_by: Optional[UUID] = None
     created_at: datetime
 

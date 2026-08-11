@@ -38,7 +38,7 @@ router = APIRouter(
 def create_new_policy(
     policy_data: PolicyCreate,
     db: Session = Depends(get_db),
-    uploaded_by: Optional[UUID] = Query(default=None),
+    uploaded_by: Optional[UUID] = None,
 ) -> PolicyResponse:
     """Create a new policy record with pending status."""
     return create_policy(db=db, policy_data=policy_data, uploaded_by=uploaded_by)

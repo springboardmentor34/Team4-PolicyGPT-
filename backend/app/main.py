@@ -3,10 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from sqlalchemy import text
 from app.db.database import engine
+from app.db.base import Base
 from app.api.auth import router as auth_router
 from app.api.policy import router as policy_router
 from app.api.scheme import router as scheme_router
 from app.api.eligibility_rule import router as eligibility_router
+
+Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(
     title="PolicyGPT API",

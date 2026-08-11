@@ -37,7 +37,7 @@ router = APIRouter(
 def create_new_scheme(
     scheme_data: SchemeCreate,
     db: Session = Depends(get_db),
-    created_by: Optional[UUID] = Query(default=None),
+    created_by: Optional[UUID] = None,
 ) -> SchemeResponse:
     """Create a new scheme record with draft status."""
     return create_scheme(db=db, scheme_data=scheme_data, created_by=created_by)
