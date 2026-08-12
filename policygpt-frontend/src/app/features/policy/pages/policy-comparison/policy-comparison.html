@@ -1,0 +1,387 @@
+<div class="comparison-page">
+
+  <!-- Page Header -->
+  <header class="page-header">
+
+    <div class="header-left">
+
+      <div class="breadcrumb">
+        <mat-icon>compare_arrows</mat-icon>
+        <span>Policy Management</span>
+      </div>
+
+      <h1>Policy Comparison</h1>
+
+      <p>
+        Compare government policies side-by-side to understand their
+        key differences and similarities.
+      </p>
+
+    </div>
+
+    <div class="header-icon">
+      <mat-icon>compare_arrows</mat-icon>
+    </div>
+
+  </header>
+
+
+  <!-- Selection Card -->
+  <section class="selection-card">
+
+    <div class="section-heading">
+
+      <div class="section-icon">
+        <mat-icon>playlist_add_check</mat-icon>
+      </div>
+
+      <div>
+        <h2>Select Policies to Compare</h2>
+
+        <p>
+          Select 2 to 3 policies from the policy repository.
+        </p>
+      </div>
+
+    </div>
+
+
+    <mat-form-field
+      appearance="outline"
+      class="policy-selector"
+    >
+
+      <mat-label>Policies to compare</mat-label>
+
+      <mat-select
+        multiple
+        [(ngModel)]="selectedPolicyIds"
+      >
+
+        @for (policy of policies; track policy.id) {
+
+          <mat-option
+            [value]="policy.id"
+            [disabled]="
+              !isSelected(policy.id) &&
+              !canSelectMore()
+            "
+          >
+            {{ policy.policyName }}
+          </mat-option>
+
+        }
+
+      </mat-select>
+
+      <mat-hint>
+        {{ selectionCount }} of 3 policies selected
+      </mat-hint>
+
+    </mat-form-field>
+
+
+    <div class="selection-actions">
+
+      <button
+        type="button"
+        mat-flat-button
+        color="primary"
+        [disabled]="!canCompare"
+        (click)="comparePolicies()"
+      >
+        <mat-icon>compare</mat-icon>
+        Compare Policies
+      </button>
+
+      <button
+        type="button"
+        mat-stroked-button
+        [disabled]="selectionCount === 0"
+        (click)="clearComparison()"
+      >
+        <mat-icon>clear</mat-icon>
+        Clear Selection
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- Empty State -->
+  @if (!hasComparison) {
+
+    <section class="empty-state">
+
+      <div class="empty-icon">
+        <mat-icon>compare_arrows</mat-icon>
+      </div>
+
+      <h2>Ready to compare</h2>
+
+      <p>
+        Select at least two policies above and click
+        <strong>Compare Policies</strong> to view their
+        details side-by-side.
+      </p>
+
+    </section>
+
+  }
+
+
+  <!-- Comparison -->
+  @if (hasComparison) {
+
+    <section class="comparison-section">
+
+      <div class="comparison-header">
+
+        <div>
+          <h2>Policy Comparison</h2>
+
+          <p>
+            Comparing {{ comparisonPolicies.length }} selected policies.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          mat-stroked-button
+          (click)="clearComparison()"
+        >
+          <mat-icon>restart_alt</mat-icon>
+          Start Over
+        </button>
+
+      </div>
+
+
+      <div class="comparison-table-wrapper">
+
+        <table class="comparison-table">
+
+          <thead>
+
+            <tr>
+
+              <th class="attribute-column">
+                Policy Information
+              </th>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+
+                <th>
+
+                  <div class="policy-heading">
+
+                    <span class="policy-number">
+                      Policy {{ $index + 1 }}
+                    </span>
+
+                    <span class="policy-name">
+                      {{ policy.policyName }}
+                    </span>
+
+                    <button
+                      type="button"
+                      class="remove-button"
+                      (click)="removePolicy(policy.id)"
+                      aria-label="Remove policy"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+
+                  </div>
+
+                </th>
+
+              }
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr>
+
+              <td class="attribute">
+                Scheme Name
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>{{ policy.schemeName }}</td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Description
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td class="description">
+                  {{ policy.description }}
+                </td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Category
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>
+                  <span class="value-badge">
+                    {{ policy.category }}
+                  </span>
+                </td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Department
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>{{ policy.department }}</td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Ministry
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>{{ policy.ministry }}</td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                State
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>{{ policy.state }}</td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Sector
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>{{ policy.sector }}</td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Publication Date
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+                <td>
+                  {{ policy.publicationDate | date:'dd MMM yyyy' }}
+                </td>
+              }
+
+            </tr>
+
+
+            <tr>
+
+              <td class="attribute">
+                Status
+              </td>
+
+              @for (
+                policy of comparisonPolicies;
+                track policy.id
+              ) {
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [class.status-approved]="policy.status === 'Approved'"
+                    [class.status-pending]="policy.status === 'Pending'"
+                    [class.status-rejected]="policy.status === 'Rejected'"
+                  >
+                    <span class="status-dot"></span>
+                    {{ policy.status }}
+                  </span>
+
+                </td>
+
+              }
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

@@ -96,9 +96,13 @@ export class Register {
       })
       .subscribe({
         next: () => {
-          this.isLoading = false;
-          this.router.navigate(['/']);
-        },
+  this.isLoading = false;
+
+  localStorage.setItem('user_name', fullName);
+  localStorage.setItem('user_email', email);
+
+  this.router.navigate(['/']);
+},
         error: (error) => {
           this.isLoading = false;
           this.errorMessage =

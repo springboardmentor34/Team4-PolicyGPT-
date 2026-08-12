@@ -1,17 +1,36 @@
-.card{
-    border-radius:12px;
+:host {
+  display: block;
 }
 
-.card-header{
-    font-size:20px;
-    font-weight:600;
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.table th{
-    background:#f8f9fa;
+.status-eligible {
+  background: #dcfce7;
+  color: #166534;
 }
 
-.badge{
-    font-size:13px;
-    padding:8px 12px;
+.status-review {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-not-eligible {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.reason-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: #16a34a;
+  flex: 0 0 18px;
 }

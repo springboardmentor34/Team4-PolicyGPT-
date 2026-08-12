@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Auth } from '../../../core/services/auth';
 import {
   FormBuilder,
   FormGroup,
@@ -7,7 +8,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Auth } from '../../../core/services/auth';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -65,10 +65,39 @@ export class Login {
 
     this.auth.login({ email, password }).subscribe({
       next: (response) => {
-        localStorage.setItem('access_token', response.access_token);
-        this.isLoading = false;
-        this.router.navigate(['/citizen']);
-      },
+  localStorage.setItem('access_token', response.access_token);
+
+  this.isLoading = false;
+
+  const role = this.auth.getRoleFromToken();
+
+  console.log('Logged-in role:', role);
+
+  switch (role) {
+    case 'admin':
+    case 'administrator':
+      this.router.navigate(['/admin']);
+      break;
+
+    case 'officer':
+    case 'government_official':
+      this.router.navigate(['/official']);
+      break;
+
+    case 'citizen':
+      this.router.navigate(['/citizen']);
+      break;
+
+    case 'researcher':
+      this.router.navigate(['/researcher']);
+      break;
+
+    default:
+      console.error('Unknown user role:', role);
+      this.errorMessage = 'Unable to determine your user role.';
+      break;
+  }
+},
       error: (error) => {
         this.isLoading = false;
         this.errorMessage =

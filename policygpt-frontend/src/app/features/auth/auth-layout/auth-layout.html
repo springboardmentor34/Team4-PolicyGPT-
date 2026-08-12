@@ -1,85 +1,102 @@
-<div class="min-h-screen grid lg:grid-cols-2">
+<div class="auth-page">
 
-  <!-- Left Section -->
-  <div
-    class="hidden lg:flex flex-col justify-between bg-[#0F4C81] text-white p-12">
+  <!-- Left branding panel -->
+  <section class="auth-brand">
 
-    <!-- Logo -->
-    <div>
-      <h1 class="text-5xl font-extrabold tracking-wide">
-        PolicyGPT
-      </h1>
+    <div class="brand-content">
 
-      <p class="mt-3 text-blue-100 text-lg">
-        AI-Powered Government Policy Assistant
-      </p>
+      <div class="brand-logo">
+        <div class="brand-logo-mark">P</div>
+
+        <div>
+          <div class="brand-name">PolicyGPT</div>
+          <div class="brand-tagline">
+            GOVERNMENT POLICY INTELLIGENCE
+          </div>
+        </div>
+      </div>
+
+      <div class="brand-intro">
+
+        <h1>
+          Understand government policies.
+          <span>Make informed decisions.</span>
+        </h1>
+
+        <p>
+          Access policies, welfare schemes, eligibility information
+          and government documents through one intelligent platform.
+        </p>
+
+      </div>
+
+      <div class="feature-list">
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            <mat-icon>search</mat-icon>
+          </div>
+
+          <div>
+            <h3>Policy Search</h3>
+            <p>Find government policies and schemes quickly.</p>
+          </div>
+
+        </div>
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            <mat-icon>auto_awesome</mat-icon>
+          </div>
+
+          <div>
+            <h3>AI-Powered Insights</h3>
+            <p>Understand complex policy documents with ease.</p>
+          </div>
+
+        </div>
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            <mat-icon>verified_user</mat-icon>
+          </div>
+
+          <div>
+            <h3>Secure Access</h3>
+            <p>Role-based access designed for trusted users.</p>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- Features -->
-    <div class="space-y-6">
-
-      <div class="flex items-center gap-4">
-        <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-          📄
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-xl">
-            Policy Search
-          </h3>
-
-          <p class="text-blue-100">
-            Search thousands of government policies instantly.
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-          🤖
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-xl">
-            AI Summaries
-          </h3>
-
-          <p class="text-blue-100">
-            Understand lengthy policy documents in seconds.
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-          🔒
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-xl">
-            Secure Access
-          </h3>
-
-          <p class="text-blue-100">
-            Role-based authentication with secure login.
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Footer -->
-    <div class="text-sm text-blue-200">
+    <div class="brand-footer">
       © 2026 PolicyGPT
+      <span>Government Policy &amp; Scheme Intelligence</span>
     </div>
 
-  </div>
+  </section>
 
-  <!-- Right Section -->
-  <div class="flex items-center justify-center bg-slate-100 px-6">
 
-    <router-outlet></router-outlet>
+  <!-- Right authentication panel -->
+  <section class="auth-content">
 
-  </div>
+    <div class="auth-card">
+
+      <div class="mobile-brand">
+        <div class="mobile-logo-mark">P</div>
+        <span>PolicyGPT</span>
+      </div>
+
+      <router-outlet></router-outlet>
+
+    </div>
+
+  </section>
 
 </div>

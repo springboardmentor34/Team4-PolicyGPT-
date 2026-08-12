@@ -1,0 +1,226 @@
+<div class="approval-page">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <div class="eyebrow">
+        Policy Management
+      </div>
+
+      <h1>
+        Policy Approval
+      </h1>
+
+      <p class="subtitle">
+        Review submitted policies and approve or reject them before publication.
+      </p>
+    </div>
+
+    <div class="header-icon">
+      <mat-icon>verified</mat-icon>
+    </div>
+
+  </div>
+
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+
+    <mat-card class="summary-card pending-card">
+
+      <div class="summary-icon">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+
+      <div>
+        <p class="summary-label">
+          Pending Review
+        </p>
+
+        <p class="summary-value">
+          {{ pendingCount }}
+        </p>
+      </div>
+
+    </mat-card>
+
+
+    <mat-card class="summary-card approved-card">
+
+      <div class="summary-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+
+      <div>
+        <p class="summary-label">
+          Approved
+        </p>
+
+        <p class="summary-value">
+          {{ approvedCount }}
+        </p>
+      </div>
+
+    </mat-card>
+
+
+    <mat-card class="summary-card rejected-card">
+
+      <div class="summary-icon">
+        <mat-icon>cancel</mat-icon>
+      </div>
+
+      <div>
+        <p class="summary-label">
+          Rejected
+        </p>
+
+        <p class="summary-value">
+          {{ rejectedCount }}
+        </p>
+      </div>
+
+    </mat-card>
+
+  </div>
+
+
+  <!-- Approval Section -->
+  <mat-card class="approval-card">
+
+    <div class="section-header">
+
+      <div>
+        <h2>
+          Submitted Policies
+        </h2>
+
+        <p>
+          Review the current approval status of submitted policies.
+        </p>
+      </div>
+
+      <div class="policy-count">
+        {{ policies.length }} policies
+      </div>
+
+    </div>
+
+
+    <!-- Policy List -->
+    <div class="policy-list">
+
+      @for (policy of policies; track policy.id) {
+
+        <div class="policy-row">
+
+          <!-- Policy Information -->
+          <div class="policy-info">
+
+            <div class="policy-icon">
+              <mat-icon>description</mat-icon>
+            </div>
+
+            <div>
+
+              <h3>
+                {{ policy.policyName }}
+              </h3>
+
+              <div class="department">
+
+                <mat-icon>business</mat-icon>
+
+                <span>
+                  {{ policy.department }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Status -->
+          <div class="status-wrapper">
+
+            @if (policy.status === 'Pending') {
+
+              <span class="status status-pending">
+                <span class="status-dot"></span>
+                Pending
+              </span>
+
+            } @else if (policy.status === 'Approved') {
+
+              <span class="status status-approved">
+                <span class="status-dot"></span>
+                Approved
+              </span>
+
+            } @else {
+
+              <span class="status status-rejected">
+                <span class="status-dot"></span>
+                Rejected
+              </span>
+
+            }
+
+          </div>
+
+
+          <!-- Actions -->
+          <div class="policy-actions">
+
+            <button
+              type="button"
+              class="icon-button view-button"
+              title="View policy"
+              (click)="view(policy)"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+
+
+            @if (policy.status === 'Pending') {
+
+              <button
+                type="button"
+                class="action-button approve-button"
+                (click)="approve(policy)"
+              >
+                <mat-icon>check</mat-icon>
+                Approve
+              </button>
+
+              <button
+                type="button"
+                class="action-button reject-button"
+                (click)="reject(policy)"
+              >
+                <mat-icon>close</mat-icon>
+                Reject
+              </button>
+
+            } @else {
+
+              <span class="completed-label">
+                Reviewed
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </mat-card>
+
+</div>

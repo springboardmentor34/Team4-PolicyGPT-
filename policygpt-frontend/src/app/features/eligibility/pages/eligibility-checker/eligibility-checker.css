@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.eligibility-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.page-description {
+  max-width: 760px;
+  margin: 0.5rem 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.8fr);
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.results-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.recommendations-section {
+  margin-top: 1.25rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 260px;
+  padding: 2rem;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 1rem;
+
+  background: #ffffff;
+
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3.25rem;
+  height: 3.25rem;
+
+  margin-bottom: 1rem;
+
+  border-radius: 50%;
+
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.empty-state-icon mat-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 1.6rem;
+}
+
+.empty-state h2 {
+  margin: 0;
+
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.empty-state p {
+  max-width: 520px;
+  margin: 0.5rem 0 0;
+
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 1000px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .eligibility-page {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.45rem;
+  }
+}

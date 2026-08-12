@@ -1,0 +1,204 @@
+<main class="min-h-screen bg-slate-100 p-8">
+
+  <div class="mx-auto max-w-6xl">
+
+    <div class="mb-8">
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-blue-600">
+        Policy Management
+      </p>
+
+      <h1 class="mt-2 text-4xl font-bold text-slate-900">
+        Upload New Policy
+      </h1>
+
+      <p class="mt-2 text-slate-500">
+        Create and publish new government policies and schemes.
+      </p>
+
+    </div>
+
+    <mat-card class="rounded-2xl p-8 shadow-lg">
+
+      <div class="grid gap-6 md:grid-cols-2">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Policy Name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="policy.policyName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Scheme Name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="policy.schemeName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+
+          <mat-select [(ngModel)]="policy.category">
+
+            <mat-option
+              *ngFor="let category of categories"
+              [value]="category">
+
+              {{ category }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Department</mat-label>
+
+          <mat-select [(ngModel)]="policy.department">
+
+            <mat-option
+              *ngFor="let department of departments"
+              [value]="department">
+
+              {{ department }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Ministry</mat-label>
+
+          <mat-select [(ngModel)]="policy.ministry">
+
+            <mat-option
+              *ngFor="let ministry of ministries"
+              [value]="ministry">
+
+              {{ ministry }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>State</mat-label>
+
+          <mat-select [(ngModel)]="policy.state">
+
+            <mat-option
+              *ngFor="let state of states"
+              [value]="state">
+
+              {{ state }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Sector</mat-label>
+
+          <mat-select [(ngModel)]="policy.sector">
+
+            <mat-option
+              *ngFor="let sector of sectors"
+              [value]="sector">
+
+              {{ sector }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Publication Date</mat-label>
+
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="policy.publicationDate">
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Status</mat-label>
+
+          <mat-select [(ngModel)]="policy.status">
+
+            <mat-option
+              *ngFor="let status of statuses"
+              [value]="status">
+
+              {{ status }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+      </div>
+
+      <mat-form-field
+        appearance="outline"
+        class="mt-6 w-full">
+
+        <mat-label>Description</mat-label>
+
+        <textarea
+          matInput
+          rows="6"
+          [(ngModel)]="policy.description">
+
+        </textarea>
+
+      </mat-form-field>
+
+      <div class="mt-8 flex gap-4">
+
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="saveDraft()">
+
+          <mat-icon>save</mat-icon>
+
+          Save Draft
+
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="publishPolicy()">
+
+          <mat-icon>publish</mat-icon>
+
+          Publish Policy
+
+        </button>
+
+      </div>
+
+    </mat-card>
+
+  </div>
+
+</main>

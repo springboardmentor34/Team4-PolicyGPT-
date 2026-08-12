@@ -1,1 +1,233 @@
-<p>edit-policy works!</p>
+<main class="min-h-screen bg-slate-100 p-8">
+
+  <div class="mx-auto max-w-6xl">
+
+    <div class="mb-8">
+
+      <p class="text-sm font-semibold uppercase tracking-wider text-blue-600">
+        Policy Management
+      </p>
+
+      <h1 class="mt-2 text-4xl font-bold text-slate-900">
+        Edit Policy
+      </h1>
+
+      <p class="mt-2 text-slate-500">
+        Update an existing government policy or scheme.
+      </p>
+
+    </div>
+
+    <mat-card class="rounded-2xl p-8 shadow-lg">
+
+      <div class="grid gap-6 md:grid-cols-2">
+
+        <!-- Policy Name -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Policy Name</mat-label>
+
+          <input
+            matInput
+            [(ngModel)]="policy.policyName">
+
+        </mat-form-field>
+
+        <!-- Scheme Name -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Scheme Name</mat-label>
+
+          <input
+            matInput
+            [(ngModel)]="policy.schemeName">
+
+        </mat-form-field>
+
+        <!-- Category -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Category</mat-label>
+
+          <mat-select [(ngModel)]="policy.category">
+
+            <mat-option
+              *ngFor="let category of categories"
+              [value]="category">
+
+              {{ category }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <!-- Department -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Department</mat-label>
+
+          <mat-select [(ngModel)]="policy.department">
+
+            <mat-option
+              *ngFor="let department of departments"
+              [value]="department">
+
+              {{ department }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <!-- Ministry -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Ministry</mat-label>
+
+          <mat-select [(ngModel)]="policy.ministry">
+
+            <mat-option
+              *ngFor="let ministry of ministries"
+              [value]="ministry">
+
+              {{ ministry }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <!-- State -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>State</mat-label>
+
+          <mat-select [(ngModel)]="policy.state">
+
+            <mat-option
+              *ngFor="let state of states"
+              [value]="state">
+
+              {{ state }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <!-- Sector -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Sector</mat-label>
+
+          <mat-select [(ngModel)]="policy.sector">
+
+            <mat-option
+              *ngFor="let sector of sectors"
+              [value]="sector">
+
+              {{ sector }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <!-- Publication Date -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Publication Date</mat-label>
+
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="policy.publicationDate">
+
+        </mat-form-field>
+
+        <!-- Status -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>Status</mat-label>
+
+          <mat-select [(ngModel)]="policy.status">
+
+            <mat-option
+              *ngFor="let status of statuses"
+              [value]="status">
+
+              {{ status }}
+
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field>
+
+      </div>
+
+      <!-- Description -->
+
+      <mat-form-field
+        appearance="outline"
+        class="mt-6 w-full">
+
+        <mat-label>Description</mat-label>
+
+        <textarea
+          matInput
+          rows="6"
+          [(ngModel)]="policy.description">
+
+        </textarea>
+
+      </mat-form-field>
+
+      <!-- Action Buttons -->
+
+      <div class="mt-8 flex gap-4">
+
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="cancel()">
+
+          <mat-icon>close</mat-icon>
+
+          Cancel
+
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="updatePolicy()">
+
+          <mat-icon>edit</mat-icon>
+
+          Update Policy
+
+        </button>
+
+      </div>
+
+    </mat-card>
+
+  </div>
+
+</main>
