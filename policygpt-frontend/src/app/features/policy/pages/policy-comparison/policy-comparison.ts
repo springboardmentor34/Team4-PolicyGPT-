@@ -27,7 +27,7 @@ import { Policy } from '../../models/policy.model';
 export class PolicyComparison implements OnInit {
   policies: Policy[] = [];
 
-  selectedPolicyIds: number[] = [];
+  selectedPolicyIds: string[] = [];
 
   comparisonPolicies: Policy[] = [];
 
@@ -50,17 +50,18 @@ export class PolicyComparison implements OnInit {
 
   comparePolicies(): void {
     this.comparisonPolicies = this.policies.filter((policy) =>
-      this.selectedPolicyIds.includes(policy.id)
+      this.selectedPolicyIds.includes(policy.id?.toString() || '')
     );
   }
 
-  removePolicy(policyId: number): void {
+  removePolicy(policyId: string | undefined): void {
+    if (!policyId) return;
     this.selectedPolicyIds = this.selectedPolicyIds.filter(
       (id) => id !== policyId
     );
 
     this.comparisonPolicies = this.comparisonPolicies.filter(
-      (policy) => policy.id !== policyId
+      (policy) => policy.id?.toString() !== policyId
     );
   }
 
@@ -69,8 +70,8 @@ export class PolicyComparison implements OnInit {
     this.comparisonPolicies = [];
   }
 
-  isSelected(policyId: number): boolean {
-    return this.selectedPolicyIds.includes(policyId);
+  isSelected(policyId: string | undefined): boolean {
+    return !!policyId && this.selectedPolicyIds.includes(policyId);
   }
 
   canSelectMore(): boolean {

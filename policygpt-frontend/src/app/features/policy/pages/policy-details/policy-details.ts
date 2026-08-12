@@ -36,22 +36,21 @@ export class PolicyDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id');
 
-    this.policyService.getPolicies().subscribe({
-      next: (policies) => {
-        this.policy = policies.find(policy => policy.id === id);
+    if (!id) {
+      this.router.navigate(['/policies']);
+      return;
+    }
 
-        if (!this.policy) {
-          console.error('Policy not found:', id);
-          this.router.navigate(['/policies']);
-          return;
-        }
-
+    this.policyService.getPolicyById(id).subscribe({
+      next: (policy) => {
+        this.policy = policy;
         this.generateBenefits();
       },
       error: (error) => {
         console.error('Failed to load policy details:', error);
+        this.router.navigate(['/policies']);
       }
     });
   }

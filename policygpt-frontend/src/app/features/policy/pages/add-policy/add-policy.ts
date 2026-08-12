@@ -136,41 +136,47 @@ export class AddPolicy {
   }
 
   saveDraft(): void {
-
     if (!this.isValid()) {
       alert('Please complete all policy fields before saving the draft.');
       return;
     }
 
-    const newPolicy = this.policyService.addPolicy({
+    this.policyService.addPolicy({
       ...this.policy,
-      status: 'Draft'
+      status: 'pending'
+    }).subscribe({
+      next: (newPolicy) => {
+        console.log('Draft Saved:', newPolicy);
+        alert('Policy draft saved successfully.');
+        this.router.navigate(['/policies', newPolicy.id]);
+      },
+      error: (error) => {
+        console.error('Failed to save draft:', error);
+        alert('Failed to save policy draft.');
+      }
     });
-
-    console.log('Draft Saved:', newPolicy);
-
-    alert('Policy draft saved successfully.');
-
-    this.router.navigate(['/policies', newPolicy.id]);
   }
 
   publishPolicy(): void {
-
     if (!this.isValid()) {
       alert('Please complete all policy fields before publishing.');
       return;
     }
 
-    const newPolicy = this.policyService.addPolicy({
+    this.policyService.addPolicy({
       ...this.policy,
-      status: 'Pending'
+      status: 'pending'
+    }).subscribe({
+      next: (newPolicy) => {
+        console.log('Policy Published:', newPolicy);
+        alert('Policy submitted successfully for approval.');
+        this.router.navigate(['/policies', newPolicy.id]);
+      },
+      error: (error) => {
+        console.error('Failed to publish policy:', error);
+        alert('Failed to submit policy for approval.');
+      }
     });
-
-    console.log('Policy Published:', newPolicy);
-
-    alert('Policy submitted successfully for approval.');
-
-    this.router.navigate(['/policies', newPolicy.id]);
   }
 
 }

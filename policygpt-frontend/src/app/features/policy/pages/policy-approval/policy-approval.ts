@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { PolicyService } from '../../../../core/services/policy.service';
+import { Policy } from '../../models/policy.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-policy-approval',
@@ -19,64 +22,76 @@ import { MatChipsModule } from '@angular/material/chips';
   templateUrl: './policy-approval.html',
   styleUrl: './policy-approval.css'
 })
-export class PolicyApproval {
+export class PolicyApproval implements OnInit {
+  private readonly policyService = inject(PolicyService);
+  private readonly router = inject(Router);
 
-  policies = [
-    {
-      id: 1,
-      policyName: 'National Education Policy 2026',
-      department: 'Education Department',
-      status: 'Pending'
-    },
-    {
-      id: 2,
-      policyName: 'PM Kisan Support Policy',
-      department: 'Agriculture Department',
-      status: 'Approved'
-    },
-    {
-      id: 3,
-      policyName: 'Digital India Mission',
-      department: 'IT Department',
-      status: 'Rejected'
-    },
-    {
-      id: 4,
-      policyName: 'Skill India Mission',
-      department: 'Skill Development Department',
-      status: 'Pending'
-    }
-  ];
+  policies: Policy[] = [];
+
+  ngOnInit(): void {
+    this.loadPolicies();
+  }
+
+  loadPolicies(): void {
+    this.policyService.getPolicies(0, 100).subscribe({
+      next: (data) => {
+        this.policies = data.map(p => {
+          const capitalizedStatus = p.status.charAt(0).toUpperCase() + p.status.slice(1);
+          return {
+            ...p,
+            status: (capitalizedStatus === 'Archived' ? 'Rejected' : capitalizedStatus) as any
+          };
+        });
+      },
+      error: (error) => {
+        console.error('Failed to load policies for approval', error);
+      }
+    });
+  }
 
   get pendingCount(): number {
     return this.policies.filter(
-      policy => policy.status === 'Pending'
+      policy => policy.status === 'Pending' || policy.status === 'pending'
     ).length;
   }
 
   get approvedCount(): number {
     return this.policies.filter(
-      policy => policy.status === 'Approved'
+      policy => policy.status === 'Approved' || policy.status === 'approved'
     ).length;
   }
 
   get rejectedCount(): number {
     return this.policies.filter(
-      policy => policy.status === 'Rejected'
+      policy => policy.status === 'Rejected' || policy.status === 'rejected' || policy.status === 'archived'
     ).length;
   }
 
-  approve(policy: any): void {
-    policy.status = 'Approved';
-    console.log('Approved:', policy);
+  approve(policy: Policy): void {
+    if (!policy.id) return;
+    this.policyService.updateApprovalStatus(policy.id.toString(), 'approved').subscribe({
+      next: (updatedPolicy) => {
+        policy.status = 'Approved';
+        console.log('Approved:', updatedPolicy);
+      },
+      error: (err) => console.error('Failed to approve policy', err)
+    });
   }
 
-  reject(policy: any): void {
-    policy.status = 'Rejected';
-    console.log('Rejected:', policy);
+  reject(policy: Policy): void {
+    if (!policy.id) return;
+    this.policyService.updateApprovalStatus(policy.id.toString(), 'archived').subscribe({
+      next: (updatedPolicy) => {
+        policy.status = 'Rejected';
+        console.log('Rejected (Archived):', updatedPolicy);
+      },
+      error: (err) => console.error('Failed to reject policy', err)
+    });
   }
 
-  view(policy: any): void {
-    console.log('Viewing policy:', policy);
+  view(policy: Policy): void {
+    if (policy.id) {
+      this.router.navigate(['/policies', policy.id]);
+    }
   }
 }

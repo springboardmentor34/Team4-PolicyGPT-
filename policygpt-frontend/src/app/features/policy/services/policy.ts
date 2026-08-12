@@ -1,11 +1,1 @@
-import { Injectable } from '@angular/core';
-
-@Injectable({
-  providedIn: 'root'
-})
-
-export class PolicyService {
-
-  constructor() {}
-
-}
+export { PolicyService } from '../../../core/services/policy.service';

@@ -5,14 +5,14 @@ import { Observable } from 'rxjs';
 export interface Scheme {
   scheme_id: string;
   name: string;
-  category?: string;
-  department?: string;
-  state?: string;
-  benefits?: string;
-  application_start_date?: string;
-  application_end_date?: string;
+  category: string | null;
+  department: string | null;
+  state: string | null;
+  benefits: string | null;
+  application_start_date: string | null;
+  application_end_date: string | null;
   status: 'draft' | 'active' | 'inactive' | 'expired';
-  created_by?: string;
+  created_by: string | null;
   created_at: string;
 }
 
@@ -115,5 +115,29 @@ export class SchemeService {
       `${this.apiUrl}/`,
       scheme
     );
+  }
+
+  getSchemeById(schemeId: string): Observable<Scheme> {
+    return this.http.get<Scheme>(`${this.apiUrl}/${schemeId}`);
+  }
+
+  updateScheme(
+    schemeId: string,
+    scheme: Partial<SchemeCreateRequest>
+  ): Observable<Scheme> {
+    return this.http.put<Scheme>(`${this.apiUrl}/${schemeId}`, scheme);
+  }
+
+  deleteScheme(schemeId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${schemeId}`);
+  }
+
+  updateSchemeStatus(
+    schemeId: string,
+    status: 'draft' | 'active' | 'inactive' | 'expired'
+  ): Observable<Scheme> {
+    return this.http.patch<Scheme>(`${this.apiUrl}/${schemeId}/status`, {
+      status,
+    });
   }
 }

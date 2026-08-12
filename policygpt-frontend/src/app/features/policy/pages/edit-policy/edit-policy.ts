@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +9,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
+import { PolicyService } from '../../../../core/services/policy.service';
+import { Policy } from '../../models/policy.model';
 
 @Component({
   selector: 'app-edit-policy',
@@ -20,27 +24,29 @@ import { MatSelectModule } from '@angular/material/select';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './edit-policy.html',
-  styleUrl: './edit-policy.css'
+  styleUrl: './edit-policy.css',
 })
-export class EditPolicy {
+export class EditPolicy implements OnInit {
+  private readonly policyService = inject(PolicyService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
-  // Mock existing policy (later this will come from backend using :id)
+  policyId = '';
 
   policy = {
-    policyName: 'National Education Policy 2026',
-    schemeName: 'Digital Learning Initiative',
-    category: 'Education',
-    department: 'Education Department',
-    ministry: 'Ministry of Education',
-    state: 'Telangana',
-    sector: 'Education',
-    publicationDate: '2026-07-31',
-    status: 'Approved',
-    description:
-      'Improves access to quality education through digital infrastructure, scholarships, and teacher training.'
+    policyName: '',
+    schemeName: '',
+    category: '',
+    department: '',
+    ministry: '',
+    state: '',
+    sector: '',
+    publicationDate: '',
+    status: '',
+    description: '',
   };
 
   categories = [
@@ -52,7 +58,7 @@ export class EditPolicy {
     'Employment',
     'Energy',
     'Housing',
-    'Infrastructure'
+    'Infrastructure',
   ];
 
   departments = [
@@ -63,7 +69,7 @@ export class EditPolicy {
     'Industry Department',
     'Skill Development Department',
     'Energy Department',
-    'Housing Department'
+    'Housing Department',
   ];
 
   ministries = [
@@ -71,7 +77,7 @@ export class EditPolicy {
     'Ministry of Agriculture',
     'Ministry of Health',
     'Ministry of Electronics',
-    'Ministry of Commerce'
+    'Ministry of Commerce',
   ];
 
   states = [
@@ -80,7 +86,7 @@ export class EditPolicy {
     'Karnataka',
     'Tamil Nadu',
     'Maharashtra',
-    'Delhi'
+    'Delhi',
   ];
 
   sectors = [
@@ -91,27 +97,69 @@ export class EditPolicy {
     'Business',
     'Employment',
     'Energy',
-    'Housing'
+    'Housing',
   ];
 
-  statuses = [
-    'Draft',
-    'Pending',
-    'Approved'
-  ];
+  statuses = ['Draft', 'Pending', 'Approved'];
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.policyId = idParam;
+      this.loadPolicy();
+    }
+  }
+
+  loadPolicy(): void {
+    this.policyService.getPolicyById(this.policyId).subscribe({
+      next: (data) => {
+        this.policy = {
+          policyName: data.policyName || '',
+          schemeName: data.schemeName || '',
+          category: data.category || '',
+          department: data.department || '',
+          ministry: data.ministry || '',
+          state: data.state || '',
+          sector: data.sector || '',
+          publicationDate: data.publicationDate || '',
+          status:
+            data.status.charAt(0).toUpperCase() + data.status.slice(1) ||
+            'Pending',
+          description: data.description || '',
+        };
+      },
+      error: (err) => {
+        console.error('Failed to load policy for editing', err);
+        alert('Failed to load policy information from backend.');
+        this.router.navigate(['/policies']);
+      },
+    });
+  }
 
   updatePolicy(): void {
-
-    console.log('Policy Updated');
-
-    console.log(this.policy);
-
+    this.policyService
+      .updatePolicy(this.policyId, {
+        ...this.policy,
+        status: this.policy.status.toLowerCase(),
+      })
+      .subscribe({
+        next: (updated) => {
+          console.log('Policy Updated', updated);
+          alert('Policy updated successfully.');
+          this.router.navigate(['/policies', this.policyId]);
+        },
+        error: (err) => {
+          console.error('Failed to update policy', err);
+          alert('Failed to update policy on backend.');
+        },
+      });
   }
 
   cancel(): void {
-
-    console.log('Edit Cancelled');
-
+    if (this.policyId) {
+      this.router.navigate(['/policies', this.policyId]);
+    } else {
+      this.router.navigate(['/policies']);
+    }
   }
-
 }

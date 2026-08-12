@@ -23,21 +23,13 @@ export class SearchService {
       const search = keyword.toLowerCase();
 
       filtered = filtered.filter(policy =>
-
-        policy.policyName.toLowerCase().includes(search) ||
-
-        policy.schemeName.toLowerCase().includes(search) ||
-
-        policy.department.toLowerCase().includes(search) ||
-
-        policy.ministry.toLowerCase().includes(search) ||
-
-        policy.state.toLowerCase().includes(search) ||
-
-        policy.sector.toLowerCase().includes(search) ||
-
-        policy.category.toLowerCase().includes(search)
-
+        (policy.policyName || '').toLowerCase().includes(search) ||
+        (policy.schemeName || '').toLowerCase().includes(search) ||
+        (policy.department || '').toLowerCase().includes(search) ||
+        (policy.ministry || '').toLowerCase().includes(search) ||
+        (policy.state || '').toLowerCase().includes(search) ||
+        (policy.sector || '').toLowerCase().includes(search) ||
+        (policy.category || '').toLowerCase().includes(search)
       );
 
     }
@@ -46,11 +38,11 @@ export class SearchService {
 
     if (filter.policyName)
       filtered = filtered.filter(p =>
-        p.policyName.toLowerCase().includes(filter.policyName.toLowerCase()));
+        (p.policyName || '').toLowerCase().includes(filter.policyName.toLowerCase()));
 
     if (filter.schemeName)
       filtered = filtered.filter(p =>
-        p.schemeName.toLowerCase().includes(filter.schemeName.toLowerCase()));
+        (p.schemeName || '').toLowerCase().includes(filter.schemeName.toLowerCase()));
 
     if (filter.department)
       filtered = filtered.filter(p =>
@@ -79,61 +71,52 @@ export class SearchService {
     return filtered;
 
   }
+
   sortPolicies(
-  policies: Policy[],
-  sortBy: string
-): Policy[] {
+    policies: Policy[],
+    sortBy: string
+  ): Policy[] {
 
-  const sorted = [...policies];
+    const sorted = [...policies];
 
-  switch (sortBy) {
+    switch (sortBy) {
 
-    case 'newest':
+      case 'newest':
+        sorted.sort((a, b) =>
+          new Date(b.publicationDate || 0).getTime() -
+          new Date(a.publicationDate || 0).getTime()
+        );
+        break;
 
-      sorted.sort((a, b) =>
-        new Date(b.publicationDate).getTime() -
-        new Date(a.publicationDate).getTime()
-      );
+      case 'oldest':
+        sorted.sort((a, b) =>
+          new Date(a.publicationDate || 0).getTime() -
+          new Date(b.publicationDate || 0).getTime()
+        );
+        break;
 
-      break;
+      case 'nameAsc':
+        sorted.sort((a, b) =>
+          (a.policyName || '').localeCompare(b.policyName || '')
+        );
+        break;
 
-    case 'oldest':
+      case 'nameDesc':
+        sorted.sort((a, b) =>
+          (b.policyName || '').localeCompare(a.policyName || '')
+        );
+        break;
 
-      sorted.sort((a, b) =>
-        new Date(a.publicationDate).getTime() -
-        new Date(b.publicationDate).getTime()
-      );
+      case 'status':
+        sorted.sort((a, b) =>
+          (a.status || '').localeCompare(b.status || '')
+        );
+        break;
 
-      break;
+    }
 
-    case 'nameAsc':
-
-      sorted.sort((a, b) =>
-        a.policyName.localeCompare(b.policyName)
-      );
-
-      break;
-
-    case 'nameDesc':
-
-      sorted.sort((a, b) =>
-        b.policyName.localeCompare(a.policyName)
-      );
-
-      break;
-
-    case 'status':
-
-      sorted.sort((a, b) =>
-        a.status.localeCompare(b.status)
-      );
-
-      break;
+    return sorted;
 
   }
-
-  return sorted;
-
-}
 
 }

@@ -84,11 +84,17 @@ export class EligibilityForm {
         this.form.disabilityStatus as UserProfile['disabilityStatus'],
     };
 
-    const result = this.eligibility.checkEligibility(profile);
-
-    this.loading = false;
-
-    this.eligibilityChecked.emit(result);
+    this.eligibility.checkEligibility(profile).subscribe({
+      next: (result) => {
+        this.loading = false;
+        this.eligibilityChecked.emit(result);
+      },
+      error: (error) => {
+        console.error('Failed to check eligibility', error);
+        this.loading = false;
+        alert('An error occurred while evaluating eligibility with the backend.');
+      }
+    });
   }
 
   resetForm(formRef: NgForm): void {

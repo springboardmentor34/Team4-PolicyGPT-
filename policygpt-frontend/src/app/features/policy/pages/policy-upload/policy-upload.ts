@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
+import { PolicyService } from '../../../../core/services/policy.service';
 
 @Component({
   selector: 'app-policy-upload',
@@ -26,6 +29,8 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './policy-upload.css'
 })
 export class PolicyUpload {
+  private readonly policyService = inject(PolicyService);
+  private readonly router = inject(Router);
 
   policy = {
     policyName: '',
@@ -98,13 +103,36 @@ export class PolicyUpload {
   ];
 
   saveDraft(): void {
-    console.log('Draft Saved');
-    console.log(this.policy);
+    this.policyService.addPolicy({
+      ...this.policy,
+      status: 'pending'
+    }).subscribe({
+      next: (newPolicy) => {
+        console.log('Draft Saved:', newPolicy);
+        alert('Policy draft saved successfully.');
+        this.router.navigate(['/policies', newPolicy.id]);
+      },
+      error: (err) => {
+        console.error('Failed to save policy draft:', err);
+        alert('Failed to save draft.');
+      }
+    });
   }
 
   publishPolicy(): void {
-    console.log('Policy Published');
-    console.log(this.policy);
+    this.policyService.addPolicy({
+      ...this.policy,
+      status: 'pending'
+    }).subscribe({
+      next: (newPolicy) => {
+        console.log('Policy Published:', newPolicy);
+        alert('Policy submitted successfully for approval.');
+        this.router.navigate(['/policies', newPolicy.id]);
+      },
+      error: (err) => {
+        console.error('Failed to publish policy:', err);
+        alert('Failed to submit policy for approval.');
+      }
+    });
   }
-
 }
