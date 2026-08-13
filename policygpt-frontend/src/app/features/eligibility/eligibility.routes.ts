@@ -7,7 +7,7 @@ import { ApplicationGuidance } from './pages/application-guidance/application-gu
 
 export const ELIGIBILITY_ROUTES: Routes = [
   {
-    path: 'eligibility',
+    path: 'eligibility', //✅
     component: EligibilityChecker,
   },
   {

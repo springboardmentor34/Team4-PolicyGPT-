@@ -61,6 +61,13 @@ export class Register {
         Validators.pattern(/^[6-9]\d{9}$/)
       ]
     ],
+    state: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z\s]+$/)
+      ]
+    ],
     role: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', Validators.required]
@@ -82,6 +89,7 @@ export class Register {
     const fullName = this.registerForm.value.fullName ?? '';
     const email = this.registerForm.value.email ?? '';
     const phone = this.registerForm.value.phone ?? null;
+    const state = this.registerForm.value.state ?? '';
     const role = this.registerForm.value.role ?? '';
     const password = this.registerForm.value.password ?? '';
 
@@ -92,7 +100,7 @@ export class Register {
         password,
         role: this.roleMap[String(role)] ?? String(role).toLowerCase().replace(/\s+/g, '_'),
         phone,
-        state: null,
+        state,
       })
       .subscribe({
         next: () => {

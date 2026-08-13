@@ -4,11 +4,11 @@ import { SchemeCreate } from './pages/scheme-create/scheme-create';
 
 export const SCHEME_ROUTES: Routes = [
   {
-    path: 'schemes',
+    path: 'schemes', //✅
     component: SchemeList,
   },
   {
-    path: 'schemes/create',
+    path: 'schemes/create', //✅
     component: SchemeCreate,
   },
 ];

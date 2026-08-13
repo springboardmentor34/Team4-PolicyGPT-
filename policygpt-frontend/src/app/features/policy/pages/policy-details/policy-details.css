@@ -1,0 +1,627 @@
+/* =========================================================
+   POLICY DETAILS PAGE
+========================================================= */
+
+.policy-details-page {
+  min-height: 100vh;
+  padding: 32px 40px 48px;
+  background: #f8fafc;
+}
+
+
+/* =========================================================
+   TOP HEADER
+========================================================= */
+
+.details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header-content {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-bottom: 14px;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #2563eb;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.back-button:hover {
+  color: #1d4ed8;
+  transform: translateX(-2px);
+}
+
+.back-button mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 9px;
+
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.breadcrumb mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.details-title {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 32px;
+  font-weight: 750;
+
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.details-description {
+  max-width: 760px;
+
+  margin: 10px 0 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   STATUS / CATEGORY CHIPS
+========================================================= */
+
+.policy-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  margin-bottom: 12px;
+}
+
+
+/* Angular Material chips */
+
+.policy-tags mat-chip {
+  min-height: 28px;
+
+  border: 1px solid #dbeafe !important;
+  border-radius: 8px !important;
+
+  background: #eff6ff !important;
+  color: #2563eb !important;
+
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.policy-tags mat-chip:nth-child(2) {
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #64748b !important;
+}
+
+.policy-tags mat-chip:nth-child(3) {
+  border-color: #dcfce7 !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+
+.save-policy-button {
+  flex-shrink: 0;
+
+  min-height: 44px;
+  padding: 0 18px !important;
+
+  border-radius: 10px !important;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.16);
+}
+
+.save-policy-button mat-icon {
+  margin-right: 6px;
+
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+/* =========================================================
+   COMMON CARD
+========================================================= */
+
+.details-card {
+  padding: 23px 25px;
+
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px rgba(15, 23, 42, 0.04) !important;
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-bottom: 18px;
+}
+
+.card-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.card-header-icon mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.card-header h2 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.card-header p {
+  margin: 3px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   OVERVIEW
+========================================================= */
+
+.overview-text {
+  margin: 0;
+
+  color: #475569;
+
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+
+/* =========================================================
+   INFORMATION GRID
+========================================================= */
+
+.info-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-top: 22px;
+}
+
+.info-item {
+  min-height: 105px;
+
+  padding: 17px;
+
+  border: 1px solid #e8edf4;
+  border-radius: 12px;
+
+  background: #f8fafc;
+}
+
+.info-item mat-icon {
+  width: 20px;
+  height: 20px;
+
+  margin-bottom: 9px;
+
+  color: #2563eb;
+
+  font-size: 20px;
+}
+
+.info-item h3 {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 650;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.info-item p {
+  margin: 5px 0 0;
+
+  color: #1e293b;
+
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   POLICY INFORMATION
+========================================================= */
+
+.policy-info-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 20px 24px;
+}
+
+.policy-info-item {
+  min-width: 0;
+}
+
+.policy-info-label {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+  font-weight: 650;
+
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.policy-info-value {
+  margin: 5px 0 0;
+
+  color: #1e293b;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   BENEFITS
+========================================================= */
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+
+  padding: 14px 15px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.benefit-item:hover {
+  border-color: #bfdbfe;
+  background: #f8fbff;
+}
+
+.benefit-item mat-icon {
+  flex-shrink: 0;
+
+  width: 19px;
+  height: 19px;
+
+  color: #16a34a;
+
+  font-size: 19px;
+}
+
+.benefit-item span {
+  color: #475569;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   DOCUMENT / FILE URL
+========================================================= */
+
+.document-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 18px;
+  padding: 10px 14px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 9px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 12px;
+  font-weight: 650;
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.document-link:hover {
+  border-color: #bfdbfe;
+  background: #dbeafe;
+}
+
+.document-link mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   LOADING STATE
+========================================================= */
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 420px;
+  padding: 40px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  text-align: center;
+
+  box-shadow:
+    0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.loading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 56px;
+  height: 56px;
+  margin-bottom: 15px;
+
+  border-radius: 15px;
+
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.loading-icon mat-icon {
+  width: 28px;
+  height: 28px;
+
+  font-size: 28px;
+
+  animation: loading-spin 1.5s linear infinite;
+}
+
+.loading-state h2 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.loading-state p {
+  margin: 7px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes loading-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+  .policy-details-page {
+    padding: 28px 28px 42px;
+  }
+
+  .info-grid,
+  .policy-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 850px) {
+
+  .details-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .save-policy-button {
+    width: fit-content;
+  }
+
+  .info-grid,
+  .policy-info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .policy-details-page {
+    padding: 20px 16px 32px;
+  }
+
+  .details-title {
+    font-size: 27px;
+  }
+
+  .details-description {
+    font-size: 13px;
+  }
+
+  .details-card {
+    padding: 19px;
+    border-radius: 14px !important;
+  }
+
+  .info-grid,
+  .policy-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .save-policy-button {
+    width: 100%;
+  }
+
+  .card-header h2 {
+    font-size: 17px;
+  }
+}

@@ -8,27 +8,27 @@ import { PolicyApproval } from './pages/policy-approval/policy-approval';
 import { PolicyComparison } from './pages/policy-comparison/policy-comparison';
 export const POLICY_ROUTES: Routes = [
   {
-    path: 'policies',
+    path: 'policies', //✅
     component: PolicyList,
   },
   {
-    path: 'policies/add',
+    path: 'policies/add', //✅
     component: AddPolicy,
   },
   {
-    path: 'policies/edit/:id',
+    path: 'policies/edit/:id', //✅
     component: EditPolicy,
   },
   {
-  path: 'policies/approval',
+  path: 'policies/approval', //✅
   component: PolicyApproval,
 },
   {
-  path: 'policies/comparison',
+  path: 'policies/comparison', //✅
   component: PolicyComparison,
 },
   {
-    path: 'policies/:id',
+    path: 'policies/:id', //✅
     component: PolicyDetails,
   },
 ];

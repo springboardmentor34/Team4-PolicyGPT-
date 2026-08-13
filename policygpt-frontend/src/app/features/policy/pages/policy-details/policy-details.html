@@ -1,4 +1,5 @@
-@if (policy) {
+<main class="policy-details-page">
+@if (policy !== null) {
 
   <div class="mb-8">
 
@@ -18,7 +19,7 @@
 
       <div>
 
-        <div class="mb-3 flex flex-wrap gap-2">
+        <!-- <div class="mb-3 flex flex-wrap gap-2">
 
           <mat-chip>
             {{ policy.category }}
@@ -32,8 +33,8 @@
             {{ policy.status }}
           </mat-chip>
 
-        </div>
-
+        </div> -->
+        
         <h1 class="text-4xl font-bold text-slate-900">
           {{ policy.policyName }}
         </h1>
@@ -273,3 +274,4 @@
   </div>
 
 }
+</main>

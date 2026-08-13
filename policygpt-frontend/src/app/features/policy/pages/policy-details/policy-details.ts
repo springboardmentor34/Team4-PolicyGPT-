@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -25,14 +25,15 @@ import { PolicyService } from '../../../../core/services/policy.service';
 })
 export class PolicyDetails implements OnInit {
 
-  policy: Policy | undefined;
+  policy: Policy | null = null;
 
   benefits: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+  private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +48,8 @@ export class PolicyDetails implements OnInit {
       next: (policy) => {
         this.policy = policy;
         this.generateBenefits();
+        // Force Angular to update the view
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Failed to load policy details:', error);

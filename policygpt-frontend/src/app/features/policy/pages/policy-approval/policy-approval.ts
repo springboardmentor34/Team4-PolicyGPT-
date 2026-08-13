@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit,ChangeDetectorRef, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,6 +25,8 @@ import { Router } from '@angular/router';
 export class PolicyApproval implements OnInit {
   private readonly policyService = inject(PolicyService);
   private readonly router = inject(Router);
+  //to rerender on change detected
+  private readonly cdr = inject(ChangeDetectorRef);
 
   policies: Policy[] = [];
 
@@ -42,6 +44,9 @@ export class PolicyApproval implements OnInit {
             status: (capitalizedStatus === 'Archived' ? 'Rejected' : capitalizedStatus) as any
           };
         });
+      // Force Angular to update the template
+      this.cdr.detectChanges();
+
       },
       error: (error) => {
         console.error('Failed to load policies for approval', error);
@@ -73,6 +78,8 @@ export class PolicyApproval implements OnInit {
       next: (updatedPolicy) => {
         policy.status = 'Approved';
         console.log('Approved:', updatedPolicy);
+        // Force UI update
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to approve policy', err)
     });
@@ -84,6 +91,8 @@ export class PolicyApproval implements OnInit {
       next: (updatedPolicy) => {
         policy.status = 'Rejected';
         console.log('Rejected (Archived):', updatedPolicy);
+        // Force UI update
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to reject policy', err)
     });

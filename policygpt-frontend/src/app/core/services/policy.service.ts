@@ -29,6 +29,22 @@ export class PolicyService {
       sector: p.category || '',
     };
   }
+  //converts javascript Date to Python Date
+  private formatDate(date: Date | string | null): string | null {
+  if (!date) {
+    return null;
+  }
+
+  if (typeof date === 'string') {
+    return date.substring(0, 10);
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
 
   getPolicies(
     skip: number = 0,
@@ -59,9 +75,11 @@ export class PolicyService {
       department: policy.department || null,
       ministry: policy.ministry || null,
       state: policy.state || null,
-      file_url: policy.file_url || policy.description || null,
-      published_date:
-        policy.published_date || policy.publicationDate || null,
+      file_url: policy.fileUrl || null,
+description: policy.description || null,
+      published_date: this.formatDate(
+  policy.published_date || policy.publicationDate || null
+),
     };
     return this.http
       .post<any>(`${this.apiUrl}/`, payload)

@@ -62,7 +62,7 @@
         </mat-form-field>
 
 
-        <!-- Scheme Name -->
+        <!-- Scheme Name
         <mat-form-field appearance="outline">
           <mat-label>Scheme Name</mat-label>
 
@@ -74,7 +74,7 @@
             placeholder="Enter related scheme name"
           />
 
-        </mat-form-field>
+        </mat-form-field> -->
 
 
         <!-- Category -->
@@ -98,7 +98,7 @@
         </mat-form-field>
 
 
-        <!-- Sector -->
+        <!-- Sector
         <mat-form-field appearance="outline">
           <mat-label>Sector</mat-label>
 
@@ -116,7 +116,7 @@
 
           </mat-select>
 
-        </mat-form-field>
+        </mat-form-field> -->
 
       </div>
 
@@ -204,25 +204,35 @@
 
 
         <!-- Publication Date -->
-        <mat-form-field appearance="outline">
-          <mat-label>Publication Date</mat-label>
+<mat-form-field appearance="outline">
 
-          <mat-icon matPrefix>calendar_today</mat-icon>
+  <mat-label>Publication Date</mat-label>
 
-          <input
-            matInput
-            type="date"
-            [(ngModel)]="policy.publicationDate"
-          />
+  <mat-icon matPrefix>calendar_today</mat-icon>
 
-        </mat-form-field>
+  <input
+    matInput
+    [matDatepicker]="publicationDatePicker"
+    [(ngModel)]="policy.publicationDate"
+    placeholder="dd-mm-yyyy"
+    readonly
+  />
+
+  <mat-datepicker-toggle
+    matIconSuffix
+    [for]="publicationDatePicker">
+  </mat-datepicker-toggle>
+
+  <mat-datepicker #publicationDatePicker></mat-datepicker>
+
+</mat-form-field>
 
       </div>
 
     </mat-card>
 
 
-    <!-- PUBLICATION SETTINGS -->
+    <!-- PUBLICATION SETTINGS
     <mat-card class="form-card">
 
       <div class="section-header">
@@ -261,14 +271,14 @@
 
       </div>
 
-    </mat-card>
+    </mat-card> -->
 
 
     <!-- DESCRIPTION -->
     <mat-card class="form-card">
 
       <div class="section-header">
-        <div class="section-number">04</div>
+        <div class="section-number">03</div>
 
         <div>
           <h2>Policy Description</h2>
@@ -278,6 +288,23 @@
         </div>
       </div>
 
+      <!-- Policy File URL -->
+<mat-form-field
+  appearance="outline"
+  class="description-field">
+
+  <mat-label>Policy Document URL</mat-label>
+
+  <mat-icon matPrefix>attach_file</mat-icon>
+
+  <input
+    matInput
+    type="url"
+    [(ngModel)]="policy.fileUrl"
+    placeholder="Enter policy document URL"
+  />
+
+</mat-form-field>
 
       <mat-form-field
         appearance="outline"

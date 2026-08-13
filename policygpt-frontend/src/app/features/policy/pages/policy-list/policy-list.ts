@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -61,35 +60,44 @@ export class PolicyList implements OnInit {
   };
 
   constructor(
-    private policyService: PolicyService,
-    private searchService: SearchService
-  ) {}
+  private router: Router,
+  private policyService: PolicyService,
+  private searchService: SearchService,
+  private cdr: ChangeDetectorRef
+) {}
 
   ngOnInit(): void {
-    this.loadPolicies();
-  }
+  this.loadPolicies();
+}
 
   loadPolicies(): void {
 
-    this.policyService.getPolicies().subscribe({
+  this.policyService.getPolicies().subscribe({
 
-      next: (data) => {
+    next: (data) => {
 
-        this.allPolicies = data;
+      console.log('Policies received:', data);
 
-        this.applySearchAndFilters();
+      this.allPolicies = data;
 
-      },
+      this.applySearchAndFilters();
 
-      error: (error) => {
+      // Force the view to update
+      this.cdr.detectChanges();
 
-        console.error('Failed to load policies', error);
+    },
 
-      }
+    error: (error) => {
 
-    });
+      console.error('Failed to load policies', error);
 
-  }
+      this.cdr.detectChanges();
+
+    }
+
+  });
+
+}
 
   onSearch(keyword: string): void {
 

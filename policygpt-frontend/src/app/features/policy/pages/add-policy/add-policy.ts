@@ -9,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { PolicyService } from '../../../../core/services/policy.service';
 
@@ -23,7 +25,9 @@ import { PolicyService } from '../../../../core/services/policy.service';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './add-policy.html',
   styleUrl: './add-policy.css'
@@ -35,15 +39,13 @@ export class AddPolicy {
 
   policy = {
     policyName: '',
-    schemeName: '',
     category: '',
     department: '',
     ministry: '',
     state: '',
-    sector: '',
+    fileUrl:'',
+    description: '',
     publicationDate: '',
-    status: '',
-    description: ''
   };
 
   categories = [
@@ -122,15 +124,15 @@ export class AddPolicy {
 
     return !!(
       this.policy.policyName.trim() &&
-      this.policy.schemeName.trim() &&
       this.policy.category &&
       this.policy.department &&
       this.policy.ministry &&
       this.policy.state &&
-      this.policy.sector &&
       this.policy.publicationDate &&
-      this.policy.status &&
-      this.policy.description.trim()
+      (
+      this.policy.description.trim() ||
+      this.policy.fileUrl.trim()
+    )
     );
 
   }

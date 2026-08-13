@@ -28,8 +28,8 @@ export class PolicyCard {
   policy!: Policy;
 
   constructor(private router: Router) {}
-
+//routes to policy details page
   viewDetails(): void {
-    this.router.navigate(['/policies', this.policy.id]);
+    this.router.navigate(['policies/', this.policy.id]);
   }
 }

@@ -152,6 +152,38 @@
 
   </mat-form-field>
 
+  <!-- State -->
+
+<mat-form-field appearance="outline" class="auth-field">
+
+  <mat-label>State</mat-label>
+
+  <input
+    matInput
+    type="text"
+    formControlName="state"
+    autocomplete="address-level1"
+    placeholder="Enter your state"
+  />
+
+  <mat-icon matSuffix>location_on</mat-icon>
+
+  @if (
+    registerForm.get('state')?.hasError('required') &&
+    registerForm.get('state')?.touched
+  ) {
+    <mat-error>State is required</mat-error>
+  }
+
+  @if (
+    registerForm.get('state')?.hasError('pattern') &&
+    registerForm.get('state')?.touched
+  ) {
+    <mat-error>Enter a valid state name</mat-error>
+  }
+
+</mat-form-field>
+
 
   <!-- Password -->
 
