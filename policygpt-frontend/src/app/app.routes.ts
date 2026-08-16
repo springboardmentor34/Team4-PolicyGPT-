@@ -38,12 +38,14 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/feedback/feedback.routes').then((m) => m.FEEDBACK_ROUTES),
       },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./features/notifications/notifications.routes').then(
+            (m) => m.NOTIFICATION_ROUTES,
+          ),
+      },
     ],
-  },
-  {
-    path: '',
-    loadChildren: () =>
-      import('./features/notifications/notifications.routes').then((m) => m.NOTIFICATION_ROUTES),
   },
 
   {
