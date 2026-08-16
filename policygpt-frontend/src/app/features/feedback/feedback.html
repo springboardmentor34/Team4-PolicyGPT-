@@ -1,0 +1,493 @@
+<div class="feedback-page">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">SUPPORT CENTER</span>
+
+      <h1>Feedback & Support</h1>
+
+      <p>
+        Share your experience, report an issue, find answers,
+        or contact the PolicyGPT support team.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- QUICK ACTIONS -->
+
+  <div class="quick-actions">
+
+    <button
+      [class.active]="activeSection === 'feedback'"
+      (click)="setSection('feedback')">
+
+      <span class="icon">★</span>
+
+      <div>
+        <strong>Citizen Feedback</strong>
+        <small>Rate your experience</small>
+      </div>
+
+    </button>
+
+
+    <button
+      [class.active]="activeSection === 'issue'"
+      (click)="setSection('issue')">
+
+      <span class="icon">!</span>
+
+      <div>
+        <strong>Issue Reporting</strong>
+        <small>Report a problem</small>
+      </div>
+
+    </button>
+
+
+    <button
+      [class.active]="activeSection === 'help'"
+      (click)="setSection('help')">
+
+      <span class="icon">?</span>
+
+      <div>
+        <strong>Help Desk</strong>
+        <small>Get help quickly</small>
+      </div>
+
+    </button>
+
+
+    <button
+      [class.active]="activeSection === 'faq'"
+      (click)="setSection('faq')">
+
+      <span class="icon">≡</span>
+
+      <div>
+        <strong>FAQs</strong>
+        <small>Common questions</small>
+      </div>
+
+    </button>
+
+
+    <button
+      [class.active]="activeSection === 'queries'"
+      (click)="setSection('queries')">
+
+      <span class="icon">✓</span>
+
+      <div>
+        <strong>Query Resolution</strong>
+        <small>Track requests</small>
+      </div>
+
+    </button>
+
+
+    <button
+      [class.active]="activeSection === 'contact'"
+      (click)="setSection('contact')">
+
+      <span class="icon">@</span>
+
+      <div>
+        <strong>Contact Support</strong>
+        <small>Contact our team</small>
+      </div>
+
+    </button>
+
+  </div>
+
+
+  @if (successMessage) {
+
+    <div class="message">
+      ✓ {{ successMessage }}
+    </div>
+
+  }
+
+
+  <!-- FEEDBACK -->
+
+  @if (activeSection === 'feedback') {
+
+    <div class="card">
+
+      <div class="section-title">
+        <span>YOUR EXPERIENCE</span>
+
+        <h2>Share your feedback</h2>
+
+        <p>
+          Your feedback helps us improve PolicyGPT.
+        </p>
+      </div>
+
+
+      <label>
+        Feedback Type
+
+        <select [(ngModel)]="feedbackType">
+
+          <option>General Feedback</option>
+          <option>Policy Information</option>
+          <option>Scheme Information</option>
+          <option>Eligibility Checker</option>
+          <option>Website Experience</option>
+
+        </select>
+
+      </label>
+
+
+      <div class="rating">
+
+        <p>How would you rate your experience?</p>
+
+        <div class="stars">
+
+          @for (star of [1,2,3,4,5]; track star) {
+
+            <button
+              type="button"
+              [class.selected]="star <= rating"
+              (click)="setRating(star)">
+
+              ★
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <label>
+
+        Your Feedback
+
+        <textarea
+          [(ngModel)]="feedbackText"
+          placeholder="Tell us what worked well or what we can improve..."
+          rows="6">
+        </textarea>
+
+      </label>
+
+
+      <button
+        class="primary"
+        (click)="submitFeedback()">
+
+        Submit Feedback
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- ISSUE REPORTING -->
+
+  @if (activeSection === 'issue') {
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span>REPORT A PROBLEM</span>
+
+        <h2>Issue Reporting</h2>
+
+        <p>
+          Tell us about an issue you are facing.
+        </p>
+
+      </div>
+
+
+      <label>
+
+        Issue Category
+
+        <select [(ngModel)]="issueCategory">
+
+          <option>Technical Issue</option>
+          <option>Policy Information</option>
+          <option>Scheme Information</option>
+          <option>Eligibility</option>
+          <option>Account & Access</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Subject
+
+        <input
+          [(ngModel)]="issueSubject"
+          placeholder="Briefly describe the issue">
+
+      </label>
+
+
+      <label>
+
+        Description
+
+        <textarea
+          [(ngModel)]="issueDescription"
+          rows="7"
+          placeholder="Describe the problem in detail...">
+        </textarea>
+
+      </label>
+
+
+      <button
+        class="primary"
+        (click)="submitIssue()">
+
+        Report Issue
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- HELP DESK -->
+
+  @if (activeSection === 'help') {
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span>HELP DESK</span>
+
+        <h2>How can we help?</h2>
+
+        <p>
+          Choose an option below.
+        </p>
+
+      </div>
+
+
+      <div class="help-grid">
+
+        <button (click)="setSection('faq')">
+          <strong>Frequently Asked Questions</strong>
+          <small>Find answers to common questions.</small>
+        </button>
+
+
+        <button (click)="setSection('issue')">
+          <strong>Report an Issue</strong>
+          <small>Report a problem with PolicyGPT.</small>
+        </button>
+
+
+        <button (click)="setSection('queries')">
+          <strong>Track a Query</strong>
+          <small>Check your support requests.</small>
+        </button>
+
+
+        <button (click)="setSection('contact')">
+          <strong>Contact Support</strong>
+          <small>Send a message to our team.</small>
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- FAQ -->
+
+  @if (activeSection === 'faq') {
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span>KNOWLEDGE BASE</span>
+
+        <h2>Frequently Asked Questions</h2>
+
+      </div>
+
+
+      <div class="faq-list">
+
+        @for (faq of faqs; track faq.question) {
+
+          <div class="faq">
+
+            <button
+              (click)="toggleFaq(faq)">
+
+              {{ faq.question }}
+
+              <span>
+                {{ faq.open ? '−' : '+' }}
+              </span>
+
+            </button>
+
+
+            @if (faq.open) {
+
+              <p>
+                {{ faq.answer }}
+              </p>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- QUERY RESOLUTION -->
+
+  @if (activeSection === 'queries') {
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span>SUPPORT TICKETS</span>
+
+        <h2>Query Resolution</h2>
+
+        <p>
+          Track your submitted issues and support requests.
+        </p>
+
+      </div>
+
+
+      <div class="tickets">
+
+        @for (ticket of tickets; track ticket.id) {
+
+          <div class="ticket">
+
+            <div>
+
+              <span class="ticket-id">
+                {{ ticket.id }}
+              </span>
+
+              <h3>
+                {{ ticket.subject }}
+              </h3>
+
+              <small>
+                {{ ticket.category }} · {{ ticket.date }}
+              </small>
+
+            </div>
+
+
+            <span
+              class="status"
+              [class.open]="ticket.status === 'Open'"
+              [class.progress]="ticket.status === 'In Progress'"
+              [class.resolved]="ticket.status === 'Resolved'">
+
+              {{ ticket.status }}
+
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- CONTACT SUPPORT -->
+
+  @if (activeSection === 'contact') {
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span>GET IN TOUCH</span>
+
+        <h2>Contact Support</h2>
+
+        <p>
+          Send your query to the PolicyGPT support team.
+        </p>
+
+      </div>
+
+
+      <label>
+
+        Subject
+
+        <input
+          [(ngModel)]="supportSubject"
+          placeholder="What do you need help with?">
+
+      </label>
+
+
+      <label>
+
+        Message
+
+        <textarea
+          [(ngModel)]="supportMessage"
+          rows="7"
+          placeholder="Describe your question or issue...">
+        </textarea>
+
+      </label>
+
+
+      <button
+        class="primary"
+        (click)="submitSupport()">
+
+        Send to Support
+
+      </button>
+
+    </div>
+
+  }
+
+</div>
