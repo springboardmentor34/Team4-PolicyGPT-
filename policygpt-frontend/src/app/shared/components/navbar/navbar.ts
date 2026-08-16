@@ -15,10 +15,9 @@ interface NavItem {
   styleUrl: './navbar.css',
 })
 export class Navbar {
-
   constructor(
     private router: Router,
-    private auth: Auth
+    private auth: Auth,
   ) {}
 
   // Get the actual role from JWT and normalize it
@@ -82,9 +81,7 @@ export class Navbar {
 
   // Dashboard according to role
   get dashboardRoute(): string {
-
     switch (this.normalizedRole) {
-
       case 'admin':
         return '/admin';
 
@@ -108,9 +105,7 @@ export class Navbar {
 
   // Role-based navigation
   get navItems(): NavItem[] {
-
     switch (this.normalizedRole) {
-
       // =========================
       // ADMIN
       // =========================
@@ -118,26 +113,29 @@ export class Navbar {
         return [
           {
             label: 'Dashboard',
-            route: '/admin'
+            route: '/admin',
           },
           {
             label: 'Policies',
-            route: '/policies'
+            route: '/policies',
           },
           {
             label: 'Schemes',
-            route: '/schemes'
+            route: '/schemes',
           },
           {
             label: 'Eligibility',
-            route: '/eligibility'
+            route: '/eligibility',
           },
           {
-  label: 'Feedback & Support',
-  route: '/feedback'
-}
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
         ];
-
 
       // =========================
       // GOVERNMENT OFFICIAL
@@ -146,26 +144,29 @@ export class Navbar {
         return [
           {
             label: 'Dashboard',
-            route: '/official'
+            route: '/official',
           },
           {
             label: 'Policies',
-            route: '/policies'
+            route: '/policies',
           },
           {
             label: 'Schemes',
-            route: '/schemes'
+            route: '/schemes',
           },
           {
             label: 'Eligibility',
-            route: '/eligibility'
+            route: '/eligibility',
           },
           {
-  label: 'Feedback & Support',
-  route: '/feedback'
-}
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
         ];
-
 
       // =========================
       // RESEARCHER
@@ -174,22 +175,25 @@ export class Navbar {
         return [
           {
             label: 'Dashboard',
-            route: '/researcher'
+            route: '/researcher',
           },
           {
             label: 'Policies',
-            route: '/policies'
+            route: '/policies',
           },
           {
             label: 'Schemes',
-            route: '/schemes'
+            route: '/schemes',
           },
           {
-  label: 'Feedback & Support',
-  route: '/feedback'
-}
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
         ];
-
 
       // =========================
       // CITIZEN
@@ -198,26 +202,29 @@ export class Navbar {
         return [
           {
             label: 'Dashboard',
-            route: '/citizen'
+            route: '/citizen',
           },
           {
             label: 'Policies',
-            route: '/policies'
+            route: '/policies',
           },
           {
             label: 'Schemes',
-            route: '/schemes'
+            route: '/schemes',
           },
           {
             label: 'Eligibility',
-            route: '/eligibility'
+            route: '/eligibility',
           },
           {
-  label: 'Feedback & Support',
-  route: '/feedback'
-}
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
         ];
-
 
       // =========================
       // ORGANIZATION
@@ -226,22 +233,25 @@ export class Navbar {
         return [
           {
             label: 'Dashboard',
-            route: '/official'
+            route: '/official',
           },
           {
             label: 'Policies',
-            route: '/policies'
+            route: '/policies',
           },
           {
             label: 'Schemes',
-            route: '/schemes'
+            route: '/schemes',
           },
           {
-  label: 'Feedback & Support',
-  route: '/feedback'
-}
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
         ];
-
 
       // =========================
       // GUEST
@@ -251,16 +261,20 @@ export class Navbar {
         return [
           {
             label: 'Policies',
-            route: '/policies'
+            route: '/policies',
           },
           {
             label: 'Schemes',
-            route: '/schemes'
+            route: '/schemes',
           },
           {
-  label: 'Feedback & Support',
-  route: '/feedback'
-}
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
         ];
     }
   }
