@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-researcher',
+  selector: 'app-organization',
   standalone: true,
   imports: [CommonModule, MatIconModule],
-  templateUrl: './researcher.html',
-  styleUrl: './researcher.css',
+  templateUrl: './organization.html',
+  styleUrl: './organization.css',
 })
-export class Researcher {
+export class Organization {
   constructor(private router: Router) {}
 
   navigate(route: string): void {

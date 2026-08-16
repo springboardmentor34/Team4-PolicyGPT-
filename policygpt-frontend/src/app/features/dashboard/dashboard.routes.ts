@@ -3,7 +3,7 @@ import { Admin } from './admin/admin';
 import { Citizen } from './citizen/citizen';
 import { Official } from './official/official';
 import { Researcher } from './researcher/researcher';
-
+import { Organization } from './organization/organization';
 export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'admin',
@@ -21,4 +21,8 @@ export const DASHBOARD_ROUTES: Routes = [
     path: 'researcher',
     component: Researcher,
   },
+  {
+  path: 'organization',
+  component: Organization,
+},
 ];

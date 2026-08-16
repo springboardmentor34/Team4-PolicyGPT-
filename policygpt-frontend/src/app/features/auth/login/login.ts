@@ -91,6 +91,9 @@ export class Login {
     case 'researcher':
       this.router.navigate(['/researcher']);
       break;
+    case 'organization':
+  this.router.navigate(['/organization']);
+  break;
 
     default:
       console.error('Unknown user role:', role);

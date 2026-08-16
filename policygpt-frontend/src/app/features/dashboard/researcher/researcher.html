@@ -1,1 +1,576 @@
-<p>researcher works!</p>
+<div class="researcher-shell">
+
+  <!-- ========================= SIDEBAR ========================= -->
+  <aside class="researcher-sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-symbol">
+        <mat-icon>account_balance</mat-icon>
+      </div>
+
+      <div class="brand-text">
+        <strong>PolicyGPT</strong>
+        <span>Research Platform</span>
+      </div>
+    </div>
+
+
+    <div class="sidebar-section">
+  <span class="sidebar-label">WORKSPACE</span>
+
+  <button
+    type="button"
+    class="sidebar-item active"
+    (click)="navigate('/dashboard/researcher')"
+  >
+    <mat-icon>grid_view</mat-icon>
+    <span>Overview</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="navigate('/policies')"
+  >
+    <mat-icon>search</mat-icon>
+    <span>Explore Policies</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="navigate('/schemes')"
+  >
+    <mat-icon>account_balance</mat-icon>
+    <span>Government Schemes</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="navigate('/eligibility')"
+  >
+    <mat-icon>fact_check</mat-icon>
+    <span>Eligibility Checker</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="navigate('/policies/comparison')"
+  >
+    <mat-icon>compare_arrows</mat-icon>
+    <span>Compare Policies</span>
+  </button>
+</div>
+
+
+    <div class="sidebar-section">
+      <span class="sidebar-label">MY RESEARCH</span>
+
+      <button type="button" class="sidebar-item">
+        <mat-icon>bookmark_border</mat-icon>
+        <span>Saved Research</span>
+      </button>
+
+      <button type="button" class="sidebar-item">
+        <mat-icon>history</mat-icon>
+        <span>Recent Activity</span>
+      </button>
+    </div>
+
+
+    <div class="sidebar-bottom">
+
+      <div class="sidebar-help">
+        <mat-icon>help_outline</mat-icon>
+
+        <div>
+          <strong>Need help?</strong>
+          <span>Explore the research tools.</span>
+        </div>
+      </div>
+
+      <div class="researcher-profile">
+
+        <div class="profile-avatar">
+          R
+        </div>
+
+        <div class="profile-info">
+          <strong>Researcher</strong>
+          <span>Policy Analyst</span>
+        </div>
+
+        <button type="button" class="profile-more">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ========================= MAIN ========================= -->
+  <main class="researcher-main">
+
+    <!-- TOPBAR -->
+    <header class="researcher-topbar">
+
+      <div class="breadcrumb">
+        <span>Research Workspace</span>
+        <mat-icon>chevron_right</mat-icon>
+        <strong>Overview</strong>
+      </div>
+
+
+      <div class="topbar-actions">
+
+        <button type="button" class="topbar-icon">
+          <mat-icon>notifications_none</mat-icon>
+          <span class="notification-dot"></span>
+        </button>
+
+        <div class="topbar-divider"></div>
+
+        <div class="topbar-user">
+          <div class="topbar-avatar">R</div>
+
+          <div>
+            <strong>Researcher</strong>
+            <span>Research Workspace</span>
+          </div>
+
+          <mat-icon>expand_more</mat-icon>
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================= CONTENT ========================= -->
+    <div class="researcher-content">
+
+      <!-- WELCOME -->
+      <section class="welcome-section">
+
+        <div>
+          <span class="eyebrow">POLICY RESEARCH</span>
+
+          <h1>
+            What are you researching today?
+          </h1>
+
+          <p>
+            Discover government policies, public schemes and policy
+            intelligence from one research workspace.
+          </p>
+        </div>
+
+      </section>
+
+
+
+      <!-- SUGGESTED TOPICS -->
+      <section class="suggested-section">
+
+        <span class="section-caption">
+          START WITH A RESEARCH AREA
+        </span>
+
+        <div class="topic-list">
+
+          <button type="button" (click)="navigate('/policies')">
+            <mat-icon>agriculture</mat-icon>
+            Agriculture
+          </button>
+
+          <button type="button" (click)="navigate('/policies')">
+            <mat-icon>health_and_safety</mat-icon>
+            Healthcare
+          </button>
+
+          <button type="button" (click)="navigate('/policies')">
+            <mat-icon>school</mat-icon>
+            Education
+          </button>
+
+          <button type="button" (click)="navigate('/policies')">
+            <mat-icon>work_outline</mat-icon>
+            Employment
+          </button>
+
+          <button type="button" (click)="navigate('/policies')">
+            <mat-icon>location_city</mat-icon>
+            Urban Development
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- TWO COLUMN RESEARCH AREA -->
+      <section class="research-grid">
+
+        <!-- CONTINUE RESEARCH -->
+        <article class="workspace-panel continue-panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="section-caption">YOUR WORKSPACE</span>
+              <h2>Continue research</h2>
+            </div>
+
+            <button type="button">
+              View all
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+
+          </div>
+
+
+          <div class="research-item">
+
+            <div class="research-item-icon">
+              <mat-icon>description</mat-icon>
+            </div>
+
+            <div class="research-item-content">
+
+              <span class="item-type">POLICY</span>
+
+              <strong>Explore the Policy Repository</strong>
+
+              <span>
+                Search policies by department, sector, state and status.
+              </span>
+
+              <small>
+                Available research tool
+              </small>
+
+            </div>
+
+            <button
+              type="button"
+              class="item-action"
+              (click)="navigate('/policies')"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+
+          </div>
+
+
+          <div class="research-item">
+
+            <div class="research-item-icon scheme-icon">
+              <mat-icon>account_balance</mat-icon>
+            </div>
+
+            <div class="research-item-content">
+
+              <span class="item-type">SCHEMES</span>
+
+              <strong>Explore Government Schemes</strong>
+
+              <span>
+                Discover public schemes and their eligibility information.
+              </span>
+
+              <small>
+                Available research tool
+              </small>
+
+            </div>
+
+            <button
+              type="button"
+              class="item-action"
+              (click)="navigate('/schemes')"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+
+          </div>
+
+        </article>
+
+
+        <!-- POLICY LANDSCAPE -->
+        <article class="workspace-panel landscape-panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="section-caption">POLICY LANDSCAPE</span>
+              <h2>Explore by sector</h2>
+            </div>
+
+            <button
+              type="button"
+              (click)="navigate('/policies')"
+            >
+              Browse
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+
+          </div>
+
+
+          <div class="sector-list">
+
+            <button type="button" (click)="navigate('/policies')">
+              <span class="sector-name">
+                <span class="sector-dot agriculture"></span>
+                Agriculture
+              </span>
+
+              <span class="sector-value">24</span>
+
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+
+            <button type="button" (click)="navigate('/policies')">
+              <span class="sector-name">
+                <span class="sector-dot health"></span>
+                Healthcare
+              </span>
+
+              <span class="sector-value">21</span>
+
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+
+            <button type="button" (click)="navigate('/policies')">
+              <span class="sector-name">
+                <span class="sector-dot education"></span>
+                Education
+              </span>
+
+              <span class="sector-value">19</span>
+
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+
+            <button type="button" (click)="navigate('/policies')">
+              <span class="sector-name">
+                <span class="sector-dot employment"></span>
+                Employment
+              </span>
+
+              <span class="sector-value">18</span>
+
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- RECENT POLICIES -->
+      <section class="recent-section">
+
+        <div class="recent-header">
+
+          <div>
+            <span class="section-caption">POLICY REPOSITORY</span>
+            <h2>Recently available policies</h2>
+          </div>
+
+          <button
+            type="button"
+            class="view-repository"
+            (click)="navigate('/policies')"
+          >
+            View policy repository
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+
+        </div>
+
+
+        <div class="policy-table">
+
+          <div class="table-head">
+            <span>POLICY</span>
+            <span>DEPARTMENT</span>
+            <span>SECTOR</span>
+            <span>STATUS</span>
+            <span>UPDATED</span>
+            <span></span>
+          </div>
+
+
+          <button
+            type="button"
+            class="table-row"
+            (click)="navigate('/policies')"
+          >
+            <span class="policy-name">
+              <span class="table-icon">
+                <mat-icon>description</mat-icon>
+              </span>
+
+              <span>
+                <strong>PM-KISAN</strong>
+                <small>Pradhan Mantri Kisan Samman Nidhi</small>
+              </span>
+            </span>
+
+            <span>Agriculture</span>
+            <span>Agriculture</span>
+
+            <span>
+              <span class="status active">Active</span>
+            </span>
+
+            <span>Aug 2026</span>
+
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+
+
+          <button
+            type="button"
+            class="table-row"
+            (click)="navigate('/policies')"
+          >
+            <span class="policy-name">
+              <span class="table-icon">
+                <mat-icon>health_and_safety</mat-icon>
+              </span>
+
+              <span>
+                <strong>Ayushman Bharat</strong>
+                <small>National Health Protection Programme</small>
+              </span>
+            </span>
+
+            <span>Health Ministry</span>
+            <span>Healthcare</span>
+
+            <span>
+              <span class="status active">Active</span>
+            </span>
+
+            <span>Aug 2026</span>
+
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+
+
+          <button
+            type="button"
+            class="table-row"
+            (click)="navigate('/policies')"
+          >
+            <span class="policy-name">
+              <span class="table-icon">
+                <mat-icon>school</mat-icon>
+              </span>
+
+              <span>
+                <strong>Skill India</strong>
+                <small>National Skill Development Initiative</small>
+              </span>
+            </span>
+
+            <span>Skill Development</span>
+            <span>Employment</span>
+
+            <span>
+              <span class="status active">Active</span>
+            </span>
+
+            <span>Jul 2026</span>
+
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- QUICK TOOLS -->
+      <section class="quick-tools">
+
+        <div>
+          <span class="section-caption">RESEARCH TOOLS</span>
+          <h2>Go further with PolicyGPT</h2>
+        </div>
+
+
+        <div class="quick-tool-list">
+
+          <button
+            type="button"
+            (click)="navigate('/policies/comparison')"
+          >
+            <span>
+              <mat-icon>compare_arrows</mat-icon>
+            </span>
+
+            <strong>Compare Policies</strong>
+
+            <small>
+              Analyze policies side by side
+            </small>
+
+            <mat-icon class="quick-arrow">arrow_forward</mat-icon>
+          </button>
+
+
+          <button
+            type="button"
+            (click)="navigate('/eligibility')"
+          >
+            <span>
+              <mat-icon>fact_check</mat-icon>
+            </span>
+
+            <strong>Eligibility Checker</strong>
+
+            <small>
+              Analyze scheme eligibility
+            </small>
+
+            <mat-icon class="quick-arrow">arrow_forward</mat-icon>
+          </button>
+
+
+          <button
+            type="button"
+            (click)="navigate('/schemes')"
+          >
+            <span>
+              <mat-icon>account_balance</mat-icon>
+            </span>
+
+            <strong>Scheme Explorer</strong>
+
+            <small>
+              Investigate government schemes
+            </small>
+
+            <mat-icon class="quick-arrow">arrow_forward</mat-icon>
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
