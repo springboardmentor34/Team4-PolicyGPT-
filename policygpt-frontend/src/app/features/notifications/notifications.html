@@ -1,0 +1,478 @@
+<div class="notifications-page">
+
+  <!-- HEADER -->
+
+  <section class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        NOTIFICATION CENTER
+      </span>
+
+      <h1>Notifications</h1>
+
+      <p>
+        Stay updated with policies, schemes, deadlines and application activity.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <span class="notification-count">
+        {{ unreadCount }} unread
+      </span>
+
+      <button
+        type="button"
+        class="mark-all-btn"
+        (click)="markAllAsRead()">
+
+        Mark all as read
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- SUMMARY CARDS -->
+
+  <section class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon policy">
+        P
+      </div>
+
+      <div>
+
+        <span>Policy Alerts</span>
+
+        <strong>
+          {{
+            notifications.filter(n => n.type === 'Policy').length
+          }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon scheme">
+        S
+      </div>
+
+      <div>
+
+        <span>Scheme Updates</span>
+
+        <strong>
+          {{
+            notifications.filter(n => n.type === 'Scheme').length
+          }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon deadline">
+        !
+      </div>
+
+      <div>
+
+        <span>Deadlines</span>
+
+        <strong>
+          {{
+            notifications.filter(n => n.type === 'Deadline').length
+          }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon application">
+        A
+      </div>
+
+      <div>
+
+        <span>Applications</span>
+
+        <strong>
+          {{
+            notifications.filter(n => n.type === 'Application').length
+          }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MAIN CONTENT -->
+
+  <section class="notification-layout">
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="notification-card">
+
+      <div class="notification-header">
+
+        <div>
+
+          <h2>Recent Notifications</h2>
+
+          <p>
+            Your latest PolicyGPT updates
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- FILTERS -->
+
+      <div class="filters">
+
+        <button
+          [class.active]="activeFilter === 'All'"
+          (click)="setFilter('All')">
+
+          All
+
+        </button>
+
+        <button
+          [class.active]="activeFilter === 'Unread'"
+          (click)="setFilter('Unread')">
+
+          Unread
+
+        </button>
+
+        <button
+          [class.active]="activeFilter === 'Policy'"
+          (click)="setFilter('Policy')">
+
+          Policies
+
+        </button>
+
+        <button
+          [class.active]="activeFilter === 'Scheme'"
+          (click)="setFilter('Scheme')">
+
+          Schemes
+
+        </button>
+
+        <button
+          [class.active]="activeFilter === 'Deadline'"
+          (click)="setFilter('Deadline')">
+
+          Deadlines
+
+        </button>
+
+        <button
+          [class.active]="activeFilter === 'Application'"
+          (click)="setFilter('Application')">
+
+          Applications
+
+        </button>
+
+      </div>
+
+
+      <!-- NOTIFICATION LIST -->
+
+      <div class="notification-list">
+
+        @for (
+          notification of filteredNotifications;
+          track notification.id
+        ) {
+
+          <article
+            class="notification-item"
+            [class.unread]="!notification.read">
+
+
+            <div
+              class="notification-icon"
+              [class.policy-icon]="notification.type === 'Policy'"
+              [class.scheme-icon]="notification.type === 'Scheme'"
+              [class.deadline-icon]="notification.type === 'Deadline'"
+              [class.application-icon]="notification.type === 'Application'">
+
+              @if (notification.type === 'Policy') {
+                P
+              }
+
+              @if (notification.type === 'Scheme') {
+                S
+              }
+
+              @if (notification.type === 'Deadline') {
+                !
+              }
+
+              @if (notification.type === 'Application') {
+                A
+              }
+
+            </div>
+
+
+            <div class="notification-content">
+
+              <div class="notification-title-row">
+
+                <h3>
+                  {{ notification.title }}
+                </h3>
+
+                @if (!notification.read) {
+                  <span class="unread-dot"></span>
+                }
+
+              </div>
+
+              <p>
+                {{ notification.message }}
+              </p>
+
+              <div class="notification-meta">
+
+                <span>
+                  {{ notification.date }}
+                </span>
+
+                <span>
+                  {{ notification.time }}
+                </span>
+
+                <span
+                  class="priority"
+                  [class.high]="notification.priority === 'High'"
+                  [class.medium]="notification.priority === 'Medium'"
+                  [class.low]="notification.priority === 'Low'">
+
+                  {{ notification.priority }}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="notification-actions">
+
+              @if (!notification.read) {
+
+                <button
+                  type="button"
+                  title="Mark as read"
+                  (click)="markAsRead(notification)">
+
+                  ✓
+
+                </button>
+
+              }
+
+              <button
+                type="button"
+                title="Delete notification"
+                (click)="deleteNotification(notification.id)">
+
+                ×
+
+              </button>
+
+            </div>
+
+          </article>
+
+        }
+
+
+        @if (filteredNotifications.length === 0) {
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              ✓
+            </div>
+
+            <h3>No notifications</h3>
+
+            <p>
+              You're all caught up.
+            </p>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- PREFERENCES -->
+
+    <aside class="preferences-card">
+
+      <div class="preferences-header">
+
+        <span class="eyebrow">
+          NOTIFICATION SETTINGS
+        </span>
+
+        <h2>Preferences</h2>
+
+        <p>
+          Choose how you want to receive updates.
+        </p>
+
+      </div>
+
+
+      <!-- EMAIL -->
+
+      <div class="preference">
+
+        <div class="preference-icon email">
+          @
+        </div>
+
+        <div class="preference-content">
+
+          <strong>Email Notifications</strong>
+
+          <span>
+            Receive important updates by email.
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="toggle"
+          [class.enabled]="emailEnabled"
+          (click)="toggleEmail()">
+
+          <span></span>
+
+        </button>
+
+      </div>
+
+
+      <!-- SMS -->
+
+      <div class="preference">
+
+        <div class="preference-icon sms">
+          SMS
+        </div>
+
+        <div class="preference-content">
+
+          <strong>SMS Notifications</strong>
+
+          <span>
+            Receive urgent alerts through SMS.
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="toggle"
+          [class.enabled]="smsEnabled"
+          (click)="toggleSms()">
+
+          <span></span>
+
+        </button>
+
+      </div>
+
+
+      <!-- IN APP -->
+
+      <div class="preference">
+
+        <div class="preference-icon app">
+          ✓
+        </div>
+
+        <div class="preference-content">
+
+          <strong>In-App Notifications</strong>
+
+          <span>
+            Show notifications inside PolicyGPT.
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          class="toggle"
+          [class.enabled]="inAppEnabled"
+          (click)="toggleInApp()">
+
+          <span></span>
+
+        </button>
+
+      </div>
+
+
+      <div class="preference-divider"></div>
+
+
+      <div class="preference-note">
+
+        <strong>Notification types</strong>
+
+        <p>
+          You will receive policy alerts, scheme updates,
+          deadline reminders and application status changes
+          through your selected channels.
+        </p>
+
+      </div>
+
+    </aside>
+
+  </section>
+
+</div>
