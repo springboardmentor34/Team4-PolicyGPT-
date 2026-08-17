@@ -1,0 +1,336 @@
+<div class="rules-page">
+
+  <div class="rules-header">
+    <div>
+      <p class="eyebrow">Government Scheme Management</p>
+      <h1>Eligibility Rules</h1>
+      <p class="subtitle">
+        Define and update criteria required for citizens to qualify for government schemes.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="back-button" routerLink="/schemes">
+        <span>←</span> Back to Schemes
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <span>✓</span> {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      <span>⚠</span> {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Scheme Selector Panel -->
+  <section class="scheme-select-panel">
+    <div class="panel-header">
+      <h2>Select Government Scheme</h2>
+      <p>Choose a scheme to view or modify its associated eligibility criteria.</p>
+    </div>
+
+    <div class="select-field">
+      <label for="schemeSelect">Scheme</label>
+      <select
+        id="schemeSelect"
+        [(ngModel)]="selectedSchemeId"
+        (change)="onSchemeChange(selectedSchemeId)"
+        [disabled]="loadingSchemes"
+      >
+        <option value="" disabled>-- Select a Scheme --</option>
+        @for (scheme of schemes; track scheme.scheme_id) {
+          <option [value]="scheme.scheme_id">
+            {{ scheme.name }} ({{ scheme.category || 'General' }} - {{ scheme.status }})
+          </option>
+        }
+      </select>
+    </div>
+
+    @if (selectedScheme) {
+      <div class="selected-scheme-badge">
+        <div class="badge-title">{{ selectedScheme.name }}</div>
+        <div class="badge-meta">
+          <span>Dept: {{ selectedScheme.department || 'N/A' }}</span> •
+          <span>State: {{ selectedScheme.state || 'All India' }}</span> •
+          <span>Status: <strong>{{ selectedScheme.status }}</strong></span>
+        </div>
+      </div>
+    }
+  </section>
+
+  @if (selectedSchemeId) {
+    <div class="rules-content-grid">
+
+      <!-- Form Section -->
+      <section class="rule-form-card">
+        <div class="card-header">
+          <h2>{{ editingRuleId ? 'Edit Eligibility Rule' : 'Add New Eligibility Rule' }}</h2>
+          <p>{{ editingRuleId ? 'Modify the selected rule parameters below.' : 'Define criteria for the selected scheme.' }}</p>
+        </div>
+
+        <form [formGroup]="ruleForm" (ngSubmit)="saveRule()">
+
+          <!-- Age Range -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="min_age">Minimum Age (years)</label>
+              <input
+                id="min_age"
+                type="number"
+                formControlName="min_age"
+                placeholder="e.g. 18"
+              />
+              @if (ruleForm.get('min_age')?.touched && ruleForm.get('min_age')?.hasError('min')) {
+                <span class="field-error">Age cannot be negative.</span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="max_age">Maximum Age (years)</label>
+              <input
+                id="max_age"
+                type="number"
+                formControlName="max_age"
+                placeholder="e.g. 60"
+              />
+              @if (ruleForm.get('max_age')?.touched && ruleForm.get('max_age')?.hasError('min')) {
+                <span class="field-error">Age cannot be negative.</span>
+              }
+            </div>
+          </div>
+
+          @if (ruleForm.touched && ruleForm.hasError('minAgeGreaterThanMaxAge')) {
+            <div class="inline-error">
+              Minimum age cannot be greater than maximum age.
+            </div>
+          }
+
+          <!-- Gender & Maximum Income -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="gender">Gender Requirement</label>
+              <select id="gender" formControlName="gender">
+                <option value="">Any / All Genders</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Transgender">Transgender</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="max_income">Maximum Income (₹/year)</label>
+              <input
+                id="max_income"
+                type="number"
+                formControlName="max_income"
+                placeholder="e.g. 300000"
+              />
+              @if (ruleForm.get('max_income')?.touched && ruleForm.get('max_income')?.hasError('min')) {
+                <span class="field-error">Income cannot be negative.</span>
+              }
+            </div>
+          </div>
+
+          <!-- Occupation & Education -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="occupation">Target Occupation</label>
+              <input
+                id="occupation"
+                type="text"
+                formControlName="occupation"
+                placeholder="e.g. Farmer, Student, Artisan, Any"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="education_level">Education Level</label>
+              <input
+                id="education_level"
+                type="text"
+                formControlName="education_level"
+                placeholder="e.g. 10th Pass, Graduate, Literate, Any"
+              />
+            </div>
+          </div>
+
+          <!-- Location & Social Category -->
+          <div class="form-row">
+            <div class="form-field">
+              <label for="location">Location / Region</label>
+              <input
+                id="location"
+                type="text"
+                formControlName="location"
+                placeholder="e.g. Rural, Urban, Telangana, All India"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="social_category">Social Category</label>
+              <input
+                id="social_category"
+                type="text"
+                formControlName="social_category"
+                placeholder="e.g. General, OBC, SC, ST, EWS, Any"
+              />
+            </div>
+          </div>
+
+          <!-- Disability Status -->
+          <div class="form-checkbox-field">
+            <label class="checkbox-container">
+              <input
+                type="checkbox"
+                formControlName="disability_status"
+              />
+              <span class="checkmark"></span>
+              <span class="checkbox-label">Requires Disability Status (PWD)</span>
+            </label>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            @if (editingRuleId) {
+              <button
+                type="button"
+                class="cancel-btn"
+                (click)="cancelEdit()"
+                [disabled]="saving"
+              >
+                Cancel
+              </button>
+            }
+
+            <button
+              type="submit"
+              class="submit-btn"
+              [disabled]="saving || ruleForm.invalid"
+            >
+              {{ saving ? 'Saving...' : (editingRuleId ? 'Update Rule' : 'Add Rule') }}
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Rules List Section -->
+      <section class="rules-list-card">
+        <div class="card-header">
+          <h2>Existing Eligibility Rules</h2>
+          <p>Criteria currently configured for this scheme.</p>
+        </div>
+
+        @if (loadingRules) {
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading eligibility rules...</p>
+          </div>
+        } @else if (rules.length === 0) {
+          <div class="empty-rules">
+            <div class="empty-icon">🎯</div>
+            <h3>No eligibility rules defined</h3>
+            <p>This scheme currently has no eligibility rules assigned. Fill out the form on the left to add one.</p>
+          </div>
+        } @else {
+          <div class="rule-cards-container">
+            @for (rule of rules; track rule.rule_id) {
+              <div class="rule-card" [class.editing-card]="editingRuleId === rule.rule_id">
+                <div class="rule-card-header">
+                  <span class="rule-badge">Rule #{{ $index + 1 }}</span>
+                  <div class="rule-actions">
+                    <button
+                      type="button"
+                      class="action-btn edit-btn"
+                      (click)="editRule(rule)"
+                      title="Edit Rule"
+                    >
+                      ✏ Edit
+                    </button>
+                    <button
+                      type="button"
+                      class="action-btn delete-btn"
+                      (click)="deleteRule(rule.rule_id)"
+                      [disabled]="deletingRuleId === rule.rule_id"
+                      title="Delete Rule"
+                    >
+                      {{ deletingRuleId === rule.rule_id ? '...' : '🗑 Delete' }}
+                    </button>
+                  </div>
+                </div>
+
+                <div class="rule-details-grid">
+                  <div class="detail-item">
+                    <span class="detail-label">Age Limits</span>
+                    <span class="detail-value">
+                      @if (rule.min_age !== null && rule.max_age !== null) {
+                        {{ rule.min_age }} - {{ rule.max_age }} yrs
+                      } @else if (rule.min_age !== null) {
+                        Min {{ rule.min_age }} yrs
+                      } @else if (rule.max_age !== null) {
+                        Max {{ rule.max_age }} yrs
+                      } @else {
+                        No age limit
+                      }
+                    </span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Gender</span>
+                    <span class="detail-value">{{ rule.gender || 'Any' }}</span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Max Income</span>
+                    <span class="detail-value">
+                      {{ rule.max_income !== null ? ('₹' + rule.max_income) : 'No limit' }}
+                    </span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Occupation</span>
+                    <span class="detail-value">{{ rule.occupation || 'Any' }}</span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Education</span>
+                    <span class="detail-value">{{ rule.education_level || 'Any' }}</span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Location</span>
+                    <span class="detail-value">{{ rule.location || 'Any' }}</span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Social Category</span>
+                    <span class="detail-value">{{ rule.social_category || 'Any' }}</span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span class="detail-label">Disability Status</span>
+                    <span class="detail-value">
+                      <span [class.pwd-required]="rule.disability_status">
+                        {{ rule.disability_status ? 'Required (PWD)' : 'Not Required' }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+    </div>
+  }
+
+</div>

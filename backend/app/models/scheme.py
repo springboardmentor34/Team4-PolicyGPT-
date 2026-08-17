@@ -66,9 +66,8 @@ class Scheme(Base):
         lazy="joined",
     )
 
-    eligibility_rule = relationship(
+    eligibility_rules = relationship(
         "EligibilityRule",
         back_populates="scheme",
-        uselist=False,
         cascade="all, delete-orphan",
     )

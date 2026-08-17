@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -9,9 +9,11 @@ from app.crud.eligibility_rule import (
     delete_rule,
     get_all_rules,
     get_rule,
+    get_rules_by_scheme,
     update_rule,
 )
 from app.db.database import get_db
+from app.models.scheme import Scheme
 from app.schemas.eligibility_rule import (
     EligibilityRuleCreate,
     EligibilityRuleResponse,
@@ -31,12 +33,18 @@ router = APIRouter(
 )
 def create_new_rule(
     rule_data: EligibilityRuleCreate,
-    scheme_id: UUID = Query(...),
+    scheme_id: Optional[UUID] = Query(default=None),
     db: Session = Depends(get_db),
 ) -> EligibilityRuleResponse:
     """Create a new eligibility rule linked to a scheme."""
+    target_scheme_id = rule_data.scheme_id or scheme_id
+    if not target_scheme_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="scheme_id is required either in payload body or query parameter.",
+        )
     try:
-        return create_rule(db=db, scheme_id=scheme_id, rule_data=rule_data)
+        return create_rule(db=db, scheme_id=target_scheme_id, rule_data=rule_data)
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -55,6 +63,24 @@ def list_rules(
 ) -> List[EligibilityRuleResponse]:
     """Get a paginated list of all eligibility rules."""
     return get_all_rules(db=db, skip=skip, limit=limit)
+
+
+@router.get(
+    "/scheme/{scheme_id}",
+    response_model=List[EligibilityRuleResponse],
+)
+def get_rules_for_scheme(
+    scheme_id: UUID,
+    db: Session = Depends(get_db),
+) -> List[EligibilityRuleResponse]:
+    """Fetch all eligibility rules belonging to a scheme."""
+    scheme = db.query(Scheme).filter(Scheme.scheme_id == scheme_id).first()
+    if scheme is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Scheme with id {scheme_id} not found.",
+        )
+    return get_rules_by_scheme(db=db, scheme_id=scheme_id)
 
 
 @router.get(
