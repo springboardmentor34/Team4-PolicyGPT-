@@ -18,7 +18,7 @@ class EligibilityRuleBase(BaseModel):
 
 
 class EligibilityRuleCreate(EligibilityRuleBase):
-    pass
+    scheme_id: Optional[UUID] = None
 
 
 class EligibilityRuleUpdate(BaseModel):

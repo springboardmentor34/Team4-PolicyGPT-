@@ -30,14 +30,19 @@ export class EligibilityRuleService {
     return this.http.get<EligibilityRule>(`${this.apiUrl}/${ruleId}`);
   }
 
+  getRulesByScheme(schemeId: string): Observable<EligibilityRule[]> {
+    return this.http.get<EligibilityRule[]>(`${this.apiUrl}/scheme/${schemeId}`);
+  }
+
   createRule(
     schemeId: string,
     ruleData: EligibilityRuleCreate
   ): Observable<EligibilityRule> {
     const params = new HttpParams().set('scheme_id', schemeId);
+    const payload = { ...ruleData, scheme_id: schemeId };
     return this.http.post<EligibilityRule>(
       `${this.apiUrl}/`,
-      ruleData,
+      payload,
       { params }
     );
   }

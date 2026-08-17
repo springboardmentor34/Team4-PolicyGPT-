@@ -20,7 +20,6 @@ class EligibilityRule(Base):
         UUID(as_uuid=True),
         ForeignKey("schemes.scheme_id", ondelete="CASCADE"),
         nullable=False,
-        unique=True,
     )
 
     min_age = Column(Integer)
@@ -46,5 +45,5 @@ class EligibilityRule(Base):
 
     scheme = relationship(
         "Scheme",
-        back_populates="eligibility_rule",
+        back_populates="eligibility_rules",
     )
