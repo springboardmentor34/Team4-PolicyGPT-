@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+
+import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-admin',
@@ -12,122 +16,101 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
-export class Admin {
+export class Admin implements OnInit {
+  private readonly adminService = inject(AdminService);
+  private readonly router = inject(Router);
+
   adminName: string = 'System Administrator';
 
-  // Dashboard Cards
-  totalUsers = 1250;
-  totalPolicies = 320;
-  totalReports = 78;
-  auditLogs = 145;
+  totalUsers = 0;
+  totalPolicies = 0;
+  totalReports = 0;
+  auditLogs = 0;
 
-  // Dashboard trends
-  userGrowth = '+12.5%';
-  policyGrowth = '+8.2%';
-  reportStatus = '4 pending';
-  auditStatus = '24h activity';
+  userGrowth = '+0.0%';
+  policyGrowth = '+0.0%';
+  reportStatus = 'No reports';
+  auditStatus = 'No activity';
 
-  // User Management
   users = [
-    {
-      name: 'Rahul Sharma',
-      role: 'Citizen',
-      status: 'Active',
-    },
-    {
-      name: 'Anjali Verma',
-      role: 'Government Official',
-      status: 'Active',
-    },
-    {
-      name: 'Kiran Kumar',
-      role: 'Researcher',
-      status: 'Inactive',
-    },
-    {
-      name: 'Admin User',
-      role: 'Administrator',
-      status: 'Active',
-    },
+    { name: 'No users in database', role: 'Citizen', status: 'Inactive' },
   ];
 
-  // Policy Management
   policies = [
-    {
-      title: 'Education Policy 2026',
-      department: 'Education',
-      status: 'Approved',
-    },
-    {
-      title: 'Healthcare Scheme',
-      department: 'Health',
-      status: 'Pending',
-    },
-    {
-      title: 'Farmer Welfare',
-      department: 'Agriculture',
-      status: 'Approved',
-    },
+    { title: 'No policy records yet', department: 'General', status: 'Pending' },
   ];
 
-  // Analytics
   analytics = [
-    {
-      category: 'Policy Downloads',
-      value: 14560,
-      icon: 'download',
-    },
-    {
-      category: 'Scheme Applications',
-      value: 9820,
-      icon: 'description',
-    },
-    {
-      category: 'New Registrations',
-      value: 1320,
-      icon: 'person_add',
-    },
+    { category: 'Registered Users', value: 0, icon: 'person_add' },
   ];
 
-  // Reports
   reports = [
-    {
-      report: 'Monthly Policy Report',
-      date: '31 Jul 2026',
-    },
-    {
-      report: 'Citizen Activity Report',
-      date: '30 Jul 2026',
-    },
-    {
-      report: 'Department Performance',
-      date: '28 Jul 2026',
-    },
+    { report: 'No reports generated', date: 'N/A' },
   ];
 
-  // Audit Logs
   auditLogList = [
-    {
-      user: 'Admin',
-      action: 'Approved Education Policy',
-      time: '10:30 AM',
-      type: 'admin',
-    },
-    {
-      user: 'Official',
-      action: 'Updated Healthcare Scheme',
-      time: '11:20 AM',
-      type: 'official',
-    },
-    {
-      user: 'Citizen',
-      action: 'Submitted Feedback',
-      time: '12:15 PM',
-      type: 'citizen',
-    },
+    { user: 'System', action: 'No audit events yet', time: 'N/A', type: 'admin' },
   ];
+
+  ngOnInit(): void {
+    this.loadDashboard();
+
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd =>
+            event instanceof NavigationEnd
+        ),
+      )
+      .subscribe((event) => {
+        if (event.urlAfterRedirects === '/admin') {
+          this.loadDashboard();
+        }
+      });
+  }
+
+  private loadDashboard(): void {
+    this.adminService.getDashboard().subscribe({
+      next: (data) => {
+        this.adminName = data.adminName || this.adminName;
+
+        this.totalUsers = data.totalUsers ?? this.totalUsers;
+        this.totalPolicies = data.totalPolicies ?? this.totalPolicies;
+        this.totalReports = data.totalReports ?? this.totalReports;
+        this.auditLogs = data.auditLogs ?? this.auditLogs;
+
+        this.userGrowth = data.userGrowth || this.userGrowth;
+        this.policyGrowth = data.policyGrowth || this.policyGrowth;
+        this.reportStatus = data.reportStatus || this.reportStatus;
+        this.auditStatus = data.auditStatus || this.auditStatus;
+
+        this.users = data.users?.length ? data.users : this.users;
+        this.policies = data.policies?.length ? data.policies : this.policies;
+        this.analytics = data.analytics?.length
+          ? data.analytics
+          : this.analytics;
+        this.reports = data.reports?.length
+          ? data.reports
+          : this.reports;
+        this.auditLogList = data.auditLogList?.length
+          ? data.auditLogList
+          : this.auditLogList;
+      },
+
+      error: (err) => {
+        console.error(
+          'Failed to load admin dashboard data',
+          err
+        );
+      },
+    });
+  }
 
   getInitials(name: string): string {
+    if (!name) {
+      return 'NA';
+    }
+
     return name
       .split(' ')
       .map((part) => part.charAt(0))
@@ -137,14 +120,18 @@ export class Admin {
   }
 
   getStatusClass(status: string): string {
-    return status.toLowerCase().replace(/\s+/g, '-');
+    return (status || 'pending')
+      .toLowerCase()
+      .replace(/\s+/g, '-');
   }
 
   getRoleClass(role: string): string {
-    return role.toLowerCase().replace(/\s+/g, '-');
+    return (role || 'citizen')
+      .toLowerCase()
+      .replace(/\s+/g, '-');
   }
 
   getAuditClass(type: string): string {
-    return type.toLowerCase();
+    return (type || 'admin').toLowerCase();
   }
 }
