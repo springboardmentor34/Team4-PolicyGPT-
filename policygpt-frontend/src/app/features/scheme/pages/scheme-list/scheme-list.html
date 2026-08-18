@@ -25,6 +25,15 @@
 
       <button
         type="button"
+        class="rules-nav-button"
+        routerLink="/schemes/eligibility"
+      >
+        <span>🎯</span>
+        Eligibility Rules
+      </button>
+
+      <button
+        type="button"
         class="refresh-button"
         (click)="loadSchemes()"
         [disabled]="loading"
@@ -293,6 +302,16 @@
               </div>
 
             }
+
+            <div class="card-footer">
+              <button
+                type="button"
+                class="card-rules-btn"
+                [routerLink]="['/schemes', scheme.scheme_id, 'eligibility']"
+              >
+                🎯 Manage Eligibility Rules
+              </button>
+            </div>
 
           </article>
 

@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.models.eligibility_rule import EligibilityRule
+from app.models.scheme import Scheme
 from app.schemas.eligibility_rule import (
     EligibilityRuleCreate,
     EligibilityRuleUpdate,
@@ -16,11 +17,20 @@ def get_rule(db: Session, rule_id: UUID) -> Optional[EligibilityRule]:
 
 
 def get_rule_by_scheme(db: Session, scheme_id: UUID) -> Optional[EligibilityRule]:
-    """Fetch the eligibility rule associated with a scheme (one-to-one)."""
+    """Fetch an eligibility rule associated with a scheme."""
     return (
         db.query(EligibilityRule)
         .filter(EligibilityRule.scheme_id == scheme_id)
         .first()
+    )
+
+
+def get_rules_by_scheme(db: Session, scheme_id: UUID) -> List[EligibilityRule]:
+    """Fetch all eligibility rules associated with a scheme."""
+    return (
+        db.query(EligibilityRule)
+        .filter(EligibilityRule.scheme_id == scheme_id)
+        .all()
     )
 
 
@@ -39,11 +49,10 @@ def create_rule(
     rule_data: EligibilityRuleCreate,
 ) -> EligibilityRule:
     """Create a new eligibility rule linked to a scheme."""
-    existing_rule = get_rule_by_scheme(db, scheme_id)
-    if existing_rule is not None:
-        raise ValueError(
-            f"An eligibility rule already exists for scheme {scheme_id}"
-        )
+    scheme = db.query(Scheme).filter(Scheme.scheme_id == scheme_id).first()
+    if scheme is None:
+        raise ValueError(f"Scheme with id {scheme_id} does not exist.")
+
     rule = EligibilityRule(
         scheme_id=scheme_id,
         min_age=rule_data.min_age,
@@ -54,7 +63,7 @@ def create_rule(
         education_level=rule_data.education_level,
         location=rule_data.location,
         social_category=rule_data.social_category,
-        disability_status=rule_data.disability_status,
+        disability_status=rule_data.disability_status if rule_data.disability_status is not None else False,
     )
 
     db.add(rule)
