@@ -135,6 +135,10 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
         ];
 
       // =========================
@@ -166,6 +170,10 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
         ];
 
       // =========================
@@ -192,6 +200,10 @@ export class Navbar {
           {
             label: 'Notifications',
             route: '/notifications',
+          },
+          {
+            label: 'Reports',
+            route: '/reports',
           },
         ];
 
@@ -224,6 +236,10 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
         ];
 
       // =========================
@@ -250,6 +266,10 @@ export class Navbar {
           {
             label: 'Notifications',
             route: '/notifications',
+          },
+          {
+            label: 'Reports',
+            route: '/reports',
           },
         ];
 

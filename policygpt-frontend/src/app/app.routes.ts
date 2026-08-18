@@ -45,6 +45,13 @@ export const routes: Routes = [
             (m) => m.NOTIFICATION_ROUTES,
           ),
       },
+      {
+        path: '',
+      loadChildren: () =>
+        import('./features/reports/reports.routes').then(
+          (m) => m.REPORTS_ROUTES,
+        ),
+      },
     ],
   },
 

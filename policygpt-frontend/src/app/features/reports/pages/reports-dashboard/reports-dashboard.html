@@ -1,0 +1,310 @@
+<div class="reports-page">
+
+  <!-- Page Header -->
+  <section class="reports-header">
+
+    <div class="header-content">
+      <span class="eyebrow">REPORTING & INSIGHTS</span>
+
+      <h1>Reports</h1>
+
+      <p>
+        Generate, preview and export policy, scheme, department and
+        platform activity reports.
+      </p>
+    </div>
+
+    <div class="header-meta">
+      <mat-icon>calendar_today</mat-icon>
+
+      <div>
+        <span>Reporting period</span>
+        <strong>August 2026</strong>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- Report Type Selection -->
+  <section class="report-section">
+
+    <div class="section-heading">
+      <div>
+        <span class="section-label">REPORT TYPES</span>
+        <h2>Choose a report</h2>
+        <p>Select the type of report you want to generate.</p>
+      </div>
+    </div>
+
+
+    <div class="report-type-grid">
+
+      <article
+        class="report-type-card"
+        *ngFor="let report of availableReportTypes"
+        [class.selected]="selectedReportType === report.id"
+        (click)="selectReportType(report.id)"
+        tabindex="0"
+        role="button"
+        [attr.aria-pressed]="selectedReportType === report.id">
+
+        <div class="report-type-top">
+
+          <div class="report-type-icon">
+            <mat-icon>{{ report.icon }}</mat-icon>
+          </div>
+
+          <mat-icon
+            class="selection-icon"
+            *ngIf="selectedReportType === report.id">
+            check_circle
+          </mat-icon>
+
+        </div>
+
+        <h3>{{ report.title }}</h3>
+
+        <p>
+          {{ report.description }}
+        </p>
+
+        <span class="report-action">
+          Select report
+          <mat-icon>arrow_forward</mat-icon>
+        </span>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- Report Generation Workspace -->
+  <section class="generation-section">
+
+    <div class="generation-panel">
+
+      <div class="panel-heading">
+
+        <div>
+          <span class="section-label">REPORT WORKSPACE</span>
+          <h2>Generate report</h2>
+          <p>
+            Configure your selected report and choose an action.
+          </p>
+        </div>
+
+        <div class="workspace-status"
+             [class.active]="selectedReport">
+
+          <span class="status-dot"></span>
+
+          {{ selectedReport ? 'Report selected' : 'Select a report' }}
+
+        </div>
+
+      </div>
+
+
+      <!-- Selected Report -->
+      <div class="selected-report" *ngIf="selectedReport; else noReportSelected">
+
+        <div class="selected-report-icon">
+          <mat-icon>{{ selectedReport.icon }}</mat-icon>
+        </div>
+
+        <div class="selected-report-info">
+
+          <span>Selected report</span>
+
+          <h3>
+            {{ selectedReport.title }}
+          </h3>
+
+          <p>
+            {{ selectedReport.description }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- Empty Selection State -->
+      <ng-template #noReportSelected>
+
+        <div class="empty-selection">
+
+          <div class="empty-icon">
+            <mat-icon>insert_chart_outlined</mat-icon>
+          </div>
+
+          <div>
+            <h3>No report selected</h3>
+            <p>
+              Choose one of the report types above to begin.
+            </p>
+          </div>
+
+        </div>
+
+      </ng-template>
+
+
+      <!-- Actions -->
+      <div class="report-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          [disabled]="!selectedReportType || isGenerating"
+          (click)="generateReport()">
+
+          <mat-icon>
+            {{ isGenerating ? 'hourglass_top' : 'auto_graph' }}
+          </mat-icon>
+
+          {{ isGenerating ? 'Generating...' : 'Generate Report' }}
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="!selectedReportType || isGenerating"
+          (click)="previewReport()">
+
+          <mat-icon>visibility</mat-icon>
+
+          Preview
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="!selectedReportType || isGenerating"
+          (click)="exportReport('PDF')">
+
+          <mat-icon>picture_as_pdf</mat-icon>
+
+          PDF
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="!selectedReportType || isGenerating"
+          (click)="exportReport('Excel')">
+
+          <mat-icon>table_view</mat-icon>
+
+          Excel
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Recent Reports -->
+  <section class="recent-section">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="section-label">REPORT HISTORY</span>
+        <h2>Recent reports</h2>
+        <p>
+          Previously generated reports available for review.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div
+      class="recent-reports"
+      *ngIf="recentReports.length > 0; else noRecentReports">
+
+      <article
+        class="recent-report"
+        *ngFor="let report of recentReports">
+
+        <div class="recent-report-icon">
+          <mat-icon>
+            {{ report.status === 'Ready'
+              ? 'description'
+              : 'hourglass_top' }}
+          </mat-icon>
+        </div>
+
+        <div class="recent-report-info">
+
+          <h3>{{ report.name }}</h3>
+
+          <div class="report-meta">
+            <span>{{ report.type }}</span>
+            <span class="meta-separator">•</span>
+            <span>{{ report.generatedOn }}</span>
+          </div>
+
+        </div>
+
+        <span
+          class="report-status"
+          [class.ready]="report.status === 'Ready'"
+          [class.generating]="report.status === 'Generating'">
+
+          <span class="status-dot"></span>
+
+          {{ report.status }}
+
+        </span>
+
+        <button
+          type="button"
+          class="download-button"
+          [disabled]="report.status !== 'Ready'"
+          aria-label="Download report">
+
+          <mat-icon>download</mat-icon>
+
+        </button>
+
+      </article>
+
+    </div>
+
+
+    <!-- Empty Reports State -->
+    <ng-template #noRecentReports>
+
+      <div class="empty-reports">
+
+        <div class="empty-icon">
+          <mat-icon>folder_open</mat-icon>
+        </div>
+
+        <h3>No reports yet</h3>
+
+        <p>
+          Generated reports will appear here.
+        </p>
+
+      </div>
+
+    </ng-template>
+
+  </section>
+
+</div>
