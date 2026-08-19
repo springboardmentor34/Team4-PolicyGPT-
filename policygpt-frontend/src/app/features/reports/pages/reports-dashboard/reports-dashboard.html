@@ -96,8 +96,9 @@
           </p>
         </div>
 
-        <div class="workspace-status"
-             [class.active]="selectedReport">
+        <div
+          class="workspace-status"
+          [class.active]="selectedReport">
 
           <span class="status-dot"></span>
 
@@ -109,7 +110,9 @@
 
 
       <!-- Selected Report -->
-      <div class="selected-report" *ngIf="selectedReport; else noReportSelected">
+      <div
+        class="selected-report"
+        *ngIf="selectedReport; else noReportSelected">
 
         <div class="selected-report-icon">
           <mat-icon>{{ selectedReport.icon }}</mat-icon>
@@ -272,14 +275,15 @@
         </span>
 
         <button
-          type="button"
-          class="download-button"
-          [disabled]="report.status !== 'Ready'"
-          aria-label="Download report">
+  type="button"
+  class="download-button"
+  [disabled]="report.status !== 'Ready'"
+  aria-label="Download report"
+  (click)="downloadReport(report)">
 
-          <mat-icon>download</mat-icon>
+  <mat-icon>download</mat-icon>
 
-        </button>
+</button>
 
       </article>
 
@@ -304,6 +308,161 @@
       </div>
 
     </ng-template>
+
+  </section>
+
+</div>
+
+
+<!-- Report Preview Modal -->
+<div
+  class="preview-backdrop"
+  *ngIf="isPreviewOpen && previewData"
+  (click)="closePreview()">
+
+  <section
+    class="preview-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="report-preview-title"
+    (click)="$event.stopPropagation()">
+
+    <header class="preview-header">
+
+      <div class="preview-heading">
+
+        <span class="section-label">REPORT PREVIEW</span>
+
+        <h2 id="report-preview-title">
+          {{ previewData.title }}
+        </h2>
+
+        <p>
+          {{ previewData.description }}
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="preview-close-button"
+        aria-label="Close report preview"
+        (click)="closePreview()">
+
+        <mat-icon>close</mat-icon>
+
+      </button>
+
+    </header>
+
+
+    <div class="preview-meta">
+
+      <div class="preview-meta-item">
+        <span>Report type</span>
+        <strong>{{ previewData.type }}</strong>
+      </div>
+
+      <div class="preview-meta-item">
+        <span>Reporting period</span>
+        <strong>{{ previewData.reportingPeriod }}</strong>
+      </div>
+
+      <div class="preview-meta-item">
+        <span>Generated on</span>
+        <strong>{{ previewData.generatedOn }}</strong>
+      </div>
+
+      <div class="preview-meta-item">
+        <span>Status</span>
+        <strong class="preview-ready">
+          <span class="status-dot"></span>
+          Ready
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="preview-content">
+
+      <div class="preview-section-title">
+        <span>REPORT SUMMARY</span>
+        <h3>Key metrics</h3>
+      </div>
+
+
+      <div class="preview-metrics">
+
+        <article
+          class="preview-metric"
+          *ngFor="let metric of previewData.metrics">
+
+          <div class="preview-metric-icon">
+            <mat-icon>{{ metric.icon }}</mat-icon>
+          </div>
+
+          <div>
+            <span>{{ metric.label }}</span>
+            <strong>{{ metric.value }}</strong>
+          </div>
+
+        </article>
+
+      </div>
+
+
+      <div class="preview-note">
+
+        <mat-icon>info_outline</mat-icon>
+
+        <p>
+          This preview uses the current PolicyGPT frontend reporting
+          dataset. Live reporting data will be connected when the
+          reporting API is available.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <footer class="preview-footer">
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="closePreview()">
+
+        Close Preview
+
+      </button>
+
+      <div class="preview-footer-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="exportReport('PDF')">
+
+          <mat-icon>picture_as_pdf</mat-icon>
+          PDF
+
+        </button>
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="exportReport('Excel')">
+
+          <mat-icon>table_view</mat-icon>
+          Excel
+
+        </button>
+
+      </div>
+
+    </footer>
 
   </section>
 
