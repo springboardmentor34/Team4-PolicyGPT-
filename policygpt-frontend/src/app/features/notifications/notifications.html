@@ -211,10 +211,27 @@
 
       <div class="notification-list">
 
+        @if (isLoading) {
+          <div class="empty-state">
+            <h3>Loading notifications...</h3>
+          </div>
+        }
+
+        @if (!isLoading && errorMessage) {
+          <div class="empty-state">
+            <h3>{{ errorMessage }}</h3>
+            <button type="button" (click)="loadNotifications()">
+              Try again
+            </button>
+          </div>
+        }
+
         @for (
           notification of filteredNotifications;
           track notification.id
         ) {
+
+          @if (!isLoading && !errorMessage) {
 
           <article
             class="notification-item"
@@ -318,10 +335,12 @@
 
           </article>
 
+          }
+
         }
 
 
-        @if (filteredNotifications.length === 0) {
+        @if (!isLoading && !errorMessage && filteredNotifications.length === 0) {
 
           <div class="empty-state">
 

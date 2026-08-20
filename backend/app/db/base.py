@@ -3,6 +3,7 @@ from app.models.user import User
 from app.models.policy import Policy
 from app.models.scheme import Scheme
 from app.models.eligibility_rule import EligibilityRule
+from app.models.notification import Notification
 
 
 # Import all models here
