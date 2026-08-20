@@ -139,6 +139,10 @@ export class Navbar {
             label: 'Reports',
             route: '/reports',
           },
+          {
+            label: 'Department Analytics',
+            route: '/department-analytics',
+          },
         ];
 
       // =========================
@@ -173,6 +177,10 @@ export class Navbar {
           {
             label: 'Reports',
             route: '/reports',
+          },
+          {
+            label: 'Department Analytics',
+            route: '/department-analytics',
           },
         ];
 

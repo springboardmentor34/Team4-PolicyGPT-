@@ -1,0 +1,524 @@
+﻿<section class="analytics-page">
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+
+    <div class="header-content">
+      <span class="eyebrow">GOVERNMENT ANALYTICS</span>
+
+      <h1>Department Analytics</h1>
+
+      <p>
+        Monitor policy and scheme activity across government departments
+        using records available in the PolicyGPT platform.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="loading">
+
+      <span class="material-symbol">refresh</span>
+
+      <span>
+        {{ loading ? 'Refreshing...' : 'Refresh Data' }}
+      </span>
+
+    </button>
+
+  </header>
+
+
+  <!-- FILTERS -->
+  <section class="filter-panel">
+
+    <div class="filter-heading">
+      <div class="filter-heading-icon">
+        <span class="material-symbol">tune</span>
+      </div>
+
+      <div>
+        <h2>Analytics Filters</h2>
+        <p>Refine the department-level view.</p>
+      </div>
+    </div>
+
+
+    <div class="filter-controls">
+
+      <div class="filter-group">
+
+        <label for="department">
+          Department
+        </label>
+
+        <select
+          id="department"
+          [value]="selectedDepartment"
+          (change)="onDepartmentChange($event)">
+
+          <option
+            *ngFor="let department of departments"
+            [value]="department">
+
+            {{ department }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-group">
+
+        <label for="period">
+          Period
+        </label>
+
+        <select
+          id="period"
+          [value]="selectedPeriod"
+          (change)="onPeriodChange($event)">
+
+          <option value="All Time">All Time</option>
+          <option value="This Year">This Year</option>
+          <option value="Last Year">Last Year</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LOADING STATE -->
+  <div
+    class="state-panel"
+    *ngIf="loading">
+
+    <div class="loader"></div>
+
+    <h3>Loading department analytics</h3>
+
+    <p>
+      Fetching policy and scheme information...
+    </p>
+
+  </div>
+
+
+  <!-- ERROR STATE -->
+  <div
+    class="state-panel error-state"
+    *ngIf="!loading && error">
+
+    <div class="state-icon">
+      <span class="material-symbol">error_outline</span>
+    </div>
+
+    <h3>Unable to load analytics</h3>
+
+    <p>
+      {{ error }}
+    </p>
+
+    <button
+      type="button"
+      class="retry-button"
+      (click)="refresh()">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+  <div
+    *ngIf="!loading && !error"
+    class="dashboard-content">
+
+
+    <!-- KPI CARDS -->
+    <section class="kpi-grid">
+
+
+      <!-- POLICIES -->
+      <article class="kpi-card">
+
+        <div class="kpi-icon policy-icon">
+          <span class="material-symbol">description</span>
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Total Policies
+          </span>
+
+          <strong>
+            {{ displayedPolicies }}
+          </strong>
+
+          <small>
+            {{ displayedActivePolicies }} active records
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <!-- SCHEMES -->
+      <article class="kpi-card">
+
+        <div class="kpi-icon scheme-icon">
+          <span class="material-symbol">account_balance</span>
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Total Schemes
+          </span>
+
+          <strong>
+            {{ displayedSchemes }}
+          </strong>
+
+          <small>
+            {{ displayedActiveSchemes }} active schemes
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <!-- DEPARTMENTS -->
+      <article class="kpi-card">
+
+        <div class="kpi-icon department-icon">
+          <span class="material-symbol">domain</span>
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Departments
+          </span>
+
+          <strong>
+            {{ displayedDepartments }}
+          </strong>
+
+          <small>
+            Departments represented
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <!-- TOTAL ACTIVITY -->
+      <article class="kpi-card">
+
+        <div class="kpi-icon activity-icon">
+          <span class="material-symbol">analytics</span>
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Total Activity
+          </span>
+
+          <strong>
+            {{ totalActivity }}
+          </strong>
+
+          <small>
+            Policies + schemes
+          </small>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- DEPARTMENT OVERVIEW -->
+    <section class="analytics-section">
+
+      <div class="section-header">
+
+        <div>
+          <span class="section-eyebrow">
+            DEPARTMENT OVERVIEW
+          </span>
+
+          <h2>Department Activity</h2>
+
+          <p>
+            Policy and scheme activity grouped by department.
+          </p>
+        </div>
+
+        <div class="department-count">
+          {{ filteredRows.length }}
+          {{ filteredRows.length === 1 ? 'department' : 'departments' }}
+        </div>
+
+      </div>
+
+
+      <!-- EMPTY STATE -->
+      <div
+        class="empty-state"
+        *ngIf="filteredRows.length === 0">
+
+        <div class="empty-icon">
+          <span class="material-symbol">domain_disabled</span>
+        </div>
+
+        <h3>No department data available</h3>
+
+        <p>
+          Department information will appear here when policies or schemes
+          are assigned to departments.
+        </p>
+
+      </div>
+
+
+      <!-- TABLE -->
+      <div
+        class="table-container"
+        *ngIf="filteredRows.length > 0">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Department</th>
+
+              <th>Policies</th>
+
+              <th>Active Policies</th>
+
+              <th>Schemes</th>
+
+              <th>Active Schemes</th>
+
+              <th>Total Activity</th>
+
+              <th>Distribution</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="let row of filteredRows">
+
+              <td>
+
+                <div class="department-name">
+
+                  <span class="department-marker"></span>
+
+                  <span>
+                    {{ row.department }}
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <td>
+                <span class="number-value">
+                  {{ row.policies }}
+                </span>
+              </td>
+
+
+              <td>
+                <span
+                  class="status-number"
+                  [class.zero]="row.activePolicies === 0">
+
+                  {{ row.activePolicies }}
+
+                </span>
+              </td>
+
+
+              <td>
+                <span class="number-value">
+                  {{ row.schemes }}
+                </span>
+              </td>
+
+
+              <td>
+                <span
+                  class="status-number"
+                  [class.zero]="row.activeSchemes === 0">
+
+                  {{ row.activeSchemes }}
+
+                </span>
+              </td>
+
+
+              <td>
+                <span class="activity-value">
+                  {{ row.total }}
+                </span>
+              </td>
+
+
+              <td class="distribution-cell">
+
+                <div class="distribution-wrapper">
+
+                  <div class="bar-wrapper">
+
+                    <div
+                      class="bar"
+                      [style.width.%]="
+                        maxDepartmentActivity > 0
+                          ? (row.total / maxDepartmentActivity) * 100
+                          : 0
+                      ">
+                    </div>
+
+                  </div>
+
+                  <span class="distribution-value">
+                    {{ row.total }}
+                  </span>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- COVERAGE SUMMARY -->
+    <section class="coverage-grid">
+
+      <article class="coverage-card">
+
+        <div class="coverage-icon">
+          <span class="material-symbol">description</span>
+        </div>
+
+        <div>
+          <span>POLICY COVERAGE</span>
+
+          <strong>
+            {{ displayedPolicies }}
+          </strong>
+
+          <p>
+            Policy records represented in the selected department and period.
+          </p>
+        </div>
+
+      </article>
+
+
+      <article class="coverage-card">
+
+        <div class="coverage-icon">
+          <span class="material-symbol">account_balance</span>
+        </div>
+
+        <div>
+          <span>SCHEME COVERAGE</span>
+
+          <strong>
+            {{ displayedSchemes }}
+          </strong>
+
+          <p>
+            Government scheme records represented in the selected view.
+          </p>
+        </div>
+
+      </article>
+
+
+      <article class="coverage-card">
+
+        <div class="coverage-icon">
+          <span class="material-symbol">verified</span>
+        </div>
+
+        <div>
+          <span>ACTIVE RECORDS</span>
+
+          <strong>
+            {{ displayedActivePolicies + displayedActiveSchemes }}
+          </strong>
+
+          <p>
+            Policies and schemes currently considered active.
+          </p>
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- DATA SOURCE -->
+    <section class="data-note">
+
+      <div class="note-icon">
+        <span class="material-symbol">info</span>
+      </div>
+
+      <div>
+
+        <strong>
+          Analytics data source
+        </strong>
+
+        <p>
+          Department analytics are calculated from policy and scheme records
+          available through the PolicyGPT APIs. No synthetic analytics data
+          is displayed.
+        </p>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</section>
