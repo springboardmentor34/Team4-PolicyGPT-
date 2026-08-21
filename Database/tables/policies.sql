@@ -21,3 +21,5 @@ CREATE TABLE policies (
 
 CREATE INDEX idx_policies_uploaded_by ON policies(uploaded_by);
 CREATE INDEX idx_policies_approved_by ON policies(approved_by);
+CREATE INDEX idx_policies_department  ON policies(department);
+CREATE INDEX idx_policies_created_at  ON policies(created_at DESC);
