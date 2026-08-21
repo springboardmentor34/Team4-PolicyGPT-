@@ -360,6 +360,13 @@ textarea:focus {
   color: #168354;
 }
 
+.status-select {
+  width: auto;
+  min-width: 125px;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
 
 /* RESPONSIVE */
 
