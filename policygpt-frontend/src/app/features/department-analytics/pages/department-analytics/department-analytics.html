@@ -426,7 +426,144 @@
       </div>
 
     </section>
+        <!-- DEPARTMENT TREND COMPARISON -->
+    <section class="trend-section">
 
+      <div class="section-header">
+
+        <div>
+          <span class="section-eyebrow">
+            DEPARTMENT COMPARISON
+          </span>
+
+          <h2>Department Trend Comparison</h2>
+
+          <p>
+            Compare policy and scheme activity across departments
+            for the selected period.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div
+        class="trend-empty"
+        *ngIf="departmentComparisonRows.length === 0">
+
+        <span class="material-symbol">
+          analytics
+        </span>
+
+        <p>
+          No department activity is available for comparison.
+        </p>
+
+      </div>
+
+
+      <div
+        class="trend-list"
+        *ngIf="departmentComparisonRows.length > 0">
+
+        <article
+          class="trend-row"
+          *ngFor="let row of departmentComparisonRows">
+
+          <div class="trend-department">
+
+            <span class="department-marker"></span>
+
+            <div>
+              <strong>
+                {{ row.department }}
+              </strong>
+
+              <small>
+                {{ row.total }} total activity
+              </small>
+            </div>
+
+          </div>
+
+
+          <div class="trend-metrics">
+
+            <!-- POLICY TREND -->
+            <div class="trend-metric">
+
+              <div class="trend-label">
+
+                <span>Policies</span>
+
+                <strong>
+                  {{ row.policies }}
+                </strong>
+
+              </div>
+
+              <div class="trend-bar-wrapper">
+
+                <div
+                  class="trend-bar policy-trend"
+                  [style.width.%]="
+                    maxDepartmentPolicies > 0
+                      ? (row.policies / maxDepartmentPolicies) * 100
+                      : 0
+                  ">
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- SCHEME TREND -->
+            <div class="trend-metric">
+
+              <div class="trend-label">
+
+                <span>Schemes</span>
+
+                <strong>
+                  {{ row.schemes }}
+                </strong>
+
+              </div>
+
+              <div class="trend-bar-wrapper">
+
+                <div
+                  class="trend-bar scheme-trend"
+                  [style.width.%]="
+                    maxDepartmentSchemes > 0
+                      ? (row.schemes / maxDepartmentSchemes) * 100
+                      : 0
+                  ">
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="trend-total">
+
+            <span>Activity</span>
+
+            <strong>
+              {{ row.total }}
+            </strong>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
 
     <!-- COVERAGE SUMMARY -->
     <section class="coverage-grid">
@@ -494,7 +631,7 @@
       </article>
 
     </section>
-
+    
 
     <!-- DATA SOURCE -->
     <section class="data-note">

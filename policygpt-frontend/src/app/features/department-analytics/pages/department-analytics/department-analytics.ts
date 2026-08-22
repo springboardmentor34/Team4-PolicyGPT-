@@ -697,6 +697,43 @@ export class DepartmentAnalytics implements OnInit {
 
     this.cdr.detectChanges();
   }
+    /*
+   * ============================
+   * DEPARTMENT TREND COMPARISON
+   * ============================
+   */
+
+  get departmentComparisonRows(): DepartmentAnalyticsRow[] {
+    return [...this.filteredRows].sort(
+      (a, b) => b.total - a.total
+    );
+  }
+
+  get maxDepartmentPolicies(): number {
+    if (!this.departmentComparisonRows.length) {
+      return 1;
+    }
+
+    return Math.max(
+      ...this.departmentComparisonRows.map(
+        (row) => row.policies
+      ),
+      1
+    );
+  }
+
+  get maxDepartmentSchemes(): number {
+    if (!this.departmentComparisonRows.length) {
+      return 1;
+    }
+
+    return Math.max(
+      ...this.departmentComparisonRows.map(
+        (row) => row.schemes
+      ),
+      1
+    );
+  }
 
   /*
    * ============================
