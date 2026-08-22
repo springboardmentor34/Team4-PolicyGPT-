@@ -5,7 +5,6 @@ import { authGuard } from '../../core/guards/auth-guard';
 export const FEEDBACK_ROUTES: Routes = [
   {
     path: 'feedback',
-    component: Feedback,
-    canActivate: [authGuard]
+    component: Feedback
   }
 ];

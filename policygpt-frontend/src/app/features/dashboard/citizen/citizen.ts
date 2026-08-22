@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { Auth } from '../../../core/services/auth';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,11 +26,16 @@ import { MatInputModule } from '@angular/material/input';
 export class Citizen {
 
   private router = inject(Router);
+  private auth = inject(Auth);
 
-  userName = 'Akshat';
+  userName = '';
 
   searchQuery = '';
 
+  constructor() {
+    this.userName =
+      this.auth.getFirstNameFromToken() ?? 'Citizen';
+  }
   quickActions = [
     {
       title: 'Browse Policies',

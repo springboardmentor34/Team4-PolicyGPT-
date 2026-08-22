@@ -73,30 +73,33 @@ export class Login {
 
   console.log('Logged-in role:', role);
 
-  switch (role) {
-    case 'admin':
-    case 'administrator':
-      this.router.navigate(['/admin']);
-      break;
+  switch (role?.toLowerCase().trim()) {
 
-    case 'officer':
-    case 'government_official':
-      this.router.navigate(['/official']);
-      break;
+  case 'admin':
+  case 'administrator':
+    this.router.navigate(['/admin']);
+    break;
 
-    case 'citizen':
-      this.router.navigate(['/citizen']);
-      break;
+  case 'official':
+  case 'officer':
+  case 'government_official':
+  case 'government official':
+    this.router.navigate(['/official']);
+    break;
 
-    case 'researcher':
-      this.router.navigate(['/researcher']);
-      break;
+  case 'citizen':
+    this.router.navigate(['/citizen']);
+    break;
 
-    default:
-      console.error('Unknown user role:', role);
-      this.errorMessage = 'Unable to determine your user role.';
-      break;
-  }
+  case 'researcher':
+    this.router.navigate(['/researcher']);
+    break;
+
+  default:
+    this.errorMessage = 'Unable to determine your user role.';
+    this.router.navigate(['/']);
+    break;
+}
 },
       error: (error) => {
         this.isLoading = false;
