@@ -19,6 +19,7 @@
   <div class="quick-actions">
 
     <button
+      [hidden]="isStaff"
       [class.active]="activeSection === 'feedback'"
       (click)="setSection('feedback')">
 
@@ -33,6 +34,7 @@
 
 
     <button
+      [hidden]="isStaff"
       [class.active]="activeSection === 'issue'"
       (click)="setSection('issue')">
 
@@ -47,6 +49,7 @@
 
 
     <button
+      [hidden]="isStaff"
       [class.active]="activeSection === 'help'"
       (click)="setSection('help')">
 
@@ -61,6 +64,7 @@
 
 
     <button
+      [hidden]="isStaff"
       [class.active]="activeSection === 'faq'"
       (click)="setSection('faq')">
 
@@ -89,6 +93,7 @@
 
 
     <button
+      [hidden]="isStaff"
       [class.active]="activeSection === 'contact'"
       (click)="setSection('contact')">
 
@@ -115,7 +120,7 @@
 
   <!-- FEEDBACK -->
 
-  @if (activeSection === 'feedback') {
+  @if (!isStaff && activeSection === 'feedback') {
 
     <div class="card">
 
@@ -198,7 +203,7 @@
 
   <!-- ISSUE REPORTING -->
 
-  @if (activeSection === 'issue') {
+  @if (!isStaff && activeSection === 'issue') {
 
     <div class="card">
 
@@ -271,7 +276,7 @@
 
   <!-- HELP DESK -->
 
-  @if (activeSection === 'help') {
+  @if (!isStaff && activeSection === 'help') {
 
     <div class="card">
 
@@ -322,7 +327,7 @@
 
   <!-- FAQ -->
 
-  @if (activeSection === 'faq') {
+  @if (!isStaff && activeSection === 'faq') {
 
     <div class="card">
 
@@ -393,14 +398,14 @@
 
       <div class="tickets">
 
-        @for (ticket of tickets; track ticket.id) {
+        @for (ticket of tickets; track ticket.feedback_id) {
 
           <div class="ticket">
 
             <div>
 
               <span class="ticket-id">
-                {{ ticket.id }}
+                {{ ticket.feedback_id }}
               </span>
 
               <h3>
@@ -408,21 +413,33 @@
               </h3>
 
               <small>
-                {{ ticket.category }} · {{ ticket.date }}
+                {{ ticket.category }} · {{ ticket.created_at | date:'dd MMM yyyy' }}
               </small>
 
             </div>
 
 
+            @if (!isStaff) {
             <span
               class="status"
-              [class.open]="ticket.status === 'Open'"
-              [class.progress]="ticket.status === 'In Progress'"
-              [class.resolved]="ticket.status === 'Resolved'">
+              [class.open]="ticket.status === 'open'"
+              [class.progress]="ticket.status === 'in_progress'"
+              [class.resolved]="ticket.status === 'resolved'">
 
-              {{ ticket.status }}
+              {{ formatStatus(ticket.status) }}
 
             </span>
+            } @else {
+            <select
+              class="status-select"
+              [ngModel]="ticket.status"
+              (ngModelChange)="updateStatus(ticket, $event)">
+              <option value="open">Open</option>
+              <option value="in_progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+              <option value="closed">Closed</option>
+            </select>
+            }
 
           </div>
 
@@ -437,7 +454,7 @@
 
   <!-- CONTACT SUPPORT -->
 
-  @if (activeSection === 'contact') {
+  @if (!isStaff && activeSection === 'contact') {
 
     <div class="card">
 

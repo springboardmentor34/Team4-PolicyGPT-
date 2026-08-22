@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import {
+  Notification as ApiNotification,
+  NotificationService,
+} from '../../core/services/notification.service';
 
 interface NotificationItem {
-  id: number;
+  id: string;
   title: string;
   message: string;
   type: 'Policy' | 'Scheme' | 'Deadline' | 'Application';
@@ -19,6 +23,7 @@ interface NotificationItem {
   styleUrl: './notifications.css'
 })
 export class Notifications {
+  private readonly notificationService = inject(NotificationService);
 
   activeFilter = 'All';
 
@@ -26,81 +31,71 @@ export class Notifications {
   smsEnabled = false;
   inAppEnabled = true;
 
-  notifications: NotificationItem[] = [
+  notifications: NotificationItem[] = [];
 
-    {
-      id: 1,
-      title: 'New Policy Alert',
-      message:
-        'A new government policy related to public welfare has been published.',
-      type: 'Policy',
-      date: '16 Aug 2026',
-      time: '09:45 AM',
-      read: false,
-      priority: 'High'
-    },
+  isLoading = true;
+  errorMessage = '';
 
-    {
-      id: 2,
-      title: 'Scheme Updated',
-      message:
-        'Eligibility criteria and benefits for PM Scholarship Scheme have been updated.',
-      type: 'Scheme',
-      date: '16 Aug 2026',
-      time: '08:30 AM',
-      read: false,
-      priority: 'Medium'
-    },
+  ngOnInit(): void {
+    this.loadNotifications();
+  }
 
-    {
-      id: 3,
-      title: 'Deadline Reminder',
-      message:
-        'The application deadline for the Student Support Scheme is approaching.',
-      type: 'Deadline',
-      date: '15 Aug 2026',
-      time: '06:15 PM',
-      read: false,
-      priority: 'High'
-    },
+  loadNotifications(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
 
-    {
-      id: 4,
-      title: 'Application Status Updated',
-      message:
-        'Your application has moved to the verification stage.',
-      type: 'Application',
-      date: '15 Aug 2026',
-      time: '02:20 PM',
-      read: true,
-      priority: 'Medium'
-    },
+    this.notificationService.getNotifications().subscribe({
+      next: response => {
+        this.notifications = response.items.map(notification =>
+          this.toNotificationItem(notification),
+        );
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Unable to load notifications.';
+        this.isLoading = false;
+      },
+    });
+  }
 
-    {
-      id: 5,
-      title: 'New Policy Available',
-      message:
-        'A new education policy is now available in the PolicyGPT database.',
-      type: 'Policy',
-      date: '14 Aug 2026',
-      time: '11:10 AM',
-      read: true,
-      priority: 'Low'
-    },
+  private toNotificationItem(notification: ApiNotification): NotificationItem {
+    const createdAt = new Date(notification.created_at);
 
-    {
-      id: 6,
-      title: 'Scheme Update Notification',
-      message:
-        'New benefits have been added to an eligible government scheme.',
-      type: 'Scheme',
-      date: '13 Aug 2026',
-      time: '04:45 PM',
-      read: true,
-      priority: 'Low'
+    return {
+      id: notification.notification_id,
+      title: notification.title,
+      message: notification.title,
+      type: this.mapType(notification.type),
+      date: createdAt.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+      time: createdAt.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      read: notification.is_read,
+      priority: notification.type === 'alert' || notification.type === 'reminder'
+        ? 'High'
+        : notification.type === 'approval'
+          ? 'Medium'
+          : 'Low',
+    };
+  }
+
+  private mapType(type: ApiNotification['type']): NotificationItem['type'] {
+    switch (type) {
+      case 'alert':
+        return 'Policy';
+      case 'reminder':
+        return 'Deadline';
+      case 'approval':
+        return 'Application';
+      default:
+        return 'Scheme';
     }
-
-  ];
+  }
 
   get filteredNotifications(): NotificationItem[] {
 
@@ -130,22 +125,28 @@ export class Notifications {
   }
 
   markAsRead(notification: NotificationItem): void {
-    notification.read = true;
+    this.notificationService.markAsRead(notification.id).subscribe({
+      next: () => notification.read = true,
+      error: () => this.errorMessage = 'Unable to mark notification as read.',
+    });
   }
 
   markAllAsRead(): void {
 
-    this.notifications.forEach(notification => {
-      notification.read = true;
-    });
+    this.notifications
+      .filter(notification => !notification.read)
+      .forEach(notification => this.markAsRead(notification));
   }
 
-  deleteNotification(id: number): void {
-
-    this.notifications =
-      this.notifications.filter(
-        notification => notification.id !== id
-      );
+  deleteNotification(id: string): void {
+    this.notificationService.deleteNotification(id).subscribe({
+      next: () => {
+        this.notifications = this.notifications.filter(
+          notification => notification.id !== id,
+        );
+      },
+      error: () => this.errorMessage = 'Unable to delete notification.',
+    });
   }
 
   toggleEmail(): void {
