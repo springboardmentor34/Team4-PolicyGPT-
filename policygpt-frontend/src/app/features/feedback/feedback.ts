@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface Ticket {
-  id: string;
-  subject: string;
-  category: string;
-  status: 'Open' | 'In Progress' | 'Resolved';
-  date: string;
-}
+import {
+  Feedback as FeedbackRecord,
+  FeedbackCategory,
+  FeedbackService,
+  FeedbackStatus,
+} from '../../core/services/feedback.service';
+import { Auth } from '../../core/services/auth';
 
 interface Faq {
   question: string;
@@ -18,11 +18,14 @@ interface Faq {
 @Component({
   selector: 'app-feedback',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: './feedback.html',
   styleUrl: './feedback.css'
 })
-export class Feedback {
+export class Feedback implements OnInit {
+
+  private readonly feedbackService = inject(FeedbackService);
+  private readonly auth = inject(Auth);
 
   activeSection = 'feedback';
 
@@ -66,22 +69,20 @@ export class Feedback {
     }
   ];
 
-  tickets: Ticket[] = [
-    {
-      id: 'PG-1001',
-      subject: 'Eligibility result needs clarification',
-      category: 'Eligibility',
-      status: 'In Progress',
-      date: '16 Aug 2026'
-    },
-    {
-      id: 'PG-1002',
-      subject: 'Unable to open policy details',
-      category: 'Technical Issue',
-      status: 'Open',
-      date: '15 Aug 2026'
+  tickets: FeedbackRecord[] = [];
+
+  get isStaff(): boolean {
+    const role = this.auth.getRoleFromToken();
+    return role === 'administrator' || role === 'government_official' ||
+      role === 'admin' || role === 'official';
+  }
+
+  ngOnInit(): void {
+    if (this.isStaff) {
+      this.activeSection = 'queries';
     }
-  ];
+    this.loadFeedback();
+  }
 
   setSection(section: string): void {
     this.activeSection = section;
@@ -92,8 +93,52 @@ export class Feedback {
     this.rating = value;
   }
 
+  loadFeedback(): void {
+    const request = this.isStaff
+      ? this.feedbackService.getFeedbackForStaff()
+      : this.feedbackService.getMyFeedback();
+
+    request.subscribe({
+      next: (feedback) => (this.tickets = feedback),
+      error: () => (this.successMessage = 'Unable to load your submitted feedback.')
+    });
+  }
+
+  updateStatus(ticket: FeedbackRecord, nextStatus: string): void {
+    const status = nextStatus as FeedbackStatus;
+    this.feedbackService.updateStatus(ticket.feedback_id, status).subscribe({
+      next: (updated) => {
+        ticket.status = updated.status;
+        ticket.resolved_by = updated.resolved_by;
+        ticket.resolved_at = updated.resolved_at;
+        this.successMessage = 'Feedback status updated successfully.';
+      },
+      error: () => (this.successMessage = 'Unable to update feedback status.')
+    });
+  }
+
+  private submit(subject: string, category: FeedbackCategory): void {
+    if (!subject.trim()) {
+      this.successMessage = 'Please enter the required details.';
+      return;
+    }
+
+    this.feedbackService.createFeedback({ subject: subject.trim().slice(0, 255), category }).subscribe({
+      next: (feedback) => {
+        this.tickets = [feedback, ...this.tickets];
+        this.successMessage = `Submitted successfully. Tracking ID: ${feedback.feedback_id}`;
+        this.activeSection = 'queries';
+      },
+      error: () => (this.successMessage = 'Unable to submit your request. Please try again.')
+    });
+  }
+
   toggleFaq(faq: Faq): void {
     faq.open = !faq.open;
+  }
+
+  formatStatus(status: FeedbackRecord['status']): string {
+    return status.replace('_', ' ');
   }
 
   submitFeedback(): void {
@@ -104,9 +149,7 @@ export class Feedback {
       return;
     }
 
-    this.successMessage =
-      'Thank you! Your feedback has been submitted successfully.';
-
+    this.submit(this.feedbackText, this.feedbackType === 'Website Experience' ? 'bug' : 'suggestion');
     this.feedbackText = '';
     this.rating = 0;
   }
@@ -122,21 +165,11 @@ export class Feedback {
       return;
     }
 
-    const ticket: Ticket = {
-      id: `PG-${1000 + this.tickets.length + 1}`,
-      subject: this.issueSubject,
-      category: this.issueCategory,
-      status: 'Open',
-      date: '16 Aug 2026'
-    };
-
-    this.tickets.unshift(ticket);
-
+    const category: FeedbackCategory = this.issueCategory === 'Technical Issue' ? 'bug' :
+      this.issueCategory === 'Account & Access' ? 'complaint' : 'query';
+    this.submit(`${this.issueSubject}: ${this.issueDescription}`, category);
     this.issueSubject = '';
     this.issueDescription = '';
-
-    this.successMessage =
-      `Issue reported successfully. Ticket ID: ${ticket.id}`;
   }
 
   submitSupport(): void {
@@ -150,28 +183,8 @@ export class Feedback {
       return;
     }
 
-    const ticket: Ticket = {
-      id: `PG-${1000 + this.tickets.length + 1}`,
-      subject: this.supportSubject,
-      category: 'Help Desk',
-      status: 'Open',
-      date: '16 Aug 2026'
-    };
-
-    this.tickets.unshift(ticket);
-
+    this.submit(this.supportSubject + ': ' + this.supportMessage, 'query');
     this.supportSubject = '';
     this.supportMessage = '';
-
-    this.successMessage =
-      `Support request submitted. Ticket ID: ${ticket.id}`;
-  }
-
-  updateTicket(
-    ticket: Ticket,
-    status: Ticket['status']
-  ): void {
-
-    ticket.status = status;
   }
 }

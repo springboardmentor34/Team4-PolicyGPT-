@@ -8,6 +8,9 @@ from app.api.auth import router as auth_router
 from app.api.policy import router as policy_router
 from app.api.scheme import router as scheme_router
 from app.api.eligibility_rule import router as eligibility_router
+from app.api.admin import router as admin_router
+from app.api.notification import router as notification_router
+from app.api.v1.endpoints.feedback import router as feedback_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -33,6 +36,9 @@ app.include_router(auth_router)
 app.include_router(policy_router)
 app.include_router(scheme_router)
 app.include_router(eligibility_router)
+app.include_router(admin_router)
+app.include_router(notification_router)
+app.include_router(feedback_router)
 
 @app.get("/")
 def root():

@@ -19,3 +19,5 @@ CREATE TABLE schemes (
 );
 
 CREATE INDEX idx_schemes_created_by ON schemes(created_by);
+CREATE INDEX idx_schemes_department ON schemes(department);
+CREATE INDEX idx_schemes_created_at ON schemes(created_at DESC);
