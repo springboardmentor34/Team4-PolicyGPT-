@@ -4,26 +4,23 @@ import { Admin } from './admin/admin';
 import { Citizen } from './citizen/citizen';
 import { Official } from './official/official';
 import { Researcher } from './researcher/researcher';
-import { Guest } from './guest/guest';
+
 import { authGuard } from '../../core/guards/auth-guard';
 
 import { roleGuard } from '../../core/guards/role-guard';
 
 export const DASHBOARD_ROUTES: Routes = [
-{
-  path: '/',
-  component: Guest,
-},
+
   // =========================
   // ADMIN
   // =========================
   {
   path: 'admin',
   component: Admin,
-  // canActivate: [
-  //   authGuard,
-  //   roleGuard(['admin']),
-  // ],
+  canActivate: [
+    authGuard,
+    roleGuard(['admin']),
+  ],
 },
 
   // =========================
@@ -32,10 +29,10 @@ export const DASHBOARD_ROUTES: Routes = [
   {
   path: 'citizen',
   component: Citizen,
-  // canActivate: [
-  //   authGuard,
-  //   roleGuard(['citizen']),
-  // ],
+  canActivate: [
+    authGuard,
+    roleGuard(['citizen']),
+  ],
 },
 
 
@@ -45,10 +42,10 @@ export const DASHBOARD_ROUTES: Routes = [
  {
   path: 'researcher',
   component: Researcher,
-  // canActivate: [
-  //   authGuard,
-  //   roleGuard(['researcher']),
-  // ],
+  canActivate: [
+    authGuard,
+    roleGuard(['researcher']),
+  ],
 },
 
   // =========================
@@ -57,9 +54,9 @@ export const DASHBOARD_ROUTES: Routes = [
   {
   path: 'official',
   component: Official,
-  // canActivate: [
-  //   authGuard,
-  //   roleGuard(['official']),
-  // ],
+  canActivate: [
+    authGuard,
+    roleGuard(['official']),
+  ],
 },
 ];
