@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './features/layout/main-layout/main-layout';
 import { Unauthorized } from './features/auth/unauthorized/unauthorized';
-
 export const routes: Routes = [
   // Authentication routes - NO NAVBAR
   {
@@ -18,12 +17,10 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
       },
-
       {
         path: '',
         loadChildren: () => import('./features/policy/policy.routes').then((m) => m.POLICY_ROUTES),
       },
-
       {
         path: '',
         loadChildren: () =>
@@ -45,9 +42,29 @@ export const routes: Routes = [
             (m) => m.NOTIFICATION_ROUTES,
           ),
       },
+      {
+        path: '',
+      loadChildren: () =>
+        import('./features/reports/reports.routes').then(
+          (m) => m.REPORTS_ROUTES,
+        ),
+      },
+        {
+  path: 'department-analytics',
+  loadChildren: () =>
+    import('./features/department-analytics/department-analytics.routes').then(
+      (m) => m.DEPARTMENT_ANALYTICS_ROUTES,
+    ),
+},
+{
+  path: 'usage-statistics',
+  loadChildren: () =>
+    import('./features/usage-statistics/usage-statistics.routes').then(
+      (m) => m.USAGE_STATISTICS_ROUTES,
+    ),
+},
     ],
   },
-
   {
     path: 'unauthorized',
     component: Unauthorized,

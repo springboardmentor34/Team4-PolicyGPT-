@@ -135,6 +135,18 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
+          {
+            label: 'Department Analytics',
+            route: '/department-analytics',
+          },
+          {
+  label: 'Usage Statistics',
+  route: '/usage-statistics',
+},
         ];
 
       // =========================
@@ -166,6 +178,18 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
+          {
+            label: 'Department Analytics',
+            route: '/department-analytics',
+          },
+          {
+  label: 'Usage Statistics',
+  route: '/usage-statistics',
+},
         ];
 
       // =========================
@@ -193,6 +217,18 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
+          {
+            label: 'Department Analytics',
+            route: '/department-analytics',
+          },
+          {
+  label: 'Usage Statistics',
+  route: '/usage-statistics',
+},
         ];
 
       // =========================
@@ -224,6 +260,15 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
+          {
+  label: 'Usage Statistics',
+  route: '/usage-statistics',
+},
+          
         ];
 
       // =========================
@@ -251,6 +296,14 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
+          {
+            label: 'Reports',
+            route: '/reports',
+          },
+          {
+  label: 'Usage Statistics',
+  route: '/usage-statistics',
+},
         ];
 
       // =========================
