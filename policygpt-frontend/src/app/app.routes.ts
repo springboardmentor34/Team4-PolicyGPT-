@@ -56,6 +56,13 @@ export const routes: Routes = [
       (m) => m.DEPARTMENT_ANALYTICS_ROUTES,
     ),
 },
+{
+  path: 'usage-statistics',
+  loadChildren: () =>
+    import('./features/usage-statistics/usage-statistics.routes').then(
+      (m) => m.USAGE_STATISTICS_ROUTES,
+    ),
+},
     ],
   },
   {

@@ -1,9 +1,12 @@
 <div class="reports-page">
 
-  <!-- Page Header -->
+  <!-- ============================================================
+       PAGE HEADER
+       ============================================================ -->
   <section class="reports-header">
 
     <div class="header-content">
+
       <span class="eyebrow">REPORTING & INSIGHTS</span>
 
       <h1>Reports</h1>
@@ -12,29 +15,70 @@
         Generate, preview and export policy, scheme, department and
         platform activity reports.
       </p>
+
     </div>
 
     <div class="header-meta">
+
       <mat-icon>calendar_today</mat-icon>
 
       <div>
         <span>Reporting period</span>
         <strong>August 2026</strong>
       </div>
+
     </div>
 
   </section>
 
 
-  <!-- Report Type Selection -->
-  <section class="report-section">
+  <!-- ============================================================
+       GUEST / NO ACCESS
+       ============================================================ -->
+  <section
+    class="report-section"
+    *ngIf="isGuest() || availableReportTypes.length === 0">
+
+    <div class="empty-selection">
+
+      <div class="empty-icon">
+        <mat-icon>lock</mat-icon>
+      </div>
+
+      <div>
+        <h3>Reports are not available</h3>
+
+        <p>
+          You do not have permission to access reports.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ============================================================
+       REPORT TYPE SELECTION
+       ============================================================ -->
+  <section
+    class="report-section"
+    *ngIf="!isGuest() && availableReportTypes.length > 0">
 
     <div class="section-heading">
+
       <div>
+
         <span class="section-label">REPORT TYPES</span>
+
         <h2>Choose a report</h2>
-        <p>Select the type of report you want to generate.</p>
+
+        <p>
+          Select the type of report you want to access.
+        </p>
+
       </div>
+
     </div>
 
 
@@ -52,26 +96,42 @@
         <div class="report-type-top">
 
           <div class="report-type-icon">
-            <mat-icon>{{ report.icon }}</mat-icon>
+
+            <mat-icon>
+              {{ report.icon }}
+            </mat-icon>
+
           </div>
 
           <mat-icon
             class="selection-icon"
             *ngIf="selectedReportType === report.id">
+
             check_circle
+
           </mat-icon>
 
         </div>
 
-        <h3>{{ report.title }}</h3>
+
+        <h3>
+          {{ report.title }}
+        </h3>
+
 
         <p>
           {{ report.description }}
         </p>
 
+
         <span class="report-action">
+
           Select report
-          <mat-icon>arrow_forward</mat-icon>
+
+          <mat-icon>
+            arrow_forward
+          </mat-icon>
+
         </span>
 
       </article>
@@ -81,20 +141,38 @@
   </section>
 
 
-  <!-- Report Generation Workspace -->
-  <section class="generation-section">
+  <!-- ============================================================
+       REPORT WORKSPACE
+       ============================================================ -->
+  <section
+    class="generation-section"
+    *ngIf="!isGuest() && availableReportTypes.length > 0">
 
     <div class="generation-panel">
 
       <div class="panel-heading">
 
         <div>
-          <span class="section-label">REPORT WORKSPACE</span>
-          <h2>Generate report</h2>
-          <p>
+
+          <span class="section-label">
+            REPORT WORKSPACE
+          </span>
+
+          <h2>
+            {{ isReadOnly() ? 'View report' : 'Generate report' }}
+          </h2>
+
+          <p *ngIf="!isReadOnly()">
             Configure your selected report and choose an action.
           </p>
+
+          <p *ngIf="isReadOnly()">
+            Review publicly available reports. Researcher access is
+            read-only.
+          </p>
+
         </div>
+
 
         <div
           class="workspace-status"
@@ -102,25 +180,38 @@
 
           <span class="status-dot"></span>
 
-          {{ selectedReport ? 'Report selected' : 'Select a report' }}
+          {{
+            selectedReport
+              ? 'Report selected'
+              : 'Select a report'
+          }}
 
         </div>
 
       </div>
 
 
-      <!-- Selected Report -->
+      <!-- ========================================================
+           SELECTED REPORT
+           ======================================================== -->
       <div
         class="selected-report"
         *ngIf="selectedReport; else noReportSelected">
 
         <div class="selected-report-icon">
-          <mat-icon>{{ selectedReport.icon }}</mat-icon>
+
+          <mat-icon>
+            {{ selectedReport.icon }}
+          </mat-icon>
+
         </div>
+
 
         <div class="selected-report-info">
 
-          <span>Selected report</span>
+          <span>
+            Selected report
+          </span>
 
           <h3>
             {{ selectedReport.title }}
@@ -135,20 +226,32 @@
       </div>
 
 
-      <!-- Empty Selection State -->
+      <!-- ========================================================
+           EMPTY SELECTION
+           ======================================================== -->
       <ng-template #noReportSelected>
 
         <div class="empty-selection">
 
           <div class="empty-icon">
-            <mat-icon>insert_chart_outlined</mat-icon>
+
+            <mat-icon>
+              insert_chart_outlined
+            </mat-icon>
+
           </div>
 
+
           <div>
-            <h3>No report selected</h3>
+
+            <h3>
+              No report selected
+            </h3>
+
             <p>
               Choose one of the report types above to begin.
             </p>
+
           </div>
 
         </div>
@@ -156,57 +259,94 @@
       </ng-template>
 
 
-      <!-- Actions -->
-      <div class="report-actions">
+      <!-- ========================================================
+           ACTIONS
+           
+           ADMIN / OFFICIAL / CITIZEN / ORGANIZATION
+           - Generate
+           - Preview
+           - PDF
+           - Excel
 
+           RESEARCHER
+           - Preview only
+           - No Generate
+           - No Export
+           ======================================================== -->
+      <div
+        class="report-actions"
+        *ngIf="selectedReport">
+
+
+        <!-- Generate -->
         <button
+          *ngIf="canGenerateReports()"
           type="button"
           class="primary-button"
           [disabled]="!selectedReportType || isGenerating"
           (click)="generateReport()">
 
           <mat-icon>
-            {{ isGenerating ? 'hourglass_top' : 'auto_graph' }}
+            {{
+              isGenerating
+                ? 'hourglass_top'
+                : 'auto_graph'
+            }}
           </mat-icon>
 
-          {{ isGenerating ? 'Generating...' : 'Generate Report' }}
+          {{
+            isGenerating
+              ? 'Generating...'
+              : 'Generate Report'
+          }}
 
         </button>
 
 
+        <!-- Preview -->
         <button
           type="button"
           class="secondary-button"
           [disabled]="!selectedReportType || isGenerating"
           (click)="previewReport()">
 
-          <mat-icon>visibility</mat-icon>
+          <mat-icon>
+            visibility
+          </mat-icon>
 
           Preview
 
         </button>
 
 
+        <!-- PDF -->
         <button
+          *ngIf="canExportReports()"
           type="button"
           class="secondary-button"
           [disabled]="!selectedReportType || isGenerating"
           (click)="exportReport('PDF')">
 
-          <mat-icon>picture_as_pdf</mat-icon>
+          <mat-icon>
+            picture_as_pdf
+          </mat-icon>
 
           PDF
 
         </button>
 
 
+        <!-- Excel -->
         <button
+          *ngIf="canExportReports()"
           type="button"
           class="secondary-button"
           [disabled]="!selectedReportType || isGenerating"
           (click)="exportReport('Excel')">
 
-          <mat-icon>table_view</mat-icon>
+          <mat-icon>
+            table_view
+          </mat-icon>
 
           Excel
 
@@ -219,17 +359,33 @@
   </section>
 
 
-  <!-- Recent Reports -->
-  <section class="recent-section">
+  <!-- ============================================================
+       RECENT REPORTS
+       ============================================================ -->
+  <section
+    class="recent-section"
+    *ngIf="!isGuest() && availableReportTypes.length > 0">
 
     <div class="section-heading">
 
       <div>
-        <span class="section-label">REPORT HISTORY</span>
-        <h2>Recent reports</h2>
-        <p>
+
+        <span class="section-label">
+          REPORT HISTORY
+        </span>
+
+        <h2>
+          Recent reports
+        </h2>
+
+        <p *ngIf="!isReadOnly()">
           Previously generated reports available for review.
         </p>
+
+        <p *ngIf="isReadOnly()">
+          Public reports available for review.
+        </p>
+
       </div>
 
     </div>
@@ -239,29 +395,52 @@
       class="recent-reports"
       *ngIf="recentReports.length > 0; else noRecentReports">
 
+
       <article
         class="recent-report"
         *ngFor="let report of recentReports">
 
+
         <div class="recent-report-icon">
+
           <mat-icon>
-            {{ report.status === 'Ready'
-              ? 'description'
-              : 'hourglass_top' }}
+
+            {{
+              report.status === 'Ready'
+                ? 'description'
+                : 'hourglass_top'
+            }}
+
           </mat-icon>
+
         </div>
+
 
         <div class="recent-report-info">
 
-          <h3>{{ report.name }}</h3>
+          <h3>
+            {{ report.name }}
+          </h3>
+
 
           <div class="report-meta">
-            <span>{{ report.type }}</span>
-            <span class="meta-separator">•</span>
-            <span>{{ report.generatedOn }}</span>
+
+            <span>
+              {{ report.type }}
+            </span>
+
+            <span class="meta-separator">
+              •
+            </span>
+
+            <span>
+              {{ report.generatedOn }}
+            </span>
+
           </div>
 
         </div>
+
 
         <span
           class="report-status"
@@ -274,32 +453,61 @@
 
         </span>
 
+
+        <!-- Download only for roles with export permission -->
         <button
-  type="button"
-  class="download-button"
-  [disabled]="report.status !== 'Ready'"
-  aria-label="Download report"
-  (click)="downloadReport(report)">
+          *ngIf="canExportReports()"
+          type="button"
+          class="download-button"
+          [disabled]="report.status !== 'Ready'"
+          aria-label="Download report"
+          (click)="downloadReport(report)">
 
-  <mat-icon>download</mat-icon>
+          <mat-icon>
+            download
+          </mat-icon>
 
-</button>
+        </button>
+
+
+        <!-- Researcher read-only indicator -->
+        <span
+          *ngIf="isReadOnly()"
+          class="read-only-label">
+
+          <mat-icon>
+            lock
+          </mat-icon>
+
+          Read only
+
+        </span>
 
       </article>
 
     </div>
 
 
-    <!-- Empty Reports State -->
+    <!-- ==========================================================
+         EMPTY REPORT HISTORY
+         ========================================================== -->
     <ng-template #noRecentReports>
 
       <div class="empty-reports">
 
         <div class="empty-icon">
-          <mat-icon>folder_open</mat-icon>
+
+          <mat-icon>
+            folder_open
+          </mat-icon>
+
         </div>
 
-        <h3>No reports yet</h3>
+
+        <h3>
+          No reports yet
+        </h3>
+
 
         <p>
           Generated reports will appear here.
@@ -314,11 +522,14 @@
 </div>
 
 
-<!-- Report Preview Modal -->
+<!-- ================================================================
+     REPORT PREVIEW MODAL
+     ================================================================ -->
 <div
   class="preview-backdrop"
   *ngIf="isPreviewOpen && previewData"
   (click)="closePreview()">
+
 
   <section
     class="preview-modal"
@@ -327,21 +538,34 @@
     aria-labelledby="report-preview-title"
     (click)="$event.stopPropagation()">
 
+
+    <!-- ============================================================
+         PREVIEW HEADER
+         ============================================================ -->
     <header class="preview-header">
 
       <div class="preview-heading">
 
-        <span class="section-label">REPORT PREVIEW</span>
+        <span class="section-label">
+          REPORT PREVIEW
+        </span>
+
 
         <h2 id="report-preview-title">
+
           {{ previewData.title }}
+
         </h2>
 
+
         <p>
+
           {{ previewData.description }}
+
         </p>
 
       </div>
+
 
       <button
         type="button"
@@ -349,62 +573,125 @@
         aria-label="Close report preview"
         (click)="closePreview()">
 
-        <mat-icon>close</mat-icon>
+        <mat-icon>
+          close
+        </mat-icon>
 
       </button>
 
     </header>
 
 
+    <!-- ============================================================
+         PREVIEW META
+         ============================================================ -->
     <div class="preview-meta">
 
-      <div class="preview-meta-item">
-        <span>Report type</span>
-        <strong>{{ previewData.type }}</strong>
-      </div>
 
       <div class="preview-meta-item">
-        <span>Reporting period</span>
-        <strong>{{ previewData.reportingPeriod }}</strong>
-      </div>
 
-      <div class="preview-meta-item">
-        <span>Generated on</span>
-        <strong>{{ previewData.generatedOn }}</strong>
-      </div>
+        <span>
+          Report type
+        </span>
 
-      <div class="preview-meta-item">
-        <span>Status</span>
-        <strong class="preview-ready">
-          <span class="status-dot"></span>
-          Ready
+        <strong>
+          {{ previewData.type }}
         </strong>
+
+      </div>
+
+
+      <div class="preview-meta-item">
+
+        <span>
+          Reporting period
+        </span>
+
+        <strong>
+          {{ previewData.reportingPeriod }}
+        </strong>
+
+      </div>
+
+
+      <div class="preview-meta-item">
+
+        <span>
+          Generated on
+        </span>
+
+        <strong>
+          {{ previewData.generatedOn }}
+        </strong>
+
+      </div>
+
+
+      <div class="preview-meta-item">
+
+        <span>
+          Status
+        </span>
+
+        <strong class="preview-ready">
+
+          <span class="status-dot"></span>
+
+          Ready
+
+        </strong>
+
       </div>
 
     </div>
 
 
+    <!-- ============================================================
+         PREVIEW CONTENT
+         ============================================================ -->
     <div class="preview-content">
 
+
       <div class="preview-section-title">
-        <span>REPORT SUMMARY</span>
-        <h3>Key metrics</h3>
+
+        <span>
+          REPORT SUMMARY
+        </span>
+
+        <h3>
+          Key metrics
+        </h3>
+
       </div>
 
 
       <div class="preview-metrics">
 
+
         <article
           class="preview-metric"
           *ngFor="let metric of previewData.metrics">
 
+
           <div class="preview-metric-icon">
-            <mat-icon>{{ metric.icon }}</mat-icon>
+
+            <mat-icon>
+              {{ metric.icon }}
+            </mat-icon>
+
           </div>
 
+
           <div>
-            <span>{{ metric.label }}</span>
-            <strong>{{ metric.value }}</strong>
+
+            <span>
+              {{ metric.label }}
+            </span>
+
+            <strong>
+              {{ metric.value }}
+            </strong>
+
           </div>
 
         </article>
@@ -414,7 +701,9 @@
 
       <div class="preview-note">
 
-        <mat-icon>info_outline</mat-icon>
+        <mat-icon>
+          info_outline
+        </mat-icon>
 
         <p>
           This preview uses the current PolicyGPT frontend reporting
@@ -427,7 +716,11 @@
     </div>
 
 
+    <!-- ============================================================
+         PREVIEW FOOTER
+         ============================================================ -->
     <footer class="preview-footer">
+
 
       <button
         type="button"
@@ -438,24 +731,37 @@
 
       </button>
 
+
       <div class="preview-footer-actions">
 
+
+        <!-- Researcher does not get export -->
         <button
+          *ngIf="canExportReports()"
           type="button"
           class="secondary-button"
           (click)="exportReport('PDF')">
 
-          <mat-icon>picture_as_pdf</mat-icon>
+          <mat-icon>
+            picture_as_pdf
+          </mat-icon>
+
           PDF
 
         </button>
 
+
+        <!-- Researcher does not get export -->
         <button
+          *ngIf="canExportReports()"
           type="button"
           class="primary-button"
           (click)="exportReport('Excel')">
 
-          <mat-icon>table_view</mat-icon>
+          <mat-icon>
+            table_view
+          </mat-icon>
+
           Excel
 
         </button>
