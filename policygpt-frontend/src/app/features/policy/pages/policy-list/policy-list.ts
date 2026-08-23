@@ -15,6 +15,7 @@ import { PolicyFilter } from '../../models/policy-filter.model';
 
 import { PolicyService } from '../../../../core/services/policy.service';
 import { SearchService } from '../../../../core/services/search.service';
+import { Auth } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-policy-list',
@@ -63,8 +64,18 @@ export class PolicyList implements OnInit {
   private router: Router,
   private policyService: PolicyService,
   private searchService: SearchService,
-  private cdr: ChangeDetectorRef
+  private cdr: ChangeDetectorRef,
+  private auth: Auth
 ) {}
+
+  canCreatePolicy(): boolean {
+    const role = this.auth.getRoleFromToken()?.toLowerCase().trim();
+    return role === 'administrator' || role === 'government_official';
+  }
+
+  navigateToCreatePolicy(): void {
+    this.router.navigate(['/policies/add']);
+  }
 
   ngOnInit(): void {
   this.loadPolicies();
@@ -102,7 +113,6 @@ export class PolicyList implements OnInit {
   onSearch(keyword: string): void {
 
     this.searchKeyword = keyword;
-
     this.applySearchAndFilters();
 
   }

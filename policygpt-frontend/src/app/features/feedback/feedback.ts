@@ -8,6 +8,7 @@ import {
   FeedbackStatus,
 } from '../../core/services/feedback.service';
 import { Auth } from '../../core/services/auth';
+import { UsageEventService } from '../../core/services/usage-event.service';
 
 interface Faq {
   question: string;
@@ -26,6 +27,7 @@ export class Feedback implements OnInit {
 
   private readonly feedbackService = inject(FeedbackService);
   private readonly auth = inject(Auth);
+  private readonly usageEvents = inject(UsageEventService);
 
   activeSection = 'feedback';
 
@@ -125,6 +127,7 @@ export class Feedback implements OnInit {
 
     this.feedbackService.createFeedback({ subject: subject.trim().slice(0, 255), category }).subscribe({
       next: (feedback) => {
+        this.usageEvents.record('feedback');
         this.tickets = [feedback, ...this.tickets];
         this.successMessage = `Submitted successfully. Tracking ID: ${feedback.feedback_id}`;
         this.activeSection = 'queries';

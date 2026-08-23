@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Auth } from '../../../../core/services/auth';
+import { ReportsService } from '../../services/reports.service';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
 
@@ -124,12 +125,45 @@ export class ReportsDashboard {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly auth: Auth,
+    private readonly reportsService: ReportsService,
   ) {
     this.currentRole = this.normalizeRole(
       this.auth.getRoleFromToken()
     );
 
     this.applyRolePermissions();
+    this.loadRecentReports();
+  }
+
+  private loadRecentReports(): void {
+    this.reportsService.list().subscribe({
+      next: reports => {
+        this.recentReports = reports.map((report, index) => ({
+          id: index + 1,
+          reportTypeId: this.toFrontendReportType(report.report_type),
+          name: this.toFrontendReportType(report.report_type),
+          type: report.report_type,
+          generatedOn: new Date(report.created_at).toLocaleDateString('en-IN'),
+          status: 'Ready',
+        }));
+        this.cdr.detectChanges();
+      },
+      error: () => undefined,
+    });
+  }
+
+  private toFrontendReportType(reportType: string): string {
+    return reportType === 'policy_summary' ? 'policy' :
+      reportType === 'department_summary' ? 'department' :
+        reportType === 'user_summary' ? 'user-activity' :
+          reportType === 'scheme_summary' ? 'scheme' : 'analytics';
+  }
+
+  private toApiReportType(reportType: string): string {
+    return reportType === 'policy' ? 'policy_summary' :
+      reportType === 'department' ? 'department_summary' :
+        reportType === 'user-activity' ? 'user_summary' :
+          reportType === 'scheme' ? 'scheme_summary' : 'usage';
   }
 
   // ============================================================
@@ -380,7 +414,8 @@ export class ReportsDashboard {
       return (
         report.id === 'department' ||
         report.id === 'policy' ||
-        report.id === 'scheme'
+        report.id === 'scheme' ||
+        report.id === 'user-activity'
       );
     }
 
@@ -395,14 +430,16 @@ export class ReportsDashboard {
       return (
         report.id === 'policy' ||
         report.id === 'scheme' ||
-        report.id === 'analytics'
+        report.id === 'analytics' ||
+        report.id === 'user-activity'
       );
     }
 
     if (this.isOrganization()) {
       return (
         report.id === 'policy' ||
-        report.id === 'scheme'
+        report.id === 'scheme' ||
+        report.id === 'user-activity'
       );
     }
 
@@ -488,30 +525,20 @@ export class ReportsDashboard {
 
     this.cdr.detectChanges();
 
-    /*
-     * Existing frontend-only simulation preserved.
-     */
-    window.setTimeout(() => {
-
-      this.recentReports = this.recentReports.map(
-        (item) => {
-
-          if (item.id === reportId) {
-            return {
-              ...item,
-              status: 'Ready',
-            };
-          }
-
-          return item;
-        },
-      );
-
-      this.isGenerating = false;
-
-      this.cdr.detectChanges();
-
-    }, 1500);
+    this.reportsService.create(this.toApiReportType(report.id), 'csv').subscribe({
+      next: () => {
+        this.recentReports = this.recentReports.map(item =>
+          item.id === reportId ? { ...item, status: 'Ready' } : item,
+        );
+        this.isGenerating = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.recentReports = this.recentReports.filter(item => item.id !== reportId);
+        this.isGenerating = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   // ============================================================
@@ -532,13 +559,13 @@ export class ReportsDashboard {
       return;
     }
 
-    this.previewData = this.buildReportPreview(
-      this.selectedReport,
-    );
-
-    this.isPreviewOpen = true;
-
-    this.cdr.detectChanges();
+    this.reportsService.preview(this.toApiReportType(this.selectedReport.id)).subscribe({
+      next: response => {
+        this.previewData = this.buildReportPreview(this.selectedReport!, response.data);
+        this.isPreviewOpen = true;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   closePreview(): void {
@@ -787,6 +814,7 @@ export class ReportsDashboard {
 
   private buildReportPreview(
     report: ReportType,
+    data?: Array<Record<string, unknown>>,
   ): ReportPreview {
 
     const metricsByReport: Record<
@@ -916,8 +944,15 @@ export class ReportsDashboard {
       type: this.getReportTypeLabel(report),
       reportingPeriod: 'August 2026',
       generatedOn: this.getTodayDate(),
-      metrics: metricsByReport[report.id] ?? [],
+      metrics: data ? this.buildMetricsFromData(report, data) : metricsByReport[report.id] ?? [],
     };
+  }
+
+  private buildMetricsFromData(report: ReportType, data: Array<Record<string, unknown>>): ReportMetric[] {
+    return [
+      { label: `${report.title} Records`, value: String(data.length), icon: report.icon },
+      { label: 'Generated Data Rows', value: String(data.length), icon: 'table_view' },
+    ];
   }
 
   // ============================================================

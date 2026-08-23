@@ -30,4 +30,22 @@ def get_current_user(
             detail="User no longer exists",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if getattr(user.role, "value", user.role) == "guest_user":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Guest users cannot access protected resources.",
+        )
     return user
+
+
+def require_roles(*allowed_roles: str):
+    def dependency(current_user: User = Depends(get_current_user)) -> User:
+        role = getattr(current_user.role, "value", current_user.role)
+        if role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to perform this action.",
+            )
+        return current_user
+
+    return dependency

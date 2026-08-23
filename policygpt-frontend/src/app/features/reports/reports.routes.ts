@@ -7,7 +7,15 @@ export const REPORTS_ROUTES: Routes = [
   {
     path: 'reports',
     component: ReportsDashboard,
-    canActivate: [roleGuard],
+    canActivate: [
+      roleGuard([
+        'admin',
+        'official',
+        'citizen',
+        'researcher',
+        'organization',
+      ]),
+    ],
     data: {
       roles: [
         'admin',

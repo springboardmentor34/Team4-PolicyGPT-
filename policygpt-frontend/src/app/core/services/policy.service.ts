@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Policy } from '../../features/policy/models/policy.model';
@@ -17,6 +17,15 @@ export interface PolicyListResponse {
 export class PolicyService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://127.0.0.1:8000/policies';
+
+  private get options(): { headers: HttpHeaders } {
+    const token = localStorage.getItem('access_token');
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return { headers };
+  }
 
   private mapPolicy(p: any): Policy {
     return {
@@ -58,13 +67,13 @@ export class PolicyService {
       params = params.set('status', status.toLowerCase());
     }
     return this.http
-      .get<PolicyListResponse>(`${this.apiUrl}/`, { params })
+      .get<PolicyListResponse>(`${this.apiUrl}/`, { ...this.options, params })
       .pipe(map((res) => res.items.map((p) => this.mapPolicy(p))));
   }
 
   getPolicyById(id: string): Observable<Policy> {
     return this.http
-      .get<any>(`${this.apiUrl}/${id}`)
+      .get<any>(`${this.apiUrl}/${id}`, this.options)
       .pipe(map((p) => this.mapPolicy(p)));
   }
 
@@ -82,7 +91,7 @@ description: policy.description || null,
 ),
     };
     return this.http
-      .post<any>(`${this.apiUrl}/`, payload)
+      .post<any>(`${this.apiUrl}/`, payload, this.options)
       .pipe(map((p) => this.mapPolicy(p)));
   }
 
@@ -98,17 +107,17 @@ description: policy.description || null,
         policy.published_date || policy.publicationDate || undefined,
     };
     return this.http
-      .put<any>(`${this.apiUrl}/${id}`, payload)
+      .put<any>(`${this.apiUrl}/${id}`, payload, this.options)
       .pipe(map((p) => this.mapPolicy(p)));
   }
 
   deletePolicy(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, this.options);
   }
 
   archivePolicy(id: string): Observable<Policy> {
     return this.http
-      .patch<any>(`${this.apiUrl}/${id}/archive`, {})
+      .patch<any>(`${this.apiUrl}/${id}/archive`, {}, this.options)
       .pipe(map((p) => this.mapPolicy(p)));
   }
 
@@ -122,7 +131,7 @@ description: policy.description || null,
       approved_by: approvedBy || null,
     };
     return this.http
-      .patch<any>(`${this.apiUrl}/${id}/approval-status`, payload)
+      .patch<any>(`${this.apiUrl}/${id}/approval-status`, payload, this.options)
       .pipe(map((p) => this.mapPolicy(p)));
   }
 

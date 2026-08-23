@@ -34,6 +34,12 @@ class AuthService:
                 detail="Email already registered"
             )
 
+        if user_data.role.value == "administrator":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Administrator accounts must be provisioned by an authorized administrator.",
+            )
+
         hashed_password = hash_password(
             user_data.password
         )
