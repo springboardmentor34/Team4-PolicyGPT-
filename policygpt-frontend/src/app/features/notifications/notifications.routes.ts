@@ -6,6 +6,6 @@ export const NOTIFICATION_ROUTES: Routes = [
   {
     path: 'notifications',
     component: Notifications,
-    // canActivate: [authGuard]
-  },
+    canActivate: [authGuard],
+  }
 ];

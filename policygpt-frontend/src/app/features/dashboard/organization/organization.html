@@ -1,0 +1,871 @@
+<div class="organization-shell">
+
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
+  <aside class="organization-sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-symbol">
+        <mat-icon>account_balance</mat-icon>
+      </div>
+
+      <div class="brand-text">
+        <strong>PolicyGPT</strong>
+        <span>Policy Intelligence Platform</span>
+      </div>
+    </div>
+
+
+    <!-- =====================================================
+         WORKSPACE NAVIGATION
+         ===================================================== -->
+    <div class="sidebar-section">
+  <span class="sidebar-label">WORKSPACE</span>
+
+  <button
+    type="button"
+    class="sidebar-item active"
+    (click)="openOverview()"
+  >
+    <mat-icon>dashboard</mat-icon>
+    <span>Overview</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="openPolicies()"
+  >
+    <mat-icon>description</mat-icon>
+    <span>Policy Repository</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="openSchemes()"
+  >
+    <mat-icon>account_balance_wallet</mat-icon>
+    <span>Government Schemes</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="openEligibility()"
+  >
+    <mat-icon>fact_check</mat-icon>
+    <span>Eligibility Checker</span>
+  </button>
+
+  <button
+    type="button"
+    class="sidebar-item"
+    (click)="openPolicyComparison()"
+  >
+    <mat-icon>compare_arrows</mat-icon>
+    <span>Policy Comparison</span>
+  </button>
+</div>
+    <!-- =====================================================
+         ORGANIZATION
+         ===================================================== -->
+    <div class="sidebar-section">
+
+      <span class="sidebar-label">ORGANIZATION</span>
+
+      <!-- Intentionally non-functional until module is implemented -->
+      <button
+        type="button"
+        class="sidebar-item"
+      >
+        <mat-icon>business</mat-icon>
+        <span>Organization Profile</span>
+      </button>
+
+
+      <!-- Intentionally non-functional until module is implemented -->
+      <button
+        type="button"
+        class="sidebar-item"
+      >
+        <mat-icon>bookmark</mat-icon>
+        <span>Saved Policies</span>
+      </button>
+
+
+      <!-- Intentionally non-functional until module is implemented -->
+      <button
+        type="button"
+        class="sidebar-item"
+      >
+        <mat-icon>history</mat-icon>
+        <span>Recent Activity</span>
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         INSIGHTS
+         ===================================================== -->
+    <div class="sidebar-section">
+
+      <span class="sidebar-label">INSIGHTS</span>
+
+      <!-- Intentionally non-functional until reports module exists -->
+      <button
+        type="button"
+        class="sidebar-item"
+      >
+        <mat-icon>trending_up</mat-icon>
+        <span>Policy Trends</span>
+      </button>
+
+
+      <!-- Intentionally non-functional until reports module exists -->
+      <button
+        type="button"
+        class="sidebar-item"
+      >
+        <mat-icon>bar_chart</mat-icon>
+        <span>Reports</span>
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         SIDEBAR BOTTOM
+         ===================================================== -->
+    <div class="sidebar-bottom">
+
+      <div class="sidebar-help">
+        <mat-icon>help_outline</mat-icon>
+
+        <div>
+          <strong>Need assistance?</strong>
+          <span>
+            Explore PolicyGPT resources and help.
+          </span>
+        </div>
+      </div>
+
+
+      <div class="organization-profile">
+
+        <div class="profile-avatar">
+          OR
+        </div>
+
+        <div class="profile-info">
+          <strong>Organization</strong>
+          <span>Organization User</span>
+        </div>
+
+        <button
+          type="button"
+          class="profile-more"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =====================================================
+       MAIN WORKSPACE
+       ===================================================== -->
+  <main class="organization-main">
+
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+    <header class="organization-topbar">
+
+      <div class="breadcrumb">
+
+        <span>PolicyGPT</span>
+
+        <mat-icon>chevron_right</mat-icon>
+
+        <strong>Organization Workspace</strong>
+
+      </div>
+
+
+      <div class="topbar-actions">
+
+        <button
+          type="button"
+          class="topbar-icon"
+        >
+          <mat-icon>notifications_none</mat-icon>
+          <span class="notification-dot"></span>
+        </button>
+
+
+        <div class="topbar-divider"></div>
+
+
+        <div class="topbar-user">
+
+          <div class="topbar-avatar">
+            OR
+          </div>
+
+          <div>
+            <strong>Organization</strong>
+            <span>Workspace</span>
+          </div>
+
+          <mat-icon>expand_more</mat-icon>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENT
+         ===================================================== -->
+    <section class="organization-content">
+
+
+      <!-- ===================================================
+           WELCOME
+           =================================================== -->
+      <section class="welcome-section">
+
+        <span class="eyebrow">
+          ORGANIZATION WORKSPACE
+        </span>
+
+        <h1>
+          Policy intelligence for your organization.
+        </h1>
+
+        <p>
+          Discover government policies, explore schemes, compare policy
+          provisions, and turn public policy information into actionable
+          insights.
+        </p>
+
+      </section>
+
+
+      <!-- ===================================================
+           QUICK ACCESS
+           =================================================== -->
+      <section class="quick-access">
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-caption">
+              QUICK ACCESS
+            </span>
+
+            <h2>
+              Start with what you need
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="quick-access-grid">
+
+
+          <!-- POLICY -->
+          <button
+            type="button"
+            class="quick-card"
+            (click)="openPolicies()"
+          >
+
+            <div class="quick-card-icon">
+              <mat-icon>description</mat-icon>
+            </div>
+
+            <div>
+              <strong>Explore Policies</strong>
+              <span>
+                Search and review government policies.
+              </span>
+            </div>
+
+            <mat-icon class="quick-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+
+          <!-- SCHEMES -->
+          <button
+            type="button"
+            class="quick-card"
+            (click)="openSchemes()"
+          >
+
+            <div class="quick-card-icon">
+              <mat-icon>
+                account_balance_wallet
+              </mat-icon>
+            </div>
+
+            <div>
+              <strong>Find Schemes</strong>
+              <span>
+                Discover schemes relevant to your needs.
+              </span>
+            </div>
+
+            <mat-icon class="quick-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+
+          <!-- ELIGIBILITY -->
+          <button
+            type="button"
+            class="quick-card"
+            (click)="openEligibility()"
+          >
+
+            <div class="quick-card-icon">
+              <mat-icon>fact_check</mat-icon>
+            </div>
+
+            <div>
+              <strong>Check Eligibility</strong>
+              <span>
+                Evaluate eligibility for government schemes.
+              </span>
+            </div>
+
+            <mat-icon class="quick-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+
+          <!-- COMPARISON -->
+          <button
+            type="button"
+            class="quick-card"
+            (click)="openPolicyComparison()"
+          >
+
+            <div class="quick-card-icon">
+              <mat-icon>compare_arrows</mat-icon>
+            </div>
+
+            <div>
+              <strong>Compare Policies</strong>
+              <span>
+                Compare provisions across policies.
+              </span>
+            </div>
+
+            <mat-icon class="quick-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- ===================================================
+           MAIN INFORMATION GRID
+           =================================================== -->
+      <section class="organization-grid">
+
+
+        <!-- RECENT POLICY ACTIVITY -->
+        <article class="workspace-panel recent-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <span class="section-caption">
+                YOUR WORKSPACE
+              </span>
+
+              <h2>
+                Recent policy activity
+              </h2>
+
+            </div>
+
+
+            <button
+              type="button"
+              (click)="openPolicies()"
+            >
+              View all
+
+              <mat-icon>
+                arrow_forward
+              </mat-icon>
+
+            </button>
+
+          </div>
+
+
+          <div class="activity-list">
+
+
+            <!-- POLICY ACTIVITY -->
+            <div class="activity-item">
+
+              <div class="activity-icon">
+                <mat-icon>
+                  description
+                </mat-icon>
+              </div>
+
+
+              <div class="activity-content">
+
+                <strong>
+                  National Education Policy 2020
+                </strong>
+
+                <span>
+                  Education · Government of India
+                </span>
+
+                <small>
+                  Viewed recently
+                </small>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="item-action"
+                (click)="openPolicies()"
+              >
+                <mat-icon>
+                  arrow_forward
+                </mat-icon>
+              </button>
+
+            </div>
+
+
+            <!-- SCHEME ACTIVITY -->
+            <div class="activity-item">
+
+              <div class="activity-icon scheme">
+                <mat-icon>
+                  account_balance_wallet
+                </mat-icon>
+              </div>
+
+
+              <div class="activity-content">
+
+                <strong>
+                  PM-KISAN Scheme
+                </strong>
+
+                <span>
+                  Agriculture · Central Government
+                </span>
+
+                <small>
+                  Viewed recently
+                </small>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="item-action"
+                (click)="openSchemes()"
+              >
+                <mat-icon>
+                  arrow_forward
+                </mat-icon>
+              </button>
+
+            </div>
+
+
+            <!-- COMPARISON ACTIVITY -->
+            <div class="activity-item">
+
+              <div class="activity-icon comparison">
+                <mat-icon>
+                  compare_arrows
+                </mat-icon>
+              </div>
+
+
+              <div class="activity-content">
+
+                <strong>
+                  Policy comparison
+                </strong>
+
+                <span>
+                  Education policy comparison
+                </span>
+
+                <small>
+                  Updated recently
+                </small>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="item-action"
+                (click)="openPolicyComparison()"
+              >
+                <mat-icon>
+                  arrow_forward
+                </mat-icon>
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- ORGANIZATION SNAPSHOT -->
+        <article class="workspace-panel snapshot-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <span class="section-caption">
+                OVERVIEW
+              </span>
+
+              <h2>
+                Workspace snapshot
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <div class="snapshot-list">
+
+
+            <div class="snapshot-item">
+
+              <div class="snapshot-icon">
+                <mat-icon>
+                  description
+                </mat-icon>
+              </div>
+
+              <div>
+
+                <strong>
+                  Policies explored
+                </strong>
+
+                <span>
+                  24
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="snapshot-item">
+
+              <div class="snapshot-icon">
+                <mat-icon>
+                  account_balance_wallet
+                </mat-icon>
+              </div>
+
+              <div>
+
+                <strong>
+                  Schemes reviewed
+                </strong>
+
+                <span>
+                  18
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="snapshot-item">
+
+              <div class="snapshot-icon">
+                <mat-icon>
+                  compare_arrows
+                </mat-icon>
+              </div>
+
+              <div>
+
+                <strong>
+                  Comparisons
+                </strong>
+
+                <span>
+                  7
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="snapshot-item">
+
+              <div class="snapshot-icon">
+                <mat-icon>
+                  bookmark
+                </mat-icon>
+              </div>
+
+              <div>
+
+                <strong>
+                  Saved policies
+                </strong>
+
+                <span>
+                  12
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- ===================================================
+           POLICY LANDSCAPE
+           =================================================== -->
+      <section class="landscape-section">
+
+        <div class="panel-header">
+
+          <div>
+
+            <span class="section-caption">
+              POLICY LANDSCAPE
+            </span>
+
+            <h2>
+              Explore policy sectors
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            (click)="openPolicies()"
+          >
+            Explore repository
+
+            <mat-icon>
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+        </div>
+
+
+        <div class="sector-grid">
+
+
+          <!-- AGRICULTURE -->
+          <button
+            type="button"
+            class="sector-card"
+            (click)="openSector('Agriculture')"
+          >
+
+            <div class="sector-icon agriculture">
+              <mat-icon>
+                agriculture
+              </mat-icon>
+            </div>
+
+            <div>
+
+              <strong>
+                Agriculture
+              </strong>
+
+              <span>
+                Policies & schemes
+              </span>
+
+            </div>
+
+            <mat-icon class="sector-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+
+          <!-- HEALTH -->
+          <button
+            type="button"
+            class="sector-card"
+            (click)="openSector('Health')"
+          >
+
+            <div class="sector-icon health">
+              <mat-icon>
+                health_and_safety
+              </mat-icon>
+            </div>
+
+            <div>
+
+              <strong>
+                Health
+              </strong>
+
+              <span>
+                Policies & schemes
+              </span>
+
+            </div>
+
+            <mat-icon class="sector-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+
+          <!-- EDUCATION -->
+          <button
+            type="button"
+            class="sector-card"
+            (click)="openSector('Education')"
+          >
+
+            <div class="sector-icon education">
+              <mat-icon>
+                school
+              </mat-icon>
+            </div>
+
+            <div>
+
+              <strong>
+                Education
+              </strong>
+
+              <span>
+                Policies & schemes
+              </span>
+
+            </div>
+
+            <mat-icon class="sector-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+
+          <!-- EMPLOYMENT -->
+          <button
+            type="button"
+            class="sector-card"
+            (click)="openSector('Employment')"
+          >
+
+            <div class="sector-icon employment">
+              <mat-icon>
+                work_outline
+              </mat-icon>
+            </div>
+
+            <div>
+
+              <strong>
+                Employment
+              </strong>
+
+              <span>
+                Policies & schemes
+              </span>
+
+            </div>
+
+            <mat-icon class="sector-arrow">
+              arrow_forward
+            </mat-icon>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- ===================================================
+           FOOTER
+           =================================================== -->
+      <footer class="workspace-footer">
+
+        <span>
+          PolicyGPT · Government Policy & Public Scheme Intelligence
+        </span>
+
+        <span>
+          Information is provided for research and informational purposes.
+        </span>
+
+      </footer>
+
+    </section>
+
+  </main>
+
+</div>

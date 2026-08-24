@@ -28,3 +28,13 @@ class FeedbackResponse(BaseModel):
     resolved_by: Optional[UUID] = None
     resolved_at: Optional[datetime] = None
     created_at: datetime
+
+
+class PublicFeedbackResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    subject: Optional[str] = None
+    category: FeedbackCategory
+    status: FeedbackStatus
+    response_text: Optional[str] = None
+    created_at: datetime

@@ -47,11 +47,12 @@
 
       <button
         mat-flat-button
-        color="primary"
+        [color]="isSaved ? 'accent' : 'primary'"
         class="rounded-xl! px-5! py-5!"
+        (click)="savePolicy()"
       >
-        <mat-icon>bookmark</mat-icon>
-        Save Policy
+        <mat-icon>{{ isSaved ? 'bookmark_added' : 'bookmark' }}</mat-icon>
+        {{ isSaved ? 'Policy Saved' : 'Save Policy' }}
       </button>
 
     </div>

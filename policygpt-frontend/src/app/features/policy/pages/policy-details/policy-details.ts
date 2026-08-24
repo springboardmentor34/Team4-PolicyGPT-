@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Policy } from '../../models/policy.model';
 import { PolicyService } from '../../../../core/services/policy.service';
 
+import { UsageEventService } from '../../../../core/services/usage-event.service';
+
 @Component({
   selector: 'app-policy-details',
   standalone: true,
@@ -33,7 +35,8 @@ export class PolicyDetails implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private policyService: PolicyService,
-  private cdr: ChangeDetectorRef
+  private cdr: ChangeDetectorRef,
+  private usageEventService: UsageEventService
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +51,10 @@ export class PolicyDetails implements OnInit {
       next: (policy) => {
         this.policy = policy;
         this.generateBenefits();
+        
+        // Track the view
+        this.usageEventService.trackPolicyView(policy.id || id);
+
         // Force Angular to update the view
         this.cdr.detectChanges();
       },
@@ -113,6 +120,17 @@ export class PolicyDetails implements OnInit {
           'Support through government initiatives'
         ];
     }
+  }
+
+  isSaved = false;
+
+  savePolicy(): void {
+    if (!this.policy?.id) {
+      return;
+    }
+    this.usageEventService.trackPolicySave(this.policy.id);
+    this.isSaved = true;
+    this.cdr.detectChanges();
   }
 
   goBack(): void {

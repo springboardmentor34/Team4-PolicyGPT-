@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Auth } from '../../../core/services/auth';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -42,7 +37,7 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private auth: Auth,
-    private router: Router
+    private router: Router,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -65,46 +60,46 @@ export class Login {
 
     this.auth.login({ email, password }).subscribe({
       next: (response) => {
-  localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('access_token', response.access_token);
 
-  this.isLoading = false;
+        this.isLoading = false;
 
-  const role = this.auth.getRoleFromToken();
+        const role = this.auth.getRoleFromToken();
 
-  console.log('Logged-in role:', role);
+        console.log('Logged-in role:', role);
 
-  switch (role?.toLowerCase().trim()) {
+        switch (role?.toLowerCase().trim()) {
+          case 'admin':
+          case 'administrator':
+            this.router.navigate(['/admin']);
+            break;
 
-  case 'admin':
-  case 'administrator':
-    this.router.navigate(['/admin']);
-    break;
+          case 'official':
+          case 'officer':
+          case 'government_official':
+          case 'government official':
+            this.router.navigate(['/official']);
+            break;
 
-  case 'official':
-  case 'officer':
-  case 'government_official':
-  case 'government official':
-    this.router.navigate(['/official']);
-    break;
+          case 'citizen':
+            this.router.navigate(['/citizen']);
+            break;
+          case 'researcher':
+            this.router.navigate(['/researcher']);
+            break;
+          case 'organization':
+            this.router.navigate(['/organization']);
+            break;
 
-  case 'citizen':
-    this.router.navigate(['/citizen']);
-    break;
-
-  case 'researcher':
-    this.router.navigate(['/researcher']);
-    break;
-
-  default:
-    this.errorMessage = 'Unable to determine your user role.';
-    this.router.navigate(['/']);
-    break;
-}
-},
+          default:
+            this.errorMessage = 'Unable to determine your user role.';
+            this.router.navigate(['/']);
+            break;
+        }
+      },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage =
-          error?.error?.detail ?? 'Login failed. Please try again.';
+        this.errorMessage = error?.error?.detail ?? 'Login failed. Please try again.';
       },
     });
   }

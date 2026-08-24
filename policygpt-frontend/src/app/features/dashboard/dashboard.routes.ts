@@ -4,6 +4,7 @@ import { Admin } from './admin/admin';
 import { Citizen } from './citizen/citizen';
 import { Official } from './official/official';
 import { Researcher } from './researcher/researcher';
+import { Organization } from './organization/organization';
 
 import { authGuard } from '../../core/guards/auth-guard';
 
@@ -59,4 +60,15 @@ export const DASHBOARD_ROUTES: Routes = [
     roleGuard(['official']),
   ],
 },
+ // =========================
+  // ORGANIZATION
+  // =========================
+  {
+    path: 'organization',
+    component: Organization,
+    canActivate: [
+      authGuard,
+      roleGuard(['organization']),
+    ],
+  },
 ];

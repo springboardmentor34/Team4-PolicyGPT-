@@ -22,11 +22,25 @@ def register(
     )
 
 
+from fastapi.security import OAuth2PasswordRequestForm
+
 @router.post("/login")
 def login(
     request: LoginRequest,
     db: Session = Depends(get_db)
 ):
+    return AuthService.login(
+        db,
+        request
+    )
+
+@router.post("/token")
+def login_for_swagger(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    # Swagger sends username, we treat it as email
+    request = LoginRequest(email=form_data.username, password=form_data.password)
     return AuthService.login(
         db,
         request

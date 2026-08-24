@@ -1,0 +1,1262 @@
+<section class="usage-page">
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+
+    <div class="header-content">
+
+      <span class="eyebrow">
+        PLATFORM USAGE ANALYTICS
+      </span>
+
+      <h1>Usage Statistics</h1>
+
+      <p *ngIf="isAdmin()">
+        Full platform usage, engagement, user activity and policy interaction
+        analytics.
+      </p>
+
+      <p *ngIf="isOfficial()">
+        Department usage and engagement metrics across PolicyGPT.
+      </p>
+
+      <p *ngIf="isCitizen()">
+        View your personal PolicyGPT searches, policy views and saved policies.
+      </p>
+
+      <p *ngIf="isResearcher()">
+        Read-only platform usage trends for policy research and analysis.
+      </p>
+
+      <p *ngIf="isOrganization()">
+        Organization-level policy usage and engagement metrics.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="loading">
+
+      <span class="material-symbol">
+        refresh
+      </span>
+
+      <span>
+        {{ loading ? 'Refreshing...' : 'Refresh Data' }}
+      </span>
+
+    </button>
+
+  </header>
+
+
+  <!-- ROLE INFORMATION -->
+  <section class="filter-panel">
+
+    <div class="filter-heading">
+
+      <div class="filter-heading-icon">
+        <span class="material-symbol">
+          verified_user
+        </span>
+      </div>
+
+      <div>
+
+        <h2>
+          {{ isAdmin() ? 'Platform Analytics' :
+             isOfficial() ? 'Department Analytics' :
+             isCitizen() ? 'Personal Usage' :
+             isResearcher() ? 'Research Analytics' :
+             'Organization Analytics' }}
+        </h2>
+
+        <p>
+          Analytics are displayed according to your authorized PolicyGPT role.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="filter-controls">
+
+      <!-- PERIOD -->
+      <div class="filter-group">
+
+        <label for="period">
+          Period
+        </label>
+
+        <select
+          id="period"
+          [value]="selectedPeriod"
+          (change)="onPeriodChange($event)">
+
+          <option value="7d">Last 7 Days</option>
+<option value="30d">Last 30 Days</option>
+<option value="3m">Last 3 Months</option>
+<option value="6m">Last 6 Months</option>
+<option value="1y">Last Year</option>
+        </select>
+
+      </div>
+
+
+      <!-- USER TYPE -->
+      <div
+        class="filter-group"
+        *ngIf="isAdmin() || isOfficial()">
+
+        <label for="userType">
+          User Type
+        </label>
+
+        <select
+          id="userType"
+          [value]="selectedUserType"
+          (change)="onUserTypeChange($event)">
+
+          <option value="all">
+            All Users
+          </option>
+
+          <option value="Administrator">
+            Administrator
+          </option>
+
+          <option value="Citizen">
+            Citizen
+          </option>
+
+          <option value="Government Official">
+            Government Official
+          </option>
+
+          <option value="Researcher">
+            Researcher
+          </option>
+
+          <option value="Organization">
+            Organization
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LOADING -->
+  <div
+    class="state-panel"
+    *ngIf="loading">
+
+    <div class="loader"></div>
+
+    <h3>
+      Loading usage statistics
+    </h3>
+
+    <p>
+      Preparing analytics for your role...
+    </p>
+
+  </div>
+
+
+  <!-- ERROR -->
+  <div
+    class="state-panel error-state"
+    *ngIf="!loading && error">
+
+    <div class="state-icon">
+
+      <span class="material-symbol">
+        error_outline
+      </span>
+
+    </div>
+
+    <h3>
+      Unable to load usage statistics
+    </h3>
+
+    <p>
+      {{ error }}
+    </p>
+
+    <button
+      type="button"
+      class="retry-button"
+      (click)="refresh()">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+  <div
+    *ngIf="!loading && !error"
+    class="dashboard-content">
+
+
+    <!-- ============================= -->
+    <!-- ADMIN KPI CARDS -->
+    <!-- ============================= -->
+
+    <section
+      class="kpi-grid"
+      *ngIf="showPlatformKpis()">
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon search-icon">
+
+          <span class="material-symbol">
+            search
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Total Searches
+          </span>
+
+          <strong>
+            {{ displayedSearches }}
+          </strong>
+
+          <small>
+            Platform search activity
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon views-icon">
+
+          <span class="material-symbol">
+            visibility
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Policy Views
+          </span>
+
+          <strong>
+            {{ displayedPolicyViews }}
+          </strong>
+
+          <small>
+            Platform policy engagement
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon saved-icon">
+
+          <span class="material-symbol">
+            bookmark
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Saved Policies
+          </span>
+
+          <strong>
+            {{ displayedSavedPolicies }}
+          </strong>
+
+          <small>
+            Policies saved by users
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon engagement-icon">
+
+          <span class="material-symbol">
+            trending_up
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Total Engagement
+          </span>
+
+          <strong>
+            {{ totalEngagement }}
+          </strong>
+
+          <small>
+            Searches + views + saves
+          </small>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- OFFICIAL / CITIZEN / ORG KPIs -->
+    <!-- ============================= -->
+
+    <section
+      class="kpi-grid"
+      *ngIf="isOfficial() || isCitizen() || isOrganization()">
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon search-icon">
+
+          <span class="material-symbol">
+            search
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            {{ isCitizen() ? 'My Searches' : 'Total Searches' }}
+          </span>
+
+          <strong>
+            {{ displayedSearches }}
+          </strong>
+
+          <small>
+            Search activity
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon views-icon">
+
+          <span class="material-symbol">
+            visibility
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            {{ isCitizen() ? 'My Policy Views' : 'Policy Views' }}
+          </span>
+
+          <strong>
+            {{ displayedPolicyViews }}
+          </strong>
+
+          <small>
+            Policy engagement
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon saved-icon">
+
+          <span class="material-symbol">
+            bookmark
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            {{ isCitizen() ? 'My Saved Policies' : 'Saved Policies' }}
+          </span>
+
+          <strong>
+            {{ displayedSavedPolicies }}
+          </strong>
+
+          <small>
+            Saved policy activity
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="kpi-card">
+
+        <div class="kpi-icon engagement-icon">
+
+          <span class="material-symbol">
+            trending_up
+          </span>
+
+        </div>
+
+        <div class="kpi-content">
+
+          <span class="kpi-label">
+            Engagement
+          </span>
+
+          <strong>
+            {{ totalEngagement }}
+          </strong>
+
+          <small>
+            Combined activity
+          </small>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- RESEARCHER NOTICE -->
+    <!-- ============================= -->
+
+    <section
+      class="data-note"
+      *ngIf="isResearcher()">
+
+      <div class="note-icon">
+
+        <span class="material-symbol">
+          visibility
+        </span>
+
+      </div>
+
+      <div>
+
+        <strong>
+          Read-only Research Analytics
+        </strong>
+
+        <p>
+          You have read-only access to platform usage trends.
+          Personal and administrative usage information is not displayed.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- USAGE TREND -->
+    <!-- ============================= -->
+
+    <section class="analytics-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            USAGE TREND
+          </span>
+
+          <h2>
+            Platform Activity Over Time
+          </h2>
+
+          <p>
+            Track searches, policy views and saved policy activity
+            for the selected period.
+          </p>
+
+        </div>
+
+        <div class="trend-summary">
+
+          <span>
+            {{ trendPeriodLabel }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="trend-container">
+
+
+        <div
+          class="trend-empty"
+          *ngIf="trendData.length === 0">
+
+          <div class="empty-icon">
+
+            <span class="material-symbol">
+              show_chart
+            </span>
+
+          </div>
+
+          <h3>
+            No trend data available
+          </h3>
+
+          <p>
+            Usage activity will appear here when platform interaction
+            records are available.
+          </p>
+
+        </div>
+
+
+        <div
+          class="trend-chart"
+          *ngIf="trendData.length > 0">
+
+          <div class="chart-y-axis">
+
+            <span>
+              {{ maxTrendValue }}
+            </span>
+
+            <span>
+              {{ halfTrendValue }}
+            </span>
+
+            <span>
+              0
+            </span>
+
+          </div>
+
+
+          <div class="chart-area">
+
+            <div class="chart-grid">
+
+              <span></span>
+              <span></span>
+              <span></span>
+
+            </div>
+
+
+            <div class="bars">
+
+              <div
+                class="trend-column"
+                *ngFor="let item of trendData">
+
+                <div class="column-values">
+
+                  <span
+                    class="trend-bar search-bar"
+                    [style.height.%]="
+                      maxTrendValue > 0
+                        ? (item.searches / maxTrendValue) * 100
+                        : 0
+                    ">
+                  </span>
+
+                  <span
+                    class="trend-bar view-bar"
+                    [style.height.%]="
+                      maxTrendValue > 0
+                        ? (item.views / maxTrendValue) * 100
+                        : 0
+                    ">
+                  </span>
+
+                  <span
+                    class="trend-bar save-bar"
+                    [style.height.%]="
+                      maxTrendValue > 0
+                        ? (item.saves / maxTrendValue) * 100
+                        : 0
+                    ">
+                  </span>
+
+                </div>
+
+                <span class="trend-label">
+                  {{ item.label }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="chart-legend"
+          *ngIf="trendData.length > 0">
+
+          <span>
+            <i class="legend-dot search-dot"></i>
+            Searches
+          </span>
+
+          <span>
+            <i class="legend-dot view-dot"></i>
+            Policy Views
+          </span>
+
+          <span>
+            <i class="legend-dot save-dot"></i>
+            Saved Policies
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- ADMIN / OFFICIAL USER ACTIVITY -->
+    <!-- ============================= -->
+
+    <section
+      class="behavior-section"
+      *ngIf="showUserActivity()">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            USER BEHAVIOR
+          </span>
+
+          <h2>
+            {{ isOfficial() ? 'Department Activity' : 'User Activity' }}
+          </h2>
+
+          <p>
+            {{ isOfficial()
+              ? 'Understand activity across your department.'
+              : 'Understand how different user groups interact with PolicyGPT.'
+            }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="behavior-grid">
+
+
+        <article class="behavior-card">
+
+          <div class="behavior-card-header">
+
+            <div class="behavior-icon">
+
+              <span class="material-symbol">
+                groups
+              </span>
+
+            </div>
+
+            <div>
+
+              <h3>
+                {{ isOfficial() ? 'Department Users' : 'User Activity' }}
+              </h3>
+
+              <span>
+                Activity by user group
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="behavior-row"
+            *ngFor="let item of userActivity">
+
+            <div class="behavior-label">
+
+              <span>
+                {{ item.role }}
+              </span>
+
+              <strong>
+                {{ item.total }}
+              </strong>
+
+            </div>
+
+
+            <div class="behavior-bar">
+
+              <div
+                [style.width.%]="
+                  maxUserActivity > 0
+                    ? (item.total / maxUserActivity) * 100
+                    : 0
+                ">
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- SEARCH BEHAVIOR -->
+        <article
+          class="behavior-card"
+          *ngIf="showRecentSearches()">
+
+          <div class="behavior-card-header">
+
+            <div class="behavior-icon">
+
+              <span class="material-symbol">
+                manage_search
+              </span>
+
+            </div>
+
+            <div>
+
+              <h3>
+                Search Behavior
+              </h3>
+
+              <span>
+                Recent search activity
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="search-item"
+            *ngFor="let search of recentSearches">
+
+            <div class="search-item-icon">
+
+              <span class="material-symbol">
+                search
+              </span>
+
+            </div>
+
+            <div class="search-item-content">
+
+              <strong>
+                {{ search.query }}
+              </strong>
+
+              <span>
+                {{ search.count ?? 0 }} searches
+              </span>
+
+              <small>
+                {{ search.searchedAt }}
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="mini-empty"
+            *ngIf="recentSearches.length === 0">
+
+            No search activity available.
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- CITIZEN PERSONAL SUMMARY -->
+    <!-- ============================= -->
+
+    <section
+      class="summary-grid"
+      *ngIf="isCitizen()">
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            person
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            PERSONAL SEARCHES
+          </span>
+
+          <strong>
+            {{ displayedSearches }}
+          </strong>
+
+          <p>
+            Searches made from your account.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            visibility
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            PERSONAL VIEWS
+          </span>
+
+          <strong>
+            {{ displayedPolicyViews }}
+          </strong>
+
+          <p>
+            Policies viewed by you.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            bookmark
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            SAVED POLICIES
+          </span>
+
+          <strong>
+            {{ displayedSavedPolicies }}
+          </strong>
+
+          <p>
+            Policies saved by you.
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- ORGANIZATION SUMMARY -->
+    <!-- ============================= -->
+
+    <section
+      class="summary-grid"
+      *ngIf="isOrganization()">
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            business
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            ORGANIZATION SEARCHES
+          </span>
+
+          <strong>
+            {{ displayedSearches }}
+          </strong>
+
+          <p>
+            Searches associated with your organization.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            visibility
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            ORGANIZATION VIEWS
+          </span>
+
+          <strong>
+            {{ displayedPolicyViews }}
+          </strong>
+
+          <p>
+            Policy views by organization users.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            bookmark
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            SAVED POLICIES
+          </span>
+
+          <strong>
+            {{ displayedSavedPolicies }}
+          </strong>
+
+          <p>
+            Policies saved by organization users.
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- OFFICIAL DEPARTMENT SUMMARY -->
+    <!-- ============================= -->
+
+    <section
+      class="summary-grid"
+      *ngIf="isOfficial()">
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            account_balance
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            DEPARTMENT SEARCHES
+          </span>
+
+          <strong>
+            {{ displayedSearches }}
+          </strong>
+
+          <p>
+            Searches within department activity.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            visibility
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            DEPARTMENT VIEWS
+          </span>
+
+          <strong>
+            {{ displayedPolicyViews }}
+          </strong>
+
+          <p>
+            Policy views within department activity.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            bookmark
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            DEPARTMENT SAVES
+          </span>
+
+          <strong>
+            {{ displayedSavedPolicies }}
+          </strong>
+
+          <p>
+            Policies saved within department activity.
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- ADMIN SUMMARY -->
+    <!-- ============================= -->
+
+    <section
+      class="summary-grid"
+      *ngIf="isAdmin()">
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            search
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            SEARCH ENGAGEMENT
+          </span>
+
+          <strong>
+            {{ displayedSearches }}
+          </strong>
+
+          <p>
+            Searches recorded across the platform.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            visibility
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            CONTENT ENGAGEMENT
+          </span>
+
+          <strong>
+            {{ displayedPolicyViews }}
+          </strong>
+
+          <p>
+            Policy views recorded across the platform.
+          </p>
+
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon">
+
+          <span class="material-symbol">
+            bookmark
+          </span>
+
+        </div>
+
+        <div>
+
+          <span>
+            USER INTEREST
+          </span>
+
+          <strong>
+            {{ displayedSavedPolicies }}
+          </strong>
+
+          <p>
+            Policies saved across the platform.
+          </p>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- DATA SOURCE -->
+    <section class="data-note">
+
+      <div class="note-icon">
+
+        <span class="material-symbol">
+          info
+        </span>
+
+      </div>
+
+      <div>
+
+        <strong>
+          Usage analytics data source
+        </strong>
+
+        <p>
+          This frontend currently uses mock usage data for development.
+          Backend usage-statistics APIs can be connected later without
+          changing the dashboard structure.
+        </p>
+
+      </div>
+
+    </section>
+
+
+  </div>
+
+</section>

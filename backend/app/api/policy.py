@@ -14,8 +14,10 @@ from app.crud.policy import (
     update_policy,
     update_policy_status,
 )
+from app.core.dependencies import require_roles
 from app.db.database import get_db
 from app.models.policy import PolicyStatus
+from app.models.user import User
 from app.schemas.policy import (
     PolicyApprovalUpdate,
     PolicyCreate,
@@ -38,10 +40,23 @@ router = APIRouter(
 def create_new_policy(
     policy_data: PolicyCreate,
     db: Session = Depends(get_db),
-    uploaded_by: Optional[UUID] = None,
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> PolicyResponse:
     """Create a new policy record with pending status."""
-    return create_policy(db=db, policy_data=policy_data, uploaded_by=uploaded_by)
+    if current_user.role.value == "government_official":
+        department = current_user.department
+        if department is None or policy_data.department != department.name:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Government officials may only create policies in their department.",
+            )
+    return create_policy(
+        db=db,
+        policy_data=policy_data,
+        uploaded_by=current_user.user_id,
+    )
 
 
 @router.get(
@@ -96,6 +111,9 @@ def update_existing_policy(
     policy_id: UUID,
     policy_data: PolicyUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> PolicyResponse:
     """Update editable fields of an existing policy."""
     policy = get_policy(db=db, policy_id=policy_id)
@@ -103,6 +121,16 @@ def update_existing_policy(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Policy with id {policy_id} not found.",
+        )
+    ensure_policy_scope(policy, current_user)
+    if (
+        current_user.role.value == "government_official"
+        and policy_data.department is not None
+        and policy_data.department != current_user.department.name
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Government officials may only assign policies to their department.",
         )
     return update_policy(db=db, policy=policy, policy_data=policy_data)
 
@@ -114,6 +142,9 @@ def update_existing_policy(
 def delete_existing_policy(
     policy_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> None:
     """Hard-delete a policy record."""
     policy = get_policy(db=db, policy_id=policy_id)
@@ -122,6 +153,7 @@ def delete_existing_policy(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Policy with id {policy_id} not found.",
         )
+    ensure_policy_scope(policy, current_user)
     delete_policy(db=db, policy=policy)
 
 
@@ -132,6 +164,9 @@ def delete_existing_policy(
 def archive_existing_policy(
     policy_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> PolicyResponse:
     """Archive a policy (set status to archived)."""
     policy = get_policy(db=db, policy_id=policy_id)
@@ -140,6 +175,7 @@ def archive_existing_policy(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Policy with id {policy_id} not found.",
         )
+    ensure_policy_scope(policy, current_user)
     return archive_policy(db=db, policy=policy)
 
 
@@ -151,6 +187,7 @@ def update_policy_approval_status(
     policy_id: UUID,
     approval_data: PolicyApprovalUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("administrator")),
 ) -> PolicyResponse:
     """Update the approval/publishing status of a policy."""
     policy = get_policy(db=db, policy_id=policy_id)
@@ -163,5 +200,16 @@ def update_policy_approval_status(
         db=db,
         policy=policy,
         new_status=approval_data.status,
-        approved_by=approval_data.approved_by,
+        approved_by=current_user.user_id,
     )
+
+
+def ensure_policy_scope(policy, current_user: User) -> None:
+    if current_user.role.value != "government_official":
+        return
+    department = current_user.department
+    if department is None or policy.department != department.name:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Government officials may only modify policies in their department.",
+        )

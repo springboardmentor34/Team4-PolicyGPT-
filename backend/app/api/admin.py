@@ -3,6 +3,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
+from app.core.dependencies import require_roles
+from app.models.user import User
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -34,7 +36,10 @@ def safe_count(db: Session, table_name: str) -> int:
 
 
 @router.get("/dashboard")
-def get_admin_dashboard(db: Session = Depends(get_db)):
+def get_admin_dashboard(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("administrator")),
+):
 
     # -----------------------------------
     # COUNTS

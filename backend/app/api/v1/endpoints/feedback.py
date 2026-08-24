@@ -8,7 +8,7 @@ from app.core.dependencies import get_current_user
 from app.db.database import get_db
 from app.models.feedback import Feedback
 from app.models.user import User, UserRole
-from app.schemas.feedback import FeedbackCreate, FeedbackResponse, FeedbackStatusUpdate
+from app.schemas.feedback import FeedbackCreate, FeedbackResponse, FeedbackStatusUpdate, PublicFeedbackResponse
 
 
 router = APIRouter(prefix="/feedback", tags=["Feedback"])
@@ -34,6 +34,12 @@ def require_feedback_staff(current_user: User = Depends(get_current_user)) -> Us
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only administrators and government officials can manage feedback.",
         )
+    return current_user
+
+
+def require_researcher(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role.value != UserRole.researcher.value:
+        raise HTTPException(status_code=403, detail="Researcher access required.")
     return current_user
 
 
@@ -72,7 +78,24 @@ def get_feedback_for_staff(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_feedback_staff),
 ) -> list[Feedback]:
-    return db.query(Feedback).order_by(Feedback.created_at.desc()).all()
+    query = db.query(Feedback).order_by(Feedback.created_at.desc())
+    if current_user.role.value == UserRole.government_official.value:
+        if current_user.department is None:
+            return []
+        query = query.join(User, Feedback.user_id == User.user_id).filter(
+            User.department_id == current_user.department_id
+        )
+    return query.all()
+
+
+@router.get("/public", response_model=list[PublicFeedbackResponse])
+def get_public_feedback(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_researcher),
+) -> list[Feedback]:
+    return db.query(Feedback).filter(
+        Feedback.status.in_(("resolved", "closed"))
+    ).order_by(Feedback.created_at.desc()).all()
 
 
 @router.patch("/{feedback_id}/status", response_model=FeedbackResponse)

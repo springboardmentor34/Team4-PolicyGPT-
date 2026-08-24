@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -19,6 +19,7 @@ import { AdminService } from '../../../core/services/admin.service';
 export class Admin implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   adminName: string = 'System Administrator';
 
@@ -95,6 +96,8 @@ export class Admin implements OnInit {
         this.auditLogList = data.auditLogList?.length
           ? data.auditLogList
           : this.auditLogList;
+
+        this.cdr.detectChanges();
       },
 
       error: (err) => {

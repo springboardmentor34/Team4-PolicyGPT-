@@ -31,6 +31,8 @@ class Feedback(Base):
         ForeignKey("users.user_id", ondelete="CASCADE"),
         nullable=False,
     )
+    policy_id = Column(UUID(as_uuid=True), ForeignKey("policies.policy_id", ondelete="SET NULL"), index=True)
+    scheme_id = Column(UUID(as_uuid=True), ForeignKey("schemes.scheme_id", ondelete="SET NULL"), index=True)
     subject = Column(String(255))
     category = Column(Enum(FeedbackCategory, name="feedback_category"), nullable=False)
     status = Column(
@@ -38,6 +40,7 @@ class Feedback(Base):
         nullable=False,
         default=FeedbackStatus.open,
     )
+    feedback_text = Column(Text)
     response_text = Column(Text)
     resolved_by = Column(
         UUID(as_uuid=True),
@@ -45,3 +48,4 @@ class Feedback(Base):
     )
     resolved_at = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
