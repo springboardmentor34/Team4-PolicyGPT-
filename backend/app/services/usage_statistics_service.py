@@ -33,8 +33,11 @@ def get_usage(db: Session, current_user: User, start_date: date | None = None, e
             role_query = role_query.filter(User.user_id.in_(scoped_user_ids))
         scoped_user_ids = [user_id for (user_id,) in role_query.all()]
         user_filter = None
+    from datetime import time
+    start_dt = datetime.combine(start_date, time.min) if start_date else None
+    end_dt = datetime.combine(end_date, time.max) if end_date else None
+
     def count(model, timestamp_column):
-        query = db.query(func.count())
         if model is SearchHistory:
             query = db.query(func.count(SearchHistory.search_id))
             timestamp_column = SearchHistory.searched_at
@@ -42,6 +45,8 @@ def get_usage(db: Session, current_user: User, start_date: date | None = None, e
             query = db.query(func.count(PolicyView.view_id))
         elif model is Application:
             query = db.query(func.count(Application.application_id))
+        elif model is SavedPolicy:
+            query = db.query(func.count(SavedPolicy.saved_id))
         else:
             query = db.query(func.count(EngagementEvent.event_id))
         query = query.select_from(model)
@@ -49,14 +54,49 @@ def get_usage(db: Session, current_user: User, start_date: date | None = None, e
             query = query.filter(model.user_id == user_filter)
         elif scoped_user_ids is not None:
             query = query.filter(model.user_id.in_(scoped_user_ids))
-        if start_date:
-            query = query.filter(timestamp_column >= start_date)
-        if end_date:
-            query = query.filter(timestamp_column <= end_date)
+        if start_dt:
+            query = query.filter(timestamp_column >= start_dt)
+        if end_dt:
+            query = query.filter(timestamp_column <= end_dt)
         return int(query.scalar() or 0)
     searches = count(SearchHistory, SearchHistory.searched_at)
     views = count(PolicyView, PolicyView.viewed_at)
     applications = count(Application, Application.submitted_at)
     saves = count(SavedPolicy, SavedPolicy.saved_at)
     engagement = count(EngagementEvent, EngagementEvent.created_at)
-    return {"searches": searches, "policy_views": views, "saved_policies": saves, "applications": applications, "engagement": views + searches + saves + engagement, "trend": []}
+
+    recent_searches_query = db.query(SearchHistory)
+    if user_filter:
+        recent_searches_query = recent_searches_query.filter(SearchHistory.user_id == user_filter)
+    elif scoped_user_ids is not None:
+        recent_searches_query = recent_searches_query.filter(SearchHistory.user_id.in_(scoped_user_ids))
+    recent_searches_query = recent_searches_query.order_by(SearchHistory.searched_at.desc()).limit(5)
+    recent_searches = [
+        {"query": s.query_text or "Policy Search", "searchedAt": s.searched_at.strftime("%b %d, %H:%M") if s.searched_at else "Recent"}
+        for s in recent_searches_query.all()
+    ]
+
+    user_activity = []
+    if role in ["administrator", "government_official"]:
+        roles_to_check = ["citizen", "government_official", "researcher", "organization", "administrator"]
+        for r in roles_to_check:
+            u_ids = [uid for (uid,) in db.query(User.user_id).filter(User.role == r).all()]
+            total_act = 0
+            if u_ids:
+                s_c = db.query(func.count(SearchHistory.search_id)).filter(SearchHistory.user_id.in_(u_ids)).scalar() or 0
+                v_c = db.query(func.count(PolicyView.view_id)).filter(PolicyView.user_id.in_(u_ids)).scalar() or 0
+                sv_c = db.query(func.count(SavedPolicy.saved_id)).filter(SavedPolicy.user_id.in_(u_ids)).scalar() or 0
+                total_act = s_c + v_c + sv_c
+            role_label = r.replace('_', ' ').title()
+            user_activity.append({"role": role_label, "total": total_act})
+
+    return {
+        "searches": searches,
+        "policy_views": views,
+        "saved_policies": saves,
+        "applications": applications,
+        "engagement": views + searches + saves + engagement,
+        "trend": [],
+        "user_activity": user_activity,
+        "recent_searches": recent_searches,
+    }

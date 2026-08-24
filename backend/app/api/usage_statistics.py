@@ -25,3 +25,41 @@ def record_event(request: UsageEventCreate, db: Session = Depends(get_db), curre
     db.commit()
     db.refresh(event)
     return {"event_id": event.event_id, "event_type": event.event_type}
+
+
+from app.models.search_history import SearchHistory
+from app.models.policy_view import PolicyView
+from app.models.saved_policy import SavedPolicy
+from app.schemas.usage_statistics import SearchTrackRequest, PolicyTrackRequest
+
+
+@router.post("/track/search", status_code=201)
+def track_search(request: SearchTrackRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    search_hist = SearchHistory(user_id=current_user.user_id, query_text=request.query_text, filters_json=request.filters_json)
+    db.add(search_hist)
+    db.commit()
+    db.refresh(search_hist)
+    return {"status": "success", "search_id": search_hist.search_id}
+
+
+@router.post("/track/view", status_code=201)
+def track_policy_view(request: PolicyTrackRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    view = PolicyView(user_id=current_user.user_id, policy_id=request.policy_id)
+    db.add(view)
+    db.commit()
+    db.refresh(view)
+    return {"status": "success", "view_id": view.view_id}
+
+
+@router.post("/track/save", status_code=201)
+def track_policy_save(request: PolicyTrackRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    # Check if already saved
+    existing = db.query(SavedPolicy).filter(SavedPolicy.user_id == current_user.user_id, SavedPolicy.policy_id == request.policy_id).first()
+    if existing:
+        return {"status": "already_saved", "saved_id": existing.saved_id}
+        
+    save = SavedPolicy(user_id=current_user.user_id, policy_id=request.policy_id)
+    db.add(save)
+    db.commit()
+    db.refresh(save)
+    return {"status": "success", "saved_id": save.saved_id}

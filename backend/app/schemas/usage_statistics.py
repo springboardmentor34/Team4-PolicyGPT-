@@ -12,6 +12,15 @@ class UsageEventCreate(BaseModel):
     metadata: Optional[dict[str, Any]] = None
 
 
+class SearchTrackRequest(BaseModel):
+    query_text: Optional[str] = None
+    filters_json: Optional[dict[str, Any]] = None
+
+
+class PolicyTrackRequest(BaseModel):
+    policy_id: UUID
+
+
 class UsageStatisticsResponse(BaseModel):
     searches: int
     policy_views: int

@@ -16,6 +16,7 @@ import { PolicyFilter } from '../../models/policy-filter.model';
 import { PolicyService } from '../../../../core/services/policy.service';
 import { SearchService } from '../../../../core/services/search.service';
 import { Auth } from '../../../../core/services/auth';
+import { UsageEventService } from '../../../../core/services/usage-event.service';
 
 @Component({
   selector: 'app-policy-list',
@@ -65,7 +66,8 @@ export class PolicyList implements OnInit {
   private policyService: PolicyService,
   private searchService: SearchService,
   private cdr: ChangeDetectorRef,
-  private auth: Auth
+  private auth: Auth,
+  private usageEventService: UsageEventService
 ) {}
 
   canCreatePolicy(): boolean {
@@ -147,6 +149,8 @@ export class PolicyList implements OnInit {
     );
 
     this.policies = result;
+    
+    this.usageEventService.trackSearch(this.searchKeyword, this.currentFilter);
 
     // Reset to first page after every search/filter/sort
     this.currentPage = 0;

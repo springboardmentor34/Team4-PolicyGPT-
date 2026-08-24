@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import {
   UsageStatisticsService,
@@ -45,7 +45,8 @@ export class UsageStatistics implements OnInit {
 
   constructor(
     private usageService: UsageStatisticsService,
-    private auth: Auth
+    private auth: Auth,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -108,6 +109,7 @@ export class UsageStatistics implements OnInit {
 
     this.loading = true;
     this.error = '';
+    this.cdr.detectChanges();
 
     this.usageService
       .getUsageStatistics(
@@ -131,11 +133,13 @@ export class UsageStatistics implements OnInit {
           this.calculateUserActivity();
 
           this.loading = false;
+          this.cdr.detectChanges();
         },
 
         error: () => {
           this.error = 'Unable to load usage statistics.';
           this.loading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -180,6 +184,7 @@ export class UsageStatistics implements OnInit {
         this.trendPeriodLabel = 'Last 6 months';
     }
 
+    this.cdr.detectChanges();
     this.loadUsageStatistics();
   }
 
@@ -191,7 +196,8 @@ export class UsageStatistics implements OnInit {
     const select = event.target as HTMLSelectElement;
 
     this.selectedUserType = select.value;
-
+    
+    this.cdr.detectChanges();
     this.loadUsageStatistics();
   }
 
