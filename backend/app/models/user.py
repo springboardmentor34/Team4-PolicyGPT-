@@ -2,8 +2,9 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Enum, String
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from app.db.database import Base
 
@@ -52,8 +53,14 @@ class User(Base):
 
     state = Column(String(100))
 
+    department_id = Column(UUID(as_uuid=True), ForeignKey("departments.department_id", ondelete="SET NULL"), index=True)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey("organizations.organization_id", ondelete="SET NULL"), index=True)
+
     created_at = Column(
         DateTime,
         default=datetime.utcnow,
         nullable=False,
     )
+
+    department = relationship("Department", back_populates="users")
+    organization = relationship("Organization", back_populates="users")

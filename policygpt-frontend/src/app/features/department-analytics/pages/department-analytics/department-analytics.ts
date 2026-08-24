@@ -11,6 +11,7 @@ import {
   SchemeService,
   Scheme,
 } from '../../../../core/services/scheme.service';
+import { DepartmentAnalyticsService } from '../../department-analytics.service';
 
 interface DepartmentAnalyticsRow {
   department: string;
@@ -38,6 +39,7 @@ export class DepartmentAnalytics implements OnInit {
   private readonly policyService = inject(PolicyService);
   private readonly schemeService = inject(SchemeService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly departmentAnalyticsService = inject(DepartmentAnalyticsService);
 
   loading = true;
   error = '';
@@ -63,7 +65,37 @@ export class DepartmentAnalytics implements OnInit {
   totalDepartments = 0;
 
   ngOnInit(): void {
-    this.loadAnalytics();
+    this.loadBackendAnalytics();
+  }
+
+  private loadBackendAnalytics(): void {
+    this.loading = true;
+    this.error = '';
+    this.departmentAnalyticsService.getRows().subscribe({
+      next: response => {
+        this.rows = response.items.map(row => ({
+          department: row.department,
+          policies: row.policies,
+          activePolicies: row.active_policies,
+          schemes: row.schemes,
+          activeSchemes: row.active_schemes,
+          total: row.policies + row.schemes,
+        }));
+        this.departments = ['All Departments', ...this.rows.map(row => row.department)];
+        this.totalPolicies = this.rows.reduce((total, row) => total + row.policies, 0);
+        this.activePolicies = this.rows.reduce((total, row) => total + row.activePolicies, 0);
+        this.totalSchemes = this.rows.reduce((total, row) => total + row.schemes, 0);
+        this.activeSchemes = this.rows.reduce((total, row) => total + row.activeSchemes, 0);
+        this.totalDepartments = this.rows.length;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.error = 'Unable to load department analytics data.';
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   loadAnalytics(): void {

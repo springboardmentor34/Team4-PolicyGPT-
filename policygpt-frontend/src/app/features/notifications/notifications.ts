@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import {
   Notification as ApiNotification,
   NotificationService,
@@ -22,8 +22,9 @@ interface NotificationItem {
   templateUrl: './notifications.html',
   styleUrl: './notifications.css'
 })
-export class Notifications {
+export class Notifications implements OnInit {
   private readonly notificationService = inject(NotificationService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   activeFilter = 'All';
 
@@ -43,6 +44,7 @@ export class Notifications {
   loadNotifications(): void {
     this.isLoading = true;
     this.errorMessage = '';
+    this.cdr.detectChanges();
 
     this.notificationService.getNotifications().subscribe({
       next: response => {
@@ -50,10 +52,12 @@ export class Notifications {
           this.toNotificationItem(notification),
         );
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Unable to load notifications.';
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -122,17 +126,23 @@ export class Notifications {
 
   setFilter(filter: string): void {
     this.activeFilter = filter;
+    this.cdr.detectChanges();
   }
 
   markAsRead(notification: NotificationItem): void {
     this.notificationService.markAsRead(notification.id).subscribe({
-      next: () => notification.read = true,
-      error: () => this.errorMessage = 'Unable to mark notification as read.',
+      next: () => {
+        notification.read = true;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Unable to mark notification as read.';
+        this.cdr.detectChanges();
+      },
     });
   }
 
   markAllAsRead(): void {
-
     this.notifications
       .filter(notification => !notification.read)
       .forEach(notification => this.markAsRead(notification));
@@ -144,20 +154,27 @@ export class Notifications {
         this.notifications = this.notifications.filter(
           notification => notification.id !== id,
         );
+        this.cdr.detectChanges();
       },
-      error: () => this.errorMessage = 'Unable to delete notification.',
+      error: () => {
+        this.errorMessage = 'Unable to delete notification.';
+        this.cdr.detectChanges();
+      },
     });
   }
 
   toggleEmail(): void {
     this.emailEnabled = !this.emailEnabled;
+    this.cdr.detectChanges();
   }
 
   toggleSms(): void {
     this.smsEnabled = !this.smsEnabled;
+    this.cdr.detectChanges();
   }
 
   toggleInApp(): void {
     this.inAppEnabled = !this.inAppEnabled;
+    this.cdr.detectChanges();
   }
 }

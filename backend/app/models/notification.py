@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, String
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.db.database import Base
@@ -32,10 +32,13 @@ class Notification(Base):
         index=True,
     )
     title = Column(String(255), nullable=False)
+    message = Column(Text)
     type = Column(Enum(NotificationType, name="notification_type"), nullable=False)
     channel = Column(
         Enum(NotificationChannel, name="notification_channel"),
         nullable=False,
     )
     is_read = Column(Boolean, nullable=False, default=False)
+    department = Column(String(150), index=True)
+    read_at = Column(DateTime)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)

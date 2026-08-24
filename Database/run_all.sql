@@ -6,6 +6,8 @@
 
 \i 00_extensions_and_types.sql
 \i tables/users.sql
+\i tables/departments.sql
+\i tables/organizations.sql
 \i tables/schemes.sql
 \i tables/policies.sql
 \i tables/eligibility_rules.sql
@@ -17,3 +19,5 @@
 \i tables/applications.sql
 \i tables/policy_versions.sql
 \i tables/saved_policies.sql
+\i tables/policy_views.sql
+\i tables/engagement_events.sql

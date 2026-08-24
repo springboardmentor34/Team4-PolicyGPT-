@@ -36,6 +36,13 @@
 
     </div>
 
+    @if (canCreatePolicy()) {
+      <button type="button" class="create-policy-button" (click)="navigateToCreatePolicy()">
+        <mat-icon>add</mat-icon>
+        Create Policy
+      </button>
+    }
+
   </header>
 
 

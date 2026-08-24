@@ -5,7 +5,126 @@
 -- Idempotency: Fully safe to run multiple times without data loss or duplication.
 -- =============================================================================
 
+ALTER TYPE report_type ADD VALUE IF NOT EXISTS 'policy_summary';
+ALTER TYPE report_type ADD VALUE IF NOT EXISTS 'department_summary';
+ALTER TYPE report_type ADD VALUE IF NOT EXISTS 'user_summary';
+
 BEGIN;
+
+CREATE TABLE IF NOT EXISTS departments (
+    department_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(150) NOT NULL UNIQUE,
+    ministry VARCHAR(150),
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS organizations (
+    organization_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS department_id UUID;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS organization_id UUID;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_department_id_fkey') THEN
+        ALTER TABLE users ADD CONSTRAINT users_department_id_fkey
+            FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_organization_id_fkey') THEN
+        ALTER TABLE users ADD CONSTRAINT users_organization_id_fkey
+            FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE SET NULL;
+    END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_users_department_id ON users(department_id);
+CREATE INDEX IF NOT EXISTS idx_users_organization_id ON users(organization_id);
+
+CREATE TABLE IF NOT EXISTS applications (
+    application_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    scheme_id UUID NOT NULL REFERENCES schemes(scheme_id) ON DELETE CASCADE,
+    status application_status NOT NULL DEFAULT 'submitted',
+    remarks TEXT,
+    submitted_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_applications_user ON applications(user_id);
+CREATE INDEX IF NOT EXISTS idx_applications_scheme ON applications(scheme_id);
+CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
+CREATE INDEX IF NOT EXISTS idx_applications_submitted_at ON applications(submitted_at DESC);
+
+CREATE TABLE IF NOT EXISTS policy_views (
+    view_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    policy_id UUID NOT NULL REFERENCES policies(policy_id) ON DELETE CASCADE,
+    viewed_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS engagement_events (
+    event_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    event_type VARCHAR(50) NOT NULL,
+    policy_id UUID REFERENCES policies(policy_id) ON DELETE SET NULL,
+    scheme_id UUID REFERENCES schemes(scheme_id) ON DELETE SET NULL,
+    metadata JSONB,
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_policy_views_user_time ON policy_views(user_id, viewed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_policy_views_policy_time ON policy_views(policy_id, viewed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_engagement_events_user_time ON engagement_events(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_engagement_events_type_time ON engagement_events(event_type, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS reports (
+    report_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    generated_by UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    policy_id UUID REFERENCES policies(policy_id) ON DELETE SET NULL,
+    scheme_id UUID REFERENCES schemes(scheme_id) ON DELETE SET NULL,
+    report_type report_type NOT NULL,
+    format report_format NOT NULL,
+    department VARCHAR(150),
+    filters JSONB,
+    file_path VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS search_history (
+    search_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    query_text VARCHAR(500),
+    filters_json JSONB,
+    searched_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS saved_policies (
+    saved_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    policy_id UUID NOT NULL REFERENCES policies(policy_id) ON DELETE CASCADE,
+    saved_at TIMESTAMP NOT NULL DEFAULT now(),
+    CONSTRAINT uq_saved_policies_user_policy UNIQUE (user_id, policy_id)
+);
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    log_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    action VARCHAR(100) NOT NULL,
+    entity_type VARCHAR(100) NOT NULL,
+    entity_id UUID,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_reports_generated_by ON reports(generated_by);
+CREATE INDEX IF NOT EXISTS idx_reports_department ON reports(department);
+CREATE INDEX IF NOT EXISTS idx_reports_created_at ON reports(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_reports_type_created ON reports(report_type, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_search_history_user_time ON search_history(user_id, searched_at DESC);
+CREATE INDEX IF NOT EXISTS idx_saved_policies_user_time ON saved_policies(user_id, saved_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_user_time ON audit_logs(user_id, created_at DESC);
 
 -- =============================================================================
 -- 1. NOTIFICATIONS TABLE UPDATES (3 new fields)

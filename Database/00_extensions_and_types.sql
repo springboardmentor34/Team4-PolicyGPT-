@@ -31,7 +31,7 @@ CREATE TYPE notification_type    AS ENUM ('info', 'alert', 'reminder', 'approval
 CREATE TYPE notification_channel AS ENUM ('in_app', 'email', 'sms');
 CREATE TYPE feedback_category    AS ENUM ('bug', 'suggestion', 'complaint', 'query');
 CREATE TYPE feedback_status      AS ENUM ('open', 'in_progress', 'resolved', 'closed');
-CREATE TYPE report_type          AS ENUM ('usage', 'scheme_summary', 'audit', 'custom');
+CREATE TYPE report_type          AS ENUM ('usage', 'scheme_summary', 'audit', 'custom', 'policy_summary', 'department_summary', 'user_summary');
 CREATE TYPE report_format        AS ENUM ('pdf', 'csv', 'xlsx');
 CREATE TYPE application_status   AS ENUM ('submitted', 'under_review', 'approved', 'rejected');
 CREATE TYPE policy_status        AS ENUM ('pending', 'approved', 'published', 'archived');

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Auth } from '../../../../core/services/auth';
+import { ReportsService } from '../../services/reports.service';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
 
@@ -35,6 +36,7 @@ interface ReportPreview {
   reportingPeriod: string;
   generatedOn: string;
   metrics: ReportMetric[];
+  records?: Array<Record<string, unknown>>;
 }
 
 @Component({
@@ -124,12 +126,45 @@ export class ReportsDashboard {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly auth: Auth,
+    private readonly reportsService: ReportsService,
   ) {
     this.currentRole = this.normalizeRole(
       this.auth.getRoleFromToken()
     );
 
     this.applyRolePermissions();
+    this.loadRecentReports();
+  }
+
+  private loadRecentReports(): void {
+    this.reportsService.list().subscribe({
+      next: reports => {
+        this.recentReports = reports.map((report, index) => ({
+          id: index + 1,
+          reportTypeId: this.toFrontendReportType(report.report_type),
+          name: this.toFrontendReportType(report.report_type),
+          type: report.report_type,
+          generatedOn: new Date(report.created_at).toLocaleDateString('en-IN'),
+          status: 'Ready',
+        }));
+        this.cdr.detectChanges();
+      },
+      error: () => undefined,
+    });
+  }
+
+  private toFrontendReportType(reportType: string): string {
+    return reportType === 'policy_summary' ? 'policy' :
+      reportType === 'department_summary' ? 'department' :
+        reportType === 'user_summary' ? 'user-activity' :
+          reportType === 'scheme_summary' ? 'scheme' : 'analytics';
+  }
+
+  private toApiReportType(reportType: string): string {
+    return reportType === 'policy' ? 'policy_summary' :
+      reportType === 'department' ? 'department_summary' :
+        reportType === 'user-activity' ? 'user_summary' :
+          reportType === 'scheme' ? 'scheme_summary' : 'usage';
   }
 
   // ============================================================
@@ -380,7 +415,8 @@ export class ReportsDashboard {
       return (
         report.id === 'department' ||
         report.id === 'policy' ||
-        report.id === 'scheme'
+        report.id === 'scheme' ||
+        report.id === 'user-activity'
       );
     }
 
@@ -395,14 +431,16 @@ export class ReportsDashboard {
       return (
         report.id === 'policy' ||
         report.id === 'scheme' ||
-        report.id === 'analytics'
+        report.id === 'analytics' ||
+        report.id === 'user-activity'
       );
     }
 
     if (this.isOrganization()) {
       return (
         report.id === 'policy' ||
-        report.id === 'scheme'
+        report.id === 'scheme' ||
+        report.id === 'user-activity'
       );
     }
 
@@ -488,30 +526,20 @@ export class ReportsDashboard {
 
     this.cdr.detectChanges();
 
-    /*
-     * Existing frontend-only simulation preserved.
-     */
-    window.setTimeout(() => {
-
-      this.recentReports = this.recentReports.map(
-        (item) => {
-
-          if (item.id === reportId) {
-            return {
-              ...item,
-              status: 'Ready',
-            };
-          }
-
-          return item;
-        },
-      );
-
-      this.isGenerating = false;
-
-      this.cdr.detectChanges();
-
-    }, 1500);
+    this.reportsService.create(this.toApiReportType(report.id), 'csv').subscribe({
+      next: () => {
+        this.recentReports = this.recentReports.map(item =>
+          item.id === reportId ? { ...item, status: 'Ready' } : item,
+        );
+        this.isGenerating = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.recentReports = this.recentReports.filter(item => item.id !== reportId);
+        this.isGenerating = false;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   // ============================================================
@@ -532,13 +560,13 @@ export class ReportsDashboard {
       return;
     }
 
-    this.previewData = this.buildReportPreview(
-      this.selectedReport,
-    );
-
-    this.isPreviewOpen = true;
-
-    this.cdr.detectChanges();
+    this.reportsService.preview(this.toApiReportType(this.selectedReport.id)).subscribe({
+      next: response => {
+        this.previewData = this.buildReportPreview(this.selectedReport!, response.data);
+        this.isPreviewOpen = true;
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   closePreview(): void {
@@ -570,14 +598,24 @@ export class ReportsDashboard {
       return;
     }
 
-    const preview = this.buildReportPreview(report);
-
-    if (format === 'PDF') {
-      this.exportPdf(preview);
-      return;
-    }
-
-    this.exportExcel(preview);
+    this.reportsService.preview(this.toApiReportType(report.id)).subscribe({
+      next: response => {
+        const preview = this.buildReportPreview(report, response.data);
+        if (format === 'PDF') {
+          this.exportPdf(preview);
+        } else {
+          this.exportExcel(preview);
+        }
+      },
+      error: () => {
+        const preview = this.buildReportPreview(report, []);
+        if (format === 'PDF') {
+          this.exportPdf(preview);
+        } else {
+          this.exportExcel(preview);
+        }
+      }
+    });
   }
 
   // ============================================================
@@ -598,17 +636,20 @@ export class ReportsDashboard {
       (item) => item.id === reportRecord.reportTypeId,
     );
 
-    if (!report) {
+    if (!report || !this.canAccessReport(report)) {
       return;
     }
 
-    if (!this.canAccessReport(report)) {
-      return;
-    }
-
-    const preview = this.buildReportPreview(report);
-
-    this.exportPdf(preview);
+    this.reportsService.preview(this.toApiReportType(report.id)).subscribe({
+      next: response => {
+        const preview = this.buildReportPreview(report, response.data);
+        this.exportPdf(preview);
+      },
+      error: () => {
+        const preview = this.buildReportPreview(report, []);
+        this.exportPdf(preview);
+      }
+    });
   }
 
   // ============================================================
@@ -618,102 +659,127 @@ export class ReportsDashboard {
   private exportPdf(preview: ReportPreview): void {
 
     const document = new jsPDF();
+    const pageWidth = document.internal.pageSize.getWidth();
+    const pageHeight = document.internal.pageSize.getHeight();
 
-    const pageWidth =
-      document.internal.pageSize.getWidth();
-
+    // Document Title Header
     document.setFont('helvetica', 'bold');
-    document.setFontSize(18);
+    document.setFontSize(20);
+    document.setTextColor(30, 41, 59);
     document.text('PolicyGPT', 20, 20);
 
     document.setFontSize(14);
-    document.text(preview.title, 20, 34);
+    document.setTextColor(51, 65, 85);
+    document.text(preview.title, 20, 32);
 
     document.setFont('helvetica', 'normal');
     document.setFontSize(10);
+    document.setTextColor(100, 116, 139);
 
-    document.text(
-      `Report Type: ${preview.type}`,
-      20,
-      48,
-    );
+    document.text(`Report Type: ${preview.type}`, 20, 44);
+    document.text(`Reporting Period: ${preview.reportingPeriod}`, 20, 52);
+    document.text(`Generated On: ${preview.generatedOn}`, 20, 60);
 
-    document.text(
-      `Reporting Period: ${preview.reportingPeriod}`,
-      20,
-      56,
-    );
+    document.setFontSize(10);
+    document.setTextColor(71, 85, 105);
+    const descriptionLines = document.splitTextToSize(preview.description, pageWidth - 40);
+    document.text(descriptionLines, 20, 72);
 
-    document.text(
-      `Generated On: ${preview.generatedOn}`,
-      20,
-      64,
-    );
+    let currentY = 90;
 
-    document.setFontSize(11);
-
-    const descriptionLines =
-      document.splitTextToSize(
-        preview.description,
-        pageWidth - 40,
-      );
-
-    document.text(
-      descriptionLines,
-      20,
-      78,
-    );
-
-    let currentY = 105;
-
+    // Key Metrics Section
     document.setFont('helvetica', 'bold');
     document.setFontSize(12);
+    document.setTextColor(30, 41, 59);
+    document.text('Key Summary Metrics', 20, currentY);
 
-    document.text(
-      'Key Metrics',
-      20,
-      currentY,
-    );
-
-    currentY += 12;
+    currentY += 8;
 
     document.setFont('helvetica', 'normal');
     document.setFontSize(10);
+    document.setTextColor(51, 65, 85);
 
     preview.metrics.forEach((metric) => {
-
-      document.text(
-        `${metric.label}: ${metric.value}`,
-        25,
-        currentY,
-      );
-
-      currentY += 10;
-
+      document.text(`• ${metric.label}: ${metric.value}`, 25, currentY);
+      currentY += 7;
     });
 
-    currentY += 12;
+    currentY += 10;
 
-    document.setFontSize(9);
+    // Data Table Section
+    if (preview.records && preview.records.length > 0) {
+      if (currentY > pageHeight - 60) {
+        document.addPage();
+        currentY = 20;
+      }
 
-    const note =
-      'This report was generated using the current PolicyGPT frontend reporting dataset. Live reporting data will be connected when the reporting API is available.';
+      document.setFont('helvetica', 'bold');
+      document.setFontSize(12);
+      document.setTextColor(30, 41, 59);
+      document.text('Data Records', 20, currentY);
+      currentY += 8;
 
-    const noteLines =
-      document.splitTextToSize(
-        note,
-        pageWidth - 40,
-      );
+      // Determine columns based on record keys (excluding raw IDs if cleaner)
+      const firstRow = preview.records[0];
+      const allKeys = Object.keys(firstRow);
+      // Filter out long uuid keys if display names exist
+      const displayKeys = allKeys.filter(k => !k.endsWith('_id') || allKeys.length <= 2);
+      const activeKeys = displayKeys.length > 0 ? displayKeys : allKeys;
 
-    document.text(
-      noteLines,
-      20,
-      currentY,
-    );
+      // Render table header
+      document.setFont('helvetica', 'bold');
+      document.setFontSize(9);
+      document.setFillColor(241, 245, 249);
+      document.rect(20, currentY - 5, pageWidth - 40, 8, 'F');
+      document.setTextColor(30, 41, 59);
 
-    document.save(
-      `${this.getSafeFileName(preview.title)}.pdf`,
-    );
+      const colWidth = (pageWidth - 40) / activeKeys.length;
+      activeKeys.forEach((key, colIndex) => {
+        const headerTitle = key.replace(/_/g, ' ').toUpperCase();
+        document.text(headerTitle, 22 + (colIndex * colWidth), currentY);
+      });
+
+      currentY += 8;
+      document.setFont('helvetica', 'normal');
+      document.setFontSize(8);
+      document.setTextColor(71, 85, 105);
+
+      preview.records.forEach((row, rowIndex) => {
+        if (currentY > pageHeight - 20) {
+          document.addPage();
+          currentY = 20;
+
+          // Repeat header on new page
+          document.setFont('helvetica', 'bold');
+          document.setFontSize(9);
+          document.setFillColor(241, 245, 249);
+          document.rect(20, currentY - 5, pageWidth - 40, 8, 'F');
+          document.setTextColor(30, 41, 59);
+          activeKeys.forEach((key, colIndex) => {
+            document.text(key.replace(/_/g, ' ').toUpperCase(), 22 + (colIndex * colWidth), currentY);
+          });
+          currentY += 8;
+          document.setFont('helvetica', 'normal');
+          document.setFontSize(8);
+          document.setTextColor(71, 85, 105);
+        }
+
+        if (rowIndex % 2 === 1) {
+          document.setFillColor(248, 250, 252);
+          document.rect(20, currentY - 4, pageWidth - 40, 7, 'F');
+        }
+
+        activeKeys.forEach((key, colIndex) => {
+          const rawVal = String(row[key] ?? '-');
+          const truncated = rawVal.length > 28 ? rawVal.substring(0, 25) + '...' : rawVal;
+          document.text(truncated, 22 + (colIndex * colWidth), currentY);
+        });
+
+        currentY += 7;
+      });
+    }
+
+    document.save(`${this.getSafeFileName(preview.title)}.pdf`);
   }
 
   // ============================================================
@@ -722,8 +788,11 @@ export class ReportsDashboard {
 
   private exportExcel(preview: ReportPreview): void {
 
+    const workbook = XLSX.utils.book_new();
+
+    // Summary Sheet
     const reportInformation = [
-      ['PolicyGPT Report'],
+      ['PolicyGPT Official Report'],
       [],
       ['Report Title', preview.title],
       ['Report Type', preview.type],
@@ -731,54 +800,22 @@ export class ReportsDashboard {
       ['Generated On', preview.generatedOn],
       [],
       ['Description', preview.description],
+      [],
+      ['Summary Metrics'],
+      ...preview.metrics.map((metric) => [metric.label, metric.value]),
     ];
 
-    const metrics = [
-      ['Metric', 'Value'],
-      ...preview.metrics.map((metric) => [
-        metric.label,
-        metric.value,
-      ]),
-    ];
+    const reportSheet = XLSX.utils.aoa_to_sheet(reportInformation);
+    reportSheet['!cols'] = [{ wch: 28 }, { wch: 65 }];
+    XLSX.utils.book_append_sheet(workbook, reportSheet, 'Summary');
 
-    const workbook = XLSX.utils.book_new();
+    // Data Records Sheet
+    if (preview.records && preview.records.length > 0) {
+      const dataSheet = XLSX.utils.json_to_sheet(preview.records);
+      XLSX.utils.book_append_sheet(workbook, dataSheet, 'Data Records');
+    }
 
-    const reportSheet =
-      XLSX.utils.aoa_to_sheet(
-        reportInformation,
-      );
-
-    const metricsSheet =
-      XLSX.utils.aoa_to_sheet(
-        metrics,
-      );
-
-    reportSheet['!cols'] = [
-      { wch: 24 },
-      { wch: 65 },
-    ];
-
-    metricsSheet['!cols'] = [
-      { wch: 32 },
-      { wch: 22 },
-    ];
-
-    XLSX.utils.book_append_sheet(
-      workbook,
-      reportSheet,
-      'Report',
-    );
-
-    XLSX.utils.book_append_sheet(
-      workbook,
-      metricsSheet,
-      'Key Metrics',
-    );
-
-    XLSX.writeFile(
-      workbook,
-      `${this.getSafeFileName(preview.title)}.xlsx`,
-    );
+    XLSX.writeFile(workbook, `${this.getSafeFileName(preview.title)}.xlsx`);
   }
 
   // ============================================================
@@ -787,128 +824,8 @@ export class ReportsDashboard {
 
   private buildReportPreview(
     report: ReportType,
+    data?: Array<Record<string, unknown>>,
   ): ReportPreview {
-
-    const metricsByReport: Record<
-      string,
-      ReportMetric[]
-    > = {
-
-      policy: [
-        {
-          label: 'Total Policies',
-          value: '320',
-          icon: 'description',
-        },
-        {
-          label: 'Policy Downloads',
-          value: '14,560',
-          icon: 'download',
-        },
-        {
-          label: 'Active Categories',
-          value: '18',
-          icon: 'category',
-        },
-        {
-          label: 'Recently Updated',
-          value: '42',
-          icon: 'update',
-        },
-      ],
-
-      scheme: [
-        {
-          label: 'Total Schemes',
-          value: '186',
-          icon: 'account_balance_wallet',
-        },
-        {
-          label: 'Scheme Applications',
-          value: '9,820',
-          icon: 'assignment',
-        },
-        {
-          label: 'Active Schemes',
-          value: '142',
-          icon: 'verified',
-        },
-        {
-          label: 'New This Month',
-          value: '12',
-          icon: 'add_circle_outline',
-        },
-      ],
-
-      'user-activity': [
-        {
-          label: 'Total Users',
-          value: '1,250',
-          icon: 'group',
-        },
-        {
-          label: 'New Registrations',
-          value: '1,320',
-          icon: 'person_add',
-        },
-        {
-          label: 'Active Sessions',
-          value: '486',
-          icon: 'login',
-        },
-        {
-          label: 'Reports Generated',
-          value: '78',
-          icon: 'assessment',
-        },
-      ],
-
-      department: [
-        {
-          label: 'Departments Covered',
-          value: '24',
-          icon: 'business',
-        },
-        {
-          label: 'Policies Managed',
-          value: '320',
-          icon: 'description',
-        },
-        {
-          label: 'Department Activities',
-          value: '2,840',
-          icon: 'timeline',
-        },
-        {
-          label: 'Active Departments',
-          value: '21',
-          icon: 'verified',
-        },
-      ],
-
-      analytics: [
-        {
-          label: 'Policy Downloads',
-          value: '14,560',
-          icon: 'download',
-        },
-        {
-          label: 'Scheme Applications',
-          value: '9,820',
-          icon: 'assignment',
-        },
-        {
-          label: 'New Registrations',
-          value: '1,320',
-          icon: 'person_add',
-        },
-        {
-          label: 'Reports Generated',
-          value: '78',
-          icon: 'assessment',
-        },
-      ],
-    };
 
     return {
       title: report.title,
@@ -916,8 +833,85 @@ export class ReportsDashboard {
       type: this.getReportTypeLabel(report),
       reportingPeriod: 'August 2026',
       generatedOn: this.getTodayDate(),
-      metrics: metricsByReport[report.id] ?? [],
+      metrics: this.buildMetricsFromData(report, data || []),
+      records: data || [],
     };
+  }
+
+  private buildMetricsFromData(report: ReportType, data: Array<Record<string, unknown>>): ReportMetric[] {
+    if (!data || data.length === 0) {
+      return [
+        { label: `${report.title} Records`, value: '0', icon: report.icon },
+        { label: 'Status', value: 'No records found', icon: 'info' }
+      ];
+    }
+
+    switch (report.id) {
+      case 'policy': {
+        const total = data.length;
+        const approved = data.filter(d => ['approved', 'published'].includes(String(d['status']).toLowerCase())).length;
+        const categories = new Set(data.map(d => d['category']).filter(Boolean)).size;
+        const depts = new Set(data.map(d => d['department']).filter(Boolean)).size;
+        return [
+          { label: 'Total Policies', value: String(total), icon: 'description' },
+          { label: 'Active Policies', value: String(approved), icon: 'verified' },
+          { label: 'Active Categories', value: String(categories), icon: 'category' },
+          { label: 'Departments Covered', value: String(depts), icon: 'business' }
+        ];
+      }
+
+      case 'scheme': {
+        const total = data.length;
+        const active = data.filter(d => String(d['status']).toLowerCase() === 'active').length;
+        const depts = new Set(data.map(d => d['department']).filter(Boolean)).size;
+        return [
+          { label: 'Total Schemes', value: String(total), icon: 'account_balance_wallet' },
+          { label: 'Active Schemes', value: String(active), icon: 'verified' },
+          { label: 'Departments Covered', value: String(depts), icon: 'business' }
+        ];
+      }
+
+      case 'department': {
+        const totalDepts = data.length;
+        const totalPolicies = data.reduce((acc, d) => acc + (Number(d['policies']) || 0), 0);
+        const activePolicies = data.reduce((acc, d) => acc + (Number(d['active_policies']) || 0), 0);
+        const totalSchemes = data.reduce((acc, d) => acc + (Number(d['schemes']) || 0), 0);
+        return [
+          { label: 'Departments Covered', value: String(totalDepts), icon: 'business' },
+          { label: 'Policies Managed', value: String(totalPolicies), icon: 'description' },
+          { label: 'Active Policies', value: String(activePolicies), icon: 'verified' },
+          { label: 'Total Schemes', value: String(totalSchemes), icon: 'account_balance_wallet' }
+        ];
+      }
+
+      case 'user-activity': {
+        const totalUsers = data.reduce((acc, d) => acc + (Number(d['user_count']) || 0), 0);
+        const rolesCount = data.length;
+        const citizenCount = data.find(d => String(d['role']).toLowerCase() === 'citizen')?.['user_count'] ?? 0;
+        return [
+          { label: 'Total Users', value: String(totalUsers), icon: 'group' },
+          { label: 'User Roles', value: String(rolesCount), icon: 'badge' },
+          { label: 'Citizens Registered', value: String(citizenCount), icon: 'person' }
+        ];
+      }
+
+      case 'analytics': {
+        const total = data.length;
+        const approved = data.filter(d => String(d['status']).toLowerCase() === 'approved').length;
+        const pending = data.filter(d => String(d['status']).toLowerCase() === 'pending').length;
+        return [
+          { label: 'Total Applications', value: String(total), icon: 'assignment' },
+          { label: 'Approved Applications', value: String(approved), icon: 'check_circle' },
+          { label: 'Pending Applications', value: String(pending), icon: 'hourglass_top' }
+        ];
+      }
+
+      default:
+        return [
+          { label: 'Total Records', value: String(data.length), icon: report.icon },
+          { label: 'Generated Data Rows', value: String(data.length), icon: 'table_view' }
+        ];
+    }
   }
 
   // ============================================================
