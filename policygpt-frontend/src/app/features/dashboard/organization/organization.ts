@@ -14,29 +14,7 @@ export class Organization {
 
   constructor(private router: Router) {}
 
-  // =====================================================
-  // SIDEBAR NAVIGATION
-  // =====================================================
 
-  openOverview(): void {
-    this.router.navigate(['/dashboard/organization']);
-  }
-
-  openPolicies(): void {
-    this.router.navigate(['/policies']);
-  }
-
-  openSchemes(): void {
-    this.router.navigate(['/schemes']);
-  }
-
-  openEligibility(): void {
-    this.router.navigate(['/eligibility']);
-  }
-
-  openPolicyComparison(): void {
-    this.router.navigate(['/policies/comparison']);
-  }
 
   // =====================================================
   // ORGANIZATION SECTION

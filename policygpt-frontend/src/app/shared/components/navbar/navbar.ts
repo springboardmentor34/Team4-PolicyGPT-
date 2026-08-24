@@ -1,14 +1,6 @@
-import {
-  Component,
-  OnInit,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  NavigationEnd,
-} from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 
 import { filter } from 'rxjs';
 
@@ -22,38 +14,25 @@ interface NavItem {
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-  ],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class Navbar implements OnInit {
-
   constructor(
     private router: Router,
     private auth: Auth,
   ) {}
 
   ngOnInit(): void {
-
     // Refresh navbar after login/logout/navigation
-    this.router.events
-      .pipe(
-        filter(
-          (event) =>
-            event instanceof NavigationEnd
-        )
-      )
-      .subscribe(() => {
-        // Trigger change detection by updating state
-        this.updateAuthState();
-      });
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      // Trigger change detection by updating state
+      this.updateAuthState();
+    });
 
     this.updateAuthState();
   }
-
 
   // ==========================================
   // AUTHENTICATION
@@ -63,32 +42,24 @@ export class Navbar implements OnInit {
     return !!localStorage.getItem('access_token');
   }
 
-
   private updateAuthState(): void {
     // Accessing the getter is enough for Angular
     // to reevaluate the navbar after navigation.
     this.auth.getRoleFromToken();
   }
 
-
   // ==========================================
   // ROLE
   // ==========================================
 
   get normalizedRole(): string {
-
     if (!this.isLoggedIn) {
       return 'guest';
     }
 
-    const role =
-      this.auth
-        .getRoleFromToken()
-        ?.toLowerCase()
-        .trim();
+    const role = this.auth.getRoleFromToken()?.toLowerCase().trim();
 
     switch (role) {
-
       case 'admin':
       case 'administrator':
         return 'admin';
@@ -113,15 +84,12 @@ export class Navbar implements OnInit {
     }
   }
 
-
   // ==========================================
   // DISPLAY ROLE
   // ==========================================
 
   get role(): string {
-
     switch (this.normalizedRole) {
-
       case 'admin':
         return 'Administrator';
 
@@ -142,19 +110,16 @@ export class Navbar implements OnInit {
     }
   }
 
-
   // ==========================================
   // DASHBOARD
   // ==========================================
 
   get dashboardRoute(): string {
-
     if (!this.isLoggedIn) {
       return '/';
     }
 
     switch (this.normalizedRole) {
-
       case 'admin':
         return '/admin';
 
@@ -168,26 +133,23 @@ export class Navbar implements OnInit {
         return '/citizen';
 
       case 'organization':
-        return '/official';
+        return '/organization';
 
       default:
         return '/';
     }
   }
 
-
   // ==========================================
   // NAVIGATION
   // ==========================================
 
   get navItems(): NavItem[] {
-
     // -------------------------------
     // GUEST
     // -------------------------------
 
     if (!this.isLoggedIn) {
-
       return [
         {
           label: 'Home',
@@ -204,15 +166,12 @@ export class Navbar implements OnInit {
       ];
     }
 
-
     // -------------------------------
     // ADMIN
     // -------------------------------
 
     switch (this.normalizedRole) {
-
       case 'admin':
-
         return [
           {
             label: 'Dashboard',
@@ -247,18 +206,16 @@ export class Navbar implements OnInit {
             route: '/department-analytics',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
-
 
       // -------------------------------
       // OFFICIAL
       // -------------------------------
 
       case 'official':
-
         return [
           {
             label: 'Dashboard',
@@ -293,18 +250,16 @@ export class Navbar implements OnInit {
             route: '/department-analytics',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
-
 
       // -------------------------------
       // RESEARCHER
       // -------------------------------
 
       case 'researcher':
-
         return [
           {
             label: 'Dashboard',
@@ -335,18 +290,16 @@ export class Navbar implements OnInit {
             route: '/department-analytics',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
-
 
       // -------------------------------
       // CITIZEN
       // -------------------------------
 
       case 'citizen':
-
         return [
           {
             label: 'Dashboard',
@@ -377,23 +330,20 @@ export class Navbar implements OnInit {
             route: '/reports',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
-          
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
-
 
       // -------------------------------
       // ORGANIZATION
       // -------------------------------
 
       case 'organization':
-
         return [
           {
             label: 'Dashboard',
-            route: '/official',
+            route: '/organization',
           },
           {
             label: 'Policies',
@@ -416,14 +366,12 @@ export class Navbar implements OnInit {
             route: '/reports',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
 
-
       default:
-
         return [
           {
             label: 'Home',
@@ -441,13 +389,11 @@ export class Navbar implements OnInit {
     }
   }
 
-
   // ==========================================
   // LOGOUT
   // ==========================================
 
   logout(): void {
-
     localStorage.removeItem('access_token');
 
     this.router.navigate(['/']);

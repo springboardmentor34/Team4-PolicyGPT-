@@ -2,4 +2,6 @@ export type UserRole =
   | 'Citizen'
   | 'Official'
   | 'Researcher'
-  | 'Admin';
+  | 'Organization'
+  | 'Admin'
+  | 'Guest';
