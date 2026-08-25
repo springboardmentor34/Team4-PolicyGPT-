@@ -1,27 +1,20 @@
 <main class="official-dashboard">
-
   <!-- HERO -->
   <section class="dashboard-hero">
     <div>
-      <span class="eyebrow">
-        GOVERNMENT WORKSPACE
-      </span>
+      <span class="eyebrow"> GOVERNMENT WORKSPACE </span>
 
-      <h1>
-        Government Official Dashboard
-      </h1>
+      <h1>Government Official Dashboard</h1>
 
       <p>
-        Welcome, {{ officialName }}. Manage policies, schemes,
-        approvals and citizen services from one place.
+        Welcome, {{ officialName }}. Manage policies, schemes, approvals and citizen services from
+        one place.
       </p>
     </div>
   </section>
 
-
   <!-- STATISTICS -->
   <section class="stats-grid">
-
     <mat-card class="stat-card">
       <div class="stat-icon blue">
         <mat-icon>policy</mat-icon>
@@ -33,7 +26,6 @@
         <small>Across government departments</small>
       </div>
     </mat-card>
-
 
     <mat-card class="stat-card">
       <div class="stat-icon green">
@@ -47,7 +39,6 @@
       </div>
     </mat-card>
 
-
     <mat-card class="stat-card">
       <div class="stat-icon orange">
         <mat-icon>account_balance</mat-icon>
@@ -60,7 +51,6 @@
       </div>
     </mat-card>
 
-
     <mat-card class="stat-card">
       <div class="stat-icon red">
         <mat-icon>notifications_active</mat-icon>
@@ -72,39 +62,23 @@
         <small>Recent system notifications</small>
       </div>
     </mat-card>
-
   </section>
-
 
   <!-- MANAGEMENT -->
   <section class="dashboard-section">
-
     <div class="section-heading">
       <div>
-        <span class="section-label">
-          MANAGEMENT CENTER
-        </span>
+        <span class="section-label"> MANAGEMENT CENTER </span>
 
-        <h2>
-          Manage Policies &amp; Schemes
-        </h2>
+        <h2>Manage Policies &amp; Schemes</h2>
 
-        <p>
-          Access the tools required to manage government policy
-          and scheme operations.
-        </p>
+        <p>Access the tools required to manage government policy and scheme operations.</p>
       </div>
     </div>
 
-
     <div class="management-grid">
-
       @for (action of managementActions; track action.title) {
-
-        <mat-card
-          class="management-card"
-          (click)="navigate(action.route)">
-
+        <mat-card class="management-card" (click)="navigate(action.route)">
           <div class="management-icon">
             <mat-icon>
               {{ action.icon }}
@@ -112,7 +86,6 @@
           </div>
 
           <div class="management-content">
-
             <h3>
               {{ action.title }}
             </h3>
@@ -124,61 +97,35 @@
             <button
               mat-button
               class="management-button"
-              (click)="$event.stopPropagation(); navigate(action.route)">
-
+              (click)="$event.stopPropagation(); navigate(action.route)"
+            >
               {{ action.label }}
 
-              <mat-icon>
-                arrow_forward
-              </mat-icon>
-
+              <mat-icon> arrow_forward </mat-icon>
             </button>
-
           </div>
-
         </mat-card>
-
       }
-
     </div>
-
   </section>
-
 
   <!-- POLICY STATUS + DEPARTMENT -->
   <section class="content-grid">
-
     <mat-card class="dashboard-card">
-
       <div class="card-heading">
-
         <div>
-          <span class="section-label">
-            POLICY WORKFLOW
-          </span>
+          <span class="section-label"> POLICY WORKFLOW </span>
 
-          <h2>
-            Policy Status
-          </h2>
+          <h2>Policy Status</h2>
         </div>
 
-        <mat-icon>
-          assessment
-        </mat-icon>
-
+        <mat-icon> assessment </mat-icon>
       </div>
 
-
       <div class="status-list">
-
         @for (policy of policyStats; track policy.title) {
-
-          <div
-            class="status-row"
-            (click)="navigate(policy.route)">
-
+          <div class="status-row" (click)="navigate(policy.route)">
             <div class="status-left">
-
               <div class="status-icon">
                 <mat-icon>
                   {{ policy.icon }}
@@ -188,171 +135,99 @@
               <span>
                 {{ policy.title }}
               </span>
-
             </div>
 
             <strong>
               {{ policy.count }}
             </strong>
-
           </div>
-
         }
-
       </div>
-
     </mat-card>
-
 
     <!-- DEPARTMENTS -->
     <mat-card class="dashboard-card">
-
       <div class="card-heading">
-
         <div>
-          <span class="section-label">
-            DEPARTMENT OVERVIEW
-          </span>
+          <span class="section-label"> DEPARTMENT OVERVIEW </span>
 
-          <h2>
-            Department Reports
-          </h2>
+          <h2>Department Reports</h2>
         </div>
 
-        <mat-icon>
-          account_balance
-        </mat-icon>
-
+        <mat-icon> account_balance </mat-icon>
       </div>
 
-
       <div class="department-list">
-
-        @for (report of departmentReports; track report.department) {
-
-          <div class="department-row">
-
+        @for (report of departmentReports; track report.departmentId) {
+          <div class="department-row" (click)="openDepartmentAnalytics(report.departmentId)">
             <div>
-
               <strong>
                 {{ report.department }}
               </strong>
 
-              <span>
-                {{ report.policies }} policies ·
-                {{ report.schemes }} schemes
-              </span>
-
+              <span> {{ report.policies }} policies · {{ report.schemes }} schemes </span>
             </div>
 
-            <mat-icon>
-              arrow_forward
-            </mat-icon>
-
+            <mat-icon> arrow_forward </mat-icon>
           </div>
-
         }
-
       </div>
-
     </mat-card>
-
   </section>
-
 
   <!-- SCHEME ANALYTICS + RECENT ACTIVITY -->
   <section class="content-grid">
-
     <mat-card class="dashboard-card">
-
       <div class="card-heading">
-
         <div>
-          <span class="section-label">
-            SCHEME ANALYTICS
-          </span>
+          <span class="section-label"> SCHEME ANALYTICS </span>
 
-          <h2>
-            Most Used Schemes
-          </h2>
+          <h2>Most Used Schemes</h2>
         </div>
 
-        <mat-icon>
-          trending_up
-        </mat-icon>
-
+        <mat-icon> trending_up </mat-icon>
       </div>
 
-
       <div class="scheme-list">
-
         @for (scheme of schemeUsage; track scheme.scheme) {
-
           <div class="scheme-row">
-
             <div class="scheme-info">
-
               <div class="scheme-icon">
-                <mat-icon>
-                  account_balance
-                </mat-icon>
+                <mat-icon> account_balance </mat-icon>
               </div>
 
               <div>
-
                 <strong>
                   {{ scheme.scheme }}
                 </strong>
 
-                <span>
-                  Citizen usage
-                </span>
-
+                <span> Citizen usage </span>
               </div>
-
             </div>
 
             <strong class="scheme-users">
               {{ scheme.users | number }}
             </strong>
-
           </div>
-
         }
-
       </div>
-
     </mat-card>
-
 
     <!-- RECENT ACTIVITY -->
     <mat-card class="dashboard-card">
-
       <div class="card-heading">
-
         <div>
-          <span class="section-label">
-            SYSTEM ACTIVITY
-          </span>
+          <span class="section-label"> SYSTEM ACTIVITY </span>
 
-          <h2>
-            Recent Updates
-          </h2>
+          <h2>Recent Updates</h2>
         </div>
 
-        <mat-icon>
-          history
-        </mat-icon>
-
+        <mat-icon> history </mat-icon>
       </div>
 
-
       <div class="activity-list">
-
         @for (activity of recentActivity; track activity.title) {
-
           <div class="activity-row">
-
             <div class="activity-icon">
               <mat-icon>
                 {{ activity.icon }}
@@ -360,7 +235,6 @@
             </div>
 
             <div>
-
               <strong>
                 {{ activity.title }}
               </strong>
@@ -372,84 +246,43 @@
               <span>
                 {{ activity.time }}
               </span>
-
             </div>
-
           </div>
-
         }
-
       </div>
-
     </mat-card>
-
   </section>
-
 
   <!-- QUICK MANAGEMENT -->
   <section class="quick-panel">
-
     <div>
+      <span class="section-label"> QUICK MANAGEMENT </span>
 
-      <span class="section-label">
-        QUICK MANAGEMENT
-      </span>
+      <h2>Need to make a change?</h2>
 
-      <h2>
-        Need to make a change?
-      </h2>
-
-      <p>
-        Quickly access the most frequently used government
-        management tools.
-      </p>
-
+      <p>Quickly access the most frequently used government management tools.</p>
     </div>
-
 
     <div class="quick-actions">
-
-      <button
-        mat-stroked-button
-        (click)="navigate('/policies/add')">
-
+      <button mat-stroked-button (click)="navigate('/policies/add')">
         <mat-icon>add</mat-icon>
         Add Policy
-
       </button>
 
-
-      <button
-        mat-stroked-button
-        (click)="navigate('/policies/approval')">
-
+      <button mat-stroked-button (click)="navigate('/policies/approval')">
         <mat-icon>fact_check</mat-icon>
         Review Approvals
-
       </button>
 
-
-      <button
-        mat-stroked-button
-        (click)="navigate('/policies/comparison')">
-
+      <button mat-stroked-button (click)="navigate('/policies/comparison')">
         <mat-icon>compare_arrows</mat-icon>
         Compare Policies
-
       </button>
 
-
-      <button
-        mat-stroked-button
-        (click)="navigate('/schemes')">
-
+      <button mat-stroked-button (click)="navigate('/schemes')">
         <mat-icon>account_balance</mat-icon>
         Manage Schemes
-
       </button>
-
     </div>
-
   </section>
-
 </main>
