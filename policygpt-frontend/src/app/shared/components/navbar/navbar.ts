@@ -181,6 +181,10 @@ export class Navbar implements OnInit {
             label: 'Policies',
             route: '/policies',
           },
+           {
+      label: 'Policy Approval',
+      route: '/policies/approval',
+    },
           {
             label: 'Schemes',
             route: '/schemes',
@@ -244,6 +248,10 @@ export class Navbar implements OnInit {
           {
             label: 'Reports',
             route: '/reports',
+          },
+          {
+            label: 'Departments',
+            route: '/departments',
           },
           {
             label: 'Department Analytics',

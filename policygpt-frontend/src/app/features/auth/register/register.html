@@ -129,7 +129,7 @@
 
     <mat-label>Select Role</mat-label>
 
-    <mat-select formControlName="role">
+    <mat-select formControlName="role" (selectionChange)="onRoleChange()">
 
       @for (role of roles; track role) {
 
@@ -151,6 +151,57 @@
     }
 
   </mat-form-field>
+
+  <!-- Department - Government Official Only -->
+
+@if (isGovernmentOfficial) {
+
+  <mat-form-field
+    appearance="outline"
+    class="auth-field">
+
+    <mat-label>
+      Department
+    </mat-label>
+
+    <mat-select
+      formControlName="department">
+
+      @for (
+        department of departments;
+        track department.id
+      ) {
+
+        <mat-option
+          [value]="department.id">
+
+          {{ department.name }}
+
+        </mat-option>
+
+      }
+
+    </mat-select>
+
+    <mat-icon matSuffix>
+      account_balance
+    </mat-icon>
+
+
+    @if (
+      registerForm.get('department')?.hasError('required') &&
+      registerForm.get('department')?.touched
+    ) {
+
+      <mat-error>
+        Please select your department
+      </mat-error>
+
+    }
+
+  </mat-form-field>
+
+}
 
   <!-- State -->
 

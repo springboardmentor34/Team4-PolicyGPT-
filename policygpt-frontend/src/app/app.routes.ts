@@ -8,7 +8,6 @@ import { ForgotPassword } from './features/auth/forgot-password/forgot-password'
 import { Unauthorized } from './features/auth/unauthorized/unauthorized';
 
 export const routes: Routes = [
-
   // ==========================================
   // LOGIN
   // ==========================================
@@ -58,15 +57,12 @@ export const routes: Routes = [
     path: '',
     component: MainLayout,
     children: [
-
       // ==========================================
       // GUEST DASHBOARD
       // ==========================================
       {
         path: '',
-        loadComponent: () =>
-          import('./features/dashboard/guest/guest')
-            .then((m) => m.Guest),
+        loadComponent: () => import('./features/dashboard/guest/guest').then((m) => m.Guest),
       },
 
       // ==========================================
@@ -74,9 +70,7 @@ export const routes: Routes = [
       // ==========================================
       {
         path: '',
-        loadChildren: () =>
-          import('./features/policy/policy.routes')
-            .then((m) => m.POLICY_ROUTES),
+        loadChildren: () => import('./features/policy/policy.routes').then((m) => m.POLICY_ROUTES),
       },
 
       // ==========================================
@@ -85,8 +79,7 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/eligibility/eligibility.routes')
-            .then((m) => m.ELIGIBILITY_ROUTES),
+          import('./features/eligibility/eligibility.routes').then((m) => m.ELIGIBILITY_ROUTES),
       },
 
       // ==========================================
@@ -94,9 +87,7 @@ export const routes: Routes = [
       // ==========================================
       {
         path: '',
-        loadChildren: () =>
-          import('./features/scheme/scheme.routes')
-            .then((m) => m.SCHEME_ROUTES),
+        loadChildren: () => import('./features/scheme/scheme.routes').then((m) => m.SCHEME_ROUTES),
       },
 
       // ==========================================
@@ -105,8 +96,7 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/dashboard/dashboard.routes')
-            .then((m) => m.DASHBOARD_ROUTES),
+          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
       },
 
       // ==========================================
@@ -115,8 +105,7 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/feedback/feedback.routes')
-            .then((m) => m.FEEDBACK_ROUTES),
+          import('./features/feedback/feedback.routes').then((m) => m.FEEDBACK_ROUTES),
       },
 
       // ==========================================
@@ -125,8 +114,9 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/notifications/notifications.routes')
-            .then((m) => m.NOTIFICATION_ROUTES),
+          import('./features/notifications/notifications.routes').then(
+            (m) => m.NOTIFICATION_ROUTES,
+          ),
       },
 
       // ==========================================
@@ -135,8 +125,7 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/reports/reports.routes')
-            .then((m) => m.REPORTS_ROUTES),
+          import('./features/reports/reports.routes').then((m) => m.REPORTS_ROUTES),
       },
 
       // ==========================================
@@ -145,8 +134,15 @@ export const routes: Routes = [
       {
         path: 'department-analytics',
         loadChildren: () =>
-          import('./features/department-analytics/department-analytics.routes')
-            .then((m) => m.DEPARTMENT_ANALYTICS_ROUTES),
+          import('./features/department-analytics/department-analytics.routes').then(
+            (m) => m.DEPARTMENT_ANALYTICS_ROUTES,
+          ),
+      },
+
+      {
+        path: 'departments',
+        loadChildren: () =>
+          import('./features/departments/departments.routes').then((m) => m.DEPARTMENT_ROUTES),
       },
 
       // ==========================================
@@ -155,8 +151,9 @@ export const routes: Routes = [
       {
         path: 'usage-statistics',
         loadChildren: () =>
-          import('./features/usage-statistics/usage-statistics.routes')
-            .then((m) => m.USAGE_STATISTICS_ROUTES),
+          import('./features/usage-statistics/usage-statistics.routes').then(
+            (m) => m.USAGE_STATISTICS_ROUTES,
+          ),
       },
     ],
   },

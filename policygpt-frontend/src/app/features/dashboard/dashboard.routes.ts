@@ -18,10 +18,10 @@ export const DASHBOARD_ROUTES: Routes = [
   {
   path: 'admin',
   component: Admin,
-  canActivate: [
-    authGuard,
-    roleGuard(['admin']),
-  ],
+  // canActivate: [
+  //   authGuard,
+  //   roleGuard(['admin']),
+  // ],
 },
 
   // =========================
@@ -30,10 +30,10 @@ export const DASHBOARD_ROUTES: Routes = [
   {
   path: 'citizen',
   component: Citizen,
-  canActivate: [
-    authGuard,
-    roleGuard(['citizen']),
-  ],
+  // canActivate: [
+  //   authGuard,
+  //   roleGuard(['citizen']),
+  // ],
 },
 
 
@@ -43,10 +43,10 @@ export const DASHBOARD_ROUTES: Routes = [
  {
   path: 'researcher',
   component: Researcher,
-  canActivate: [
-    authGuard,
-    roleGuard(['researcher']),
-  ],
+  // canActivate: [
+  //   authGuard,
+  //   roleGuard(['researcher']),
+  // ],
 },
 
   // =========================
@@ -55,10 +55,10 @@ export const DASHBOARD_ROUTES: Routes = [
   {
   path: 'official',
   component: Official,
-  canActivate: [
-    authGuard,
-    roleGuard(['official']),
-  ],
+  // canActivate: [
+  //   authGuard,
+  //   roleGuard(['official']),
+  // ],
 },
  // =========================
   // ORGANIZATION
@@ -66,9 +66,9 @@ export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'organization',
     component: Organization,
-    canActivate: [
-      authGuard,
-      roleGuard(['organization']),
-    ],
+    // canActivate: [
+    //   authGuard,
+    //   roleGuard(['organization']),
+    // ],
   },
 ];
