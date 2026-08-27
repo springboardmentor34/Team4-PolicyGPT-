@@ -335,13 +335,35 @@
 }
 
 .trend-summary {
-  padding: 7px 11px;
   border: 1px solid #dbe3ec;
   border-radius: 6px;
   background: #f8fafc;
+}
+
+.trend-summary select {
+  min-width: 112px;
+  padding: 7px 28px 7px 11px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   color: #52647d;
+  font: inherit;
   font-size: 12px;
   font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 
