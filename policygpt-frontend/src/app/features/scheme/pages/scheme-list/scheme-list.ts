@@ -10,6 +10,7 @@ import {
   Scheme,
   SchemeService,
 } from '../../../../core/services/scheme.service';
+import { Auth } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-scheme-list',
@@ -21,6 +22,7 @@ import {
 export class SchemeList implements OnInit {
   private readonly schemeService = inject(SchemeService);
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly auth = inject(Auth);
 
   schemes: Scheme[] = [];
   totalSchemes = 0;
@@ -105,4 +107,17 @@ export class SchemeList implements OnInit {
 
     this.loadSchemes();
   }
+
+canManageSchemes(): boolean {
+  const role = this.auth.getRoleFromToken()
+    ?.toLowerCase()
+    .trim();
+
+  return (
+    role === 'official' ||
+    role === 'government_official' ||
+    role === 'government official' ||
+    role === 'officer'
+  );
+}
 }

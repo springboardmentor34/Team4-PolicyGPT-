@@ -14,23 +14,31 @@
 
     <div class="header-actions">
 
-      <button
-        type="button"
-        class="add-button"
-        routerLink="/schemes/create"
-      >
-        <span>+</span>
-        Add Scheme
-      </button>
+   @if (canManageSchemes()) {
 
-      <button
-        type="button"
-        class="rules-nav-button"
-        routerLink="/schemes/eligibility"
-      >
-        <span>🎯</span>
-        Eligibility Rules
-      </button>
+  <button
+    type="button"
+    class="add-button"
+    routerLink="/schemes/create"
+  >
+    <span>+</span>
+    Add Scheme
+  </button>
+
+}
+
+@if (canManageSchemes()) {
+
+  <button
+    type="button"
+    class="rules-nav-button"
+    routerLink="/schemes/eligibility"
+  >
+    <span>🎯</span>
+    Eligibility Rules
+  </button>
+
+}
 
       <button
         type="button"

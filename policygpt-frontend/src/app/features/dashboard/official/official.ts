@@ -61,7 +61,7 @@ export class Official implements OnInit {
       title: 'Pending Policies',
       count: 0,
       icon: 'pending',
-      route: '/policies/approval'
+      route: '/policies'
     },
     {
       title: 'Rejected Policies',
@@ -91,13 +91,7 @@ export class Official implements OnInit {
       route: '/policies/add',
       label: 'Add Policy'
     },
-    {
-      title: 'Policy Approval',
-      description: 'Review and process pending policy submissions.',
-      icon: 'fact_check',
-      route: '/policies/approval',
-      label: 'Review Policies'
-    },
+  
     {
       title: 'Policy Comparison',
       description: 'Compare multiple policies side by side.',

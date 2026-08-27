@@ -181,6 +181,10 @@ export class Navbar implements OnInit {
             label: 'Policies',
             route: '/policies',
           },
+          {
+  label: 'Add Policy',
+  route: '/policies/add',
+},
            {
       label: 'Policy Approval',
       route: '/policies/approval',
@@ -333,14 +337,7 @@ export class Navbar implements OnInit {
             label: 'Notifications',
             route: '/notifications',
           },
-          {
-            label: 'Reports',
-            route: '/reports',
-          },
-          {
-            label: 'Usage Statistics',
-            route: '/usage-statistics',
-          },
+      
         ];
 
       // -------------------------------
@@ -362,6 +359,10 @@ export class Navbar implements OnInit {
             route: '/schemes',
           },
           {
+            label: 'Reports',
+            route: '/reports',
+          },
+          {
             label: 'Feedback & Support',
             route: '/feedback',
           },
@@ -369,14 +370,7 @@ export class Navbar implements OnInit {
             label: 'Notifications',
             route: '/notifications',
           },
-          {
-            label: 'Reports',
-            route: '/reports',
-          },
-          {
-            label: 'Usage Statistics',
-            route: '/usage-statistics',
-          },
+        
         ];
 
       default:

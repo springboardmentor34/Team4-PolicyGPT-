@@ -70,10 +70,22 @@ export class PolicyList implements OnInit {
   private usageEventService: UsageEventService
 ) {}
 
-  canCreatePolicy(): boolean {
-    const role = this.auth.getRoleFromToken()?.toLowerCase().trim();
-    return role === 'administrator' || role === 'government_official';
-  }
+ canCreatePolicy(): boolean {
+
+  const role = this.auth.getRoleFromToken()
+    ?.toLowerCase()
+    .trim();
+
+  return (
+    role === 'admin' ||
+    role === 'administrator' ||
+    role === 'official' ||
+    role === 'officer' ||
+    role === 'government_official' ||
+    role === 'government official'
+  );
+
+}
 
   navigateToCreatePolicy(): void {
     this.router.navigate(['/policies/add']);
