@@ -1,33 +1,71 @@
 <nav class="navbar">
 
+  <!-- LOGO -->
+
   <div class="logo">
+
     <a [routerLink]="dashboardRoute">
       PolicyGPT
     </a>
+
   </div>
+
+
+  <!-- NAVIGATION -->
 
   <div class="nav-links">
 
     @for (item of navItems; track item.route) {
+
       <a
         [routerLink]="item.route"
         routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }">
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         {{ item.label }}
       </a>
+
     }
 
   </div>
 
+
+  <!-- RIGHT SIDE -->
+
   <div class="nav-right">
 
-    <span class="role">
-      {{ role }}
-    </span>
+    @if (isLoggedIn) {
 
-    <button type="button" (click)="logout()">
-      Logout
-    </button>
+      <span class="role">
+        {{ role }}
+      </span>
+
+      <button
+        type="button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+
+    }
+
+    @else {
+
+      <a
+        routerLink="/login"
+        class="nav-login"
+      >
+        Login
+      </a>
+
+      <a
+        routerLink="/register"
+        class="nav-register"
+      >
+        Register
+      </a>
+
+    }
 
   </div>
 

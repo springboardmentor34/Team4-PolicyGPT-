@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
+
+import { filter } from 'rxjs';
+
 import { Auth } from '../../../core/services/auth';
 
 interface NavItem {
@@ -14,14 +18,45 @@ interface NavItem {
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class Navbar implements OnInit {
   constructor(
     private router: Router,
     private auth: Auth,
   ) {}
 
-  // Get the actual role from JWT and normalize it
+  ngOnInit(): void {
+    // Refresh navbar after login/logout/navigation
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      // Trigger change detection by updating state
+      this.updateAuthState();
+    });
+
+    this.updateAuthState();
+  }
+
+  // ==========================================
+  // AUTHENTICATION
+  // ==========================================
+
+  get isLoggedIn(): boolean {
+    return !!localStorage.getItem('access_token');
+  }
+
+  private updateAuthState(): void {
+    // Accessing the getter is enough for Angular
+    // to reevaluate the navbar after navigation.
+    this.auth.getRoleFromToken();
+  }
+
+  // ==========================================
+  // ROLE
+  // ==========================================
+
   get normalizedRole(): string {
+    if (!this.isLoggedIn) {
+      return 'guest';
+    }
+
     const role = this.auth.getRoleFromToken()?.toLowerCase().trim();
 
     switch (role) {
@@ -41,21 +76,18 @@ export class Navbar {
       case 'organization':
         return 'organization';
 
-      case 'guest_user':
-      case 'guest user':
-      case 'guest':
-        return 'guest';
-
       case 'citizen':
         return 'citizen';
 
       default:
-        console.warn('Unknown role:', role);
         return 'guest';
     }
   }
 
-  // Display the actual role nicely
+  // ==========================================
+  // DISPLAY ROLE
+  // ==========================================
+
   get role(): string {
     switch (this.normalizedRole) {
       case 'admin':
@@ -73,14 +105,20 @@ export class Navbar {
       case 'citizen':
         return 'Citizen';
 
-      case 'guest':
       default:
-        return 'Guest User';
+        return 'Guest';
     }
   }
 
-  // Dashboard according to role
+  // ==========================================
+  // DASHBOARD
+  // ==========================================
+
   get dashboardRoute(): string {
+    if (!this.isLoggedIn) {
+      return '/';
+    }
+
     switch (this.normalizedRole) {
       case 'admin':
         return '/admin';
@@ -95,20 +133,44 @@ export class Navbar {
         return '/citizen';
 
       case 'organization':
-        return '/official';
+        return '/organization';
 
-      case 'guest':
       default:
-        return '/citizen';
+        return '/';
     }
   }
 
-  // Role-based navigation
+  // ==========================================
+  // NAVIGATION
+  // ==========================================
+
   get navItems(): NavItem[] {
+    // -------------------------------
+    // GUEST
+    // -------------------------------
+
+    if (!this.isLoggedIn) {
+      return [
+        {
+          label: 'Home',
+          route: '/',
+        },
+        {
+          label: 'Policies',
+          route: '/policies',
+        },
+        {
+          label: 'Schemes',
+          route: '/schemes',
+        },
+      ];
+    }
+
+    // -------------------------------
+    // ADMIN
+    // -------------------------------
+
     switch (this.normalizedRole) {
-      // =========================
-      // ADMIN
-      // =========================
       case 'admin':
         return [
           {
@@ -119,6 +181,14 @@ export class Navbar {
             label: 'Policies',
             route: '/policies',
           },
+          {
+  label: 'Add Policy',
+  route: '/policies/add',
+},
+           {
+      label: 'Policy Approval',
+      route: '/policies/approval',
+    },
           {
             label: 'Schemes',
             route: '/schemes',
@@ -144,14 +214,15 @@ export class Navbar {
             route: '/department-analytics',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
 
-      // =========================
-      // GOVERNMENT OFFICIAL
-      // =========================
+      // -------------------------------
+      // OFFICIAL
+      // -------------------------------
+
       case 'official':
         return [
           {
@@ -183,18 +254,23 @@ export class Navbar {
             route: '/reports',
           },
           {
+            label: 'Departments',
+            route: '/departments',
+          },
+          {
             label: 'Department Analytics',
             route: '/department-analytics',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
 
-      // =========================
+      // -------------------------------
       // RESEARCHER
-      // =========================
+      // -------------------------------
+
       case 'researcher':
         return [
           {
@@ -226,14 +302,15 @@ export class Navbar {
             route: '/department-analytics',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Usage Statistics',
+            route: '/usage-statistics',
+          },
         ];
 
-      // =========================
+      // -------------------------------
       // CITIZEN
-      // =========================
+      // -------------------------------
+
       case 'citizen':
         return [
           {
@@ -260,25 +337,18 @@ export class Navbar {
             label: 'Notifications',
             route: '/notifications',
           },
-          {
-            label: 'Reports',
-            route: '/reports',
-          },
-          {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
-          
+      
         ];
 
-      // =========================
+      // -------------------------------
       // ORGANIZATION
-      // =========================
+      // -------------------------------
+
       case 'organization':
         return [
           {
             label: 'Dashboard',
-            route: '/official',
+            route: '/organization',
           },
           {
             label: 'Policies',
@@ -287,31 +357,28 @@ export class Navbar {
           {
             label: 'Schemes',
             route: '/schemes',
-          },
-          {
-            label: 'Feedback & Support',
-            route: '/feedback',
-          },
-          {
-            label: 'Notifications',
-            route: '/notifications',
           },
           {
             label: 'Reports',
             route: '/reports',
           },
           {
-  label: 'Usage Statistics',
-  route: '/usage-statistics',
-},
+            label: 'Feedback & Support',
+            route: '/feedback',
+          },
+          {
+            label: 'Notifications',
+            route: '/notifications',
+          },
+        
         ];
 
-      // =========================
-      // GUEST
-      // =========================
-      case 'guest':
       default:
         return [
+          {
+            label: 'Home',
+            route: '/',
+          },
           {
             label: 'Policies',
             route: '/policies',
@@ -319,21 +386,18 @@ export class Navbar {
           {
             label: 'Schemes',
             route: '/schemes',
-          },
-          {
-            label: 'Feedback & Support',
-            route: '/feedback',
-          },
-          {
-            label: 'Notifications',
-            route: '/notifications',
           },
         ];
     }
   }
 
+  // ==========================================
+  // LOGOUT
+  // ==========================================
+
   logout(): void {
     localStorage.removeItem('access_token');
+
     this.router.navigate(['/']);
   }
 }

@@ -14,8 +14,6 @@ export const USAGE_STATISTICS_ROUTES: Routes = [
         'admin',
         'official',
         'researcher',
-        'organization',
-        'citizen'
       ])
     ]
   }

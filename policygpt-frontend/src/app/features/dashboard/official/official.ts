@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { OfficialService } from '../../../core/services/official.service';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,37 +20,61 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './official.html',
   styleUrl: './official.css',
 })
-export class Official {
+export class Official implements OnInit {
 
   private router = inject(Router);
+  private officialService = inject(OfficialService);
+
+
+  // =====================================================
+  // BASIC INFORMATION
+  // =====================================================
 
   officialName = 'Government Official';
 
-  totalPolicies = 125;
-  activeSchemes = 48;
-  totalDepartments = 15;
-  notifications = 26;
+  totalPolicies = 0;
+  activeSchemes = 0;
+  totalDepartments = 0;
+  notifications = 0;
+
+
+  // =====================================================
+  // LOADING / ERROR
+  // =====================================================
+
+  loading = true;
+  errorMessage = '';
+
+
+  // =====================================================
+  // POLICY STATUS
+  // =====================================================
 
   policyStats = [
     {
       title: 'Approved Policies',
-      count: 90,
+      count: 0,
       icon: 'check_circle',
       route: '/policies'
     },
     {
       title: 'Pending Policies',
-      count: 25,
+      count: 0,
       icon: 'pending',
-      route: '/policies/approval'
+      route: '/policies'
     },
     {
       title: 'Rejected Policies',
-      count: 10,
+      count: 0,
       icon: 'cancel',
       route: '/policies'
     }
   ];
+
+
+  // =====================================================
+  // MANAGEMENT ACTIONS
+  // =====================================================
 
   managementActions = [
     {
@@ -65,13 +91,7 @@ export class Official {
       route: '/policies/add',
       label: 'Add Policy'
     },
-    {
-      title: 'Policy Approval',
-      description: 'Review and process pending policy submissions.',
-      icon: 'fact_check',
-      route: '/policies/approval',
-      label: 'Review Policies'
-    },
+  
     {
       title: 'Policy Comparison',
       description: 'Compare multiple policies side by side.',
@@ -102,70 +122,200 @@ export class Official {
     }
   ];
 
-  schemeUsage = [
-    {
-      scheme: 'PM Kisan',
-      users: 12500
-    },
-    {
-      scheme: 'Ayushman Bharat',
-      users: 9800
-    },
-    {
-      scheme: 'Skill India',
-      users: 7600
-    },
-    {
-      scheme: 'PM Awas',
-      users: 5400
-    }
-  ];
 
-  departmentReports = [
-    {
-      department: 'Education',
-      policies: 22,
-      schemes: 10
-    },
-    {
-      department: 'Healthcare',
-      policies: 30,
-      schemes: 15
-    },
-    {
-      department: 'Agriculture',
-      policies: 18,
-      schemes: 8
-    },
-    {
-      department: 'Finance',
-      policies: 25,
-      schemes: 12
-    }
-  ];
+  // =====================================================
+  // SCHEME USAGE
+  // =====================================================
 
-  recentActivity = [
-    {
-      title: 'Policy submitted for approval',
-      description: 'A new policy is waiting for administrative review.',
-      time: 'Today',
-      icon: 'pending'
-    },
-    {
-      title: 'Scheme information updated',
-      description: 'Government scheme details were recently updated.',
-      time: 'Today',
-      icon: 'update'
-    },
-    {
-      title: 'Policy repository updated',
-      description: 'New policy documents are available in the repository.',
-      time: 'Yesterday',
-      icon: 'library_books'
+  schemeUsage: any[] = [];
+
+
+  // =====================================================
+  // DEPARTMENT REPORTS
+  // =====================================================
+
+  departmentReports: any[] = [];
+
+
+  // =====================================================
+  // RECENT ACTIVITY
+  // =====================================================
+
+  recentActivity: any[] = [];
+
+
+  // =====================================================
+  // INITIALIZATION
+  // =====================================================
+
+  ngOnInit(): void {
+    this.loadDashboardStats();
+    this.loadDepartmentReports();
+  }
+
+
+  // =====================================================
+  // DASHBOARD STATISTICS
+  // =====================================================
+
+  loadDashboardStats(): void {
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.officialService.getDashboardStats().subscribe({
+
+      next: (data) => {
+
+        console.log('Official dashboard response:', data);
+
+        this.totalPolicies =
+          data.totalPolicies ?? 0;
+
+        this.activeSchemes =
+          data.activeSchemes ?? 0;
+
+        this.totalDepartments =
+          data.totalDepartments ?? 0;
+
+        this.notifications =
+          data.notifications ?? 0;
+
+
+        // Policy statistics
+
+        this.policyStats = [
+          {
+            title: 'Approved Policies',
+            count: data.approvedPolicies ?? 0,
+            icon: 'check_circle',
+            route: '/policies'
+          },
+          {
+            title: 'Pending Policies',
+            count: data.pendingPolicies ?? 0,
+            icon: 'pending',
+            route: '/policies/approval'
+          },
+          {
+            title: 'Rejected Policies',
+            count: data.rejectedPolicies ?? 0,
+            icon: 'cancel',
+            route: '/policies'
+          }
+        ];
+
+
+        // Scheme usage
+
+        this.schemeUsage =
+          data.schemeUsage ?? [];
+
+
+        // Recent activity
+
+        this.recentActivity =
+          data.recentActivity ?? [];
+
+
+        this.loading = false;
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load official dashboard:',
+          error
+        );
+
+        this.errorMessage =
+          'Unable to load government dashboard data.';
+
+        this.loading = false;
+      }
+
+    });
+  }
+
+
+  // =====================================================
+  // DEPARTMENT REPORTS
+  // =====================================================
+
+  loadDepartmentReports(): void {
+
+    this.officialService.getDepartmentReports().subscribe({
+
+      next: (data) => {
+
+        console.log(
+          'Department reports response:',
+          data
+        );
+
+        this.departmentReports =
+          data ?? [];
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load department reports:',
+          error
+        );
+
+        this.departmentReports = [];
+
+      }
+
+    });
+  }
+
+
+  // =====================================================
+  // DEPARTMENT ANALYTICS
+  // =====================================================
+
+  openDepartmentAnalytics(
+    departmentId: string
+  ): void {
+
+    if (!departmentId) {
+      return;
     }
-  ];
+
+    this.router.navigate(
+      ['/department-analytics'],
+      {
+        queryParams: {
+          department: departmentId
+        }
+      }
+    );
+  }
+
+
+  // =====================================================
+  // RETRY
+  // =====================================================
+
+  retry(): void {
+
+    this.loadDashboardStats();
+    this.loadDepartmentReports();
+
+  }
+
+
+  // =====================================================
+  // NAVIGATION
+  // =====================================================
 
   navigate(route: string): void {
+
     this.router.navigateByUrl(route);
+
   }
+
 }

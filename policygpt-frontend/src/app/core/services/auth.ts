@@ -21,6 +21,15 @@ export interface TokenResponse {
   token_type: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -43,6 +52,24 @@ export class Auth {
     );
   }
 
+  forgotPassword(
+    payload: ForgotPasswordRequest
+  ): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/auth/forgot-password`,
+      payload
+    );
+  }
+
+  resetPassword(
+    payload: ResetPasswordRequest
+  ): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/auth/reset-password`,
+      payload
+    );
+  }
+
   getRoleFromToken(): string | null {
     const token = localStorage.getItem('access_token');
 
@@ -60,24 +87,33 @@ export class Auth {
   }
 
   getUserNameFromToken(): string | null {
-  const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token');
 
-  if (!token) {
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+
+      return (
+        payload.full_name ??
+        payload.name ??
+        payload.username ??
+        null
+      );
+    } catch (error) {
+      console.error('Unable to decode user name from access token:', error);
+      return null;
+    }
+  }
+  getFirstNameFromToken(): string | null {
+  const fullName = this.getUserNameFromToken();
+
+  if (!fullName) {
     return null;
   }
 
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-
-    return (
-      payload.full_name ??
-      payload.name ??
-      payload.username ??
-      null
-    );
-  } catch (error) {
-    console.error('Unable to decode user name from access token:', error);
-    return null;
-  }
+  return fullName.trim().split(/\s+/)[0];
 }
 }

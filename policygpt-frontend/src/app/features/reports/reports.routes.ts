@@ -11,7 +11,6 @@ export const REPORTS_ROUTES: Routes = [
       roleGuard([
         'admin',
         'official',
-        'citizen',
         'researcher',
         'organization',
       ]),
@@ -20,7 +19,6 @@ export const REPORTS_ROUTES: Routes = [
       roles: [
         'admin',
         'official',
-        'citizen',
         'researcher',
         'organization',
       ],

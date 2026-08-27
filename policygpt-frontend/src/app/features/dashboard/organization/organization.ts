@@ -14,9 +14,6 @@ export class Organization {
 
   constructor(private router: Router) {}
 
-  // =====================================================
-  // SIDEBAR NAVIGATION
-  // =====================================================
 
   openOverview(): void {
     this.router.navigate(['/dashboard/organization']);

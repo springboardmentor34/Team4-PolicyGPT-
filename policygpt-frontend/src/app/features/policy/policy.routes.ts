@@ -30,6 +30,14 @@ export const POLICY_ROUTES: Routes = [
   {
   path: 'policies/comparison', //✅
   component: PolicyComparison,
+  canActivate: [
+      roleGuard([
+        'admin',
+        'official',
+        'researcher',
+        'organization',
+      ]),
+    ],
 },
   {
     path: 'policies/:id', //✅

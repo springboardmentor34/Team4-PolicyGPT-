@@ -1,0 +1,223 @@
+<main class="departments-page">
+
+  <!-- HEADER -->
+
+  <section class="departments-hero">
+
+    <div>
+
+      <span class="eyebrow">
+        GOVERNMENT WORKSPACE
+      </span>
+
+      <h1>
+        Government Departments
+      </h1>
+
+      <p>
+        Select a department to view its policies,
+        schemes and activity analytics.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- LOADING -->
+
+  @if (loading) {
+
+    <section class="state-card">
+
+      <mat-icon>
+        sync
+      </mat-icon>
+
+      <p>
+        Loading departments...
+      </p>
+
+    </section>
+
+  }
+
+
+  <!-- ERROR -->
+
+  @if (!loading && errorMessage) {
+
+    <section class="state-card error-state">
+
+      <mat-icon>
+        error_outline
+      </mat-icon>
+
+      <h3>
+        Unable to load departments
+      </h3>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="retry()">
+
+        Retry
+
+      </button>
+
+    </section>
+
+  }
+
+
+  <!-- DEPARTMENT LIST -->
+
+  @if (!loading && !errorMessage) {
+
+    @if (departments.length > 0) {
+
+      <section class="department-grid">
+
+        @for (
+          department of departments;
+          track department.departmentId
+        ) {
+
+          <mat-card
+            class="department-card"
+            (click)="
+              openDepartmentAnalytics(
+                department.departmentId
+              )
+            ">
+
+            <div class="department-icon">
+
+              <mat-icon>
+                account_balance
+              </mat-icon>
+
+            </div>
+
+
+            <div class="department-content">
+
+              <h2>
+                {{ department.department }}
+              </h2>
+
+              <p>
+                View department policies,
+                schemes and activity.
+              </p>
+
+
+              <div class="department-stats">
+
+                <div>
+
+                  <strong>
+                    {{ department.policies | number }}
+                  </strong>
+
+                  <span>
+                    Policies
+                  </span>
+
+                </div>
+
+
+                <div>
+
+                  <strong>
+                    {{ department.schemes | number }}
+                  </strong>
+
+                  <span>
+                    Schemes
+                  </span>
+
+                </div>
+
+
+                @if (
+                  department.activity !== undefined
+                ) {
+
+                  <div>
+
+                    <strong>
+                      {{ department.activity | number }}
+                    </strong>
+
+                    <span>
+                      Activities
+                    </span>
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <button
+                mat-button
+                type="button"
+                class="analytics-button"
+                (click)="
+                  $event.stopPropagation();
+                  openDepartmentAnalytics(
+                    department.departmentId
+                  )
+                ">
+
+                View Analytics
+
+                <mat-icon>
+                  arrow_forward
+                </mat-icon>
+
+              </button>
+
+            </div>
+
+          </mat-card>
+
+        }
+
+      </section>
+
+    }
+
+
+    <!-- NO DEPARTMENTS -->
+
+    @if (departments.length === 0) {
+
+      <section class="state-card">
+
+        <mat-icon>
+          account_balance
+        </mat-icon>
+
+        <h3>
+          No departments found
+        </h3>
+
+        <p>
+          There are currently no departments available.
+        </p>
+
+      </section>
+
+    }
+
+  }
+
+</main>
