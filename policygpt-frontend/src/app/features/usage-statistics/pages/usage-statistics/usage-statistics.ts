@@ -31,8 +31,6 @@ export class UsageStatistics implements OnInit {
   displayedSavedPolicies = 0;
   totalEngagement = 0;
 
-  trendPeriodLabel = 'Last 6 months';
-
   trendData: TrendItem[] = [];
   userActivity: UserActivityItem[] = [];
   recentSearches: RecentSearch[] = [];
@@ -156,33 +154,6 @@ export class UsageStatistics implements OnInit {
     const select = event.target as HTMLSelectElement;
 
     this.selectedPeriod = select.value;
-
-    switch (this.selectedPeriod) {
-
-      case '7d':
-        this.trendPeriodLabel = 'Last 7 days';
-        break;
-
-      case '30d':
-        this.trendPeriodLabel = 'Last 30 days';
-        break;
-
-      case '3m':
-        this.trendPeriodLabel = 'Last 3 months';
-        break;
-
-      case '6m':
-        this.trendPeriodLabel = 'Last 6 months';
-        break;
-
-      case '1y':
-        this.trendPeriodLabel = 'Last year';
-        break;
-
-      default:
-        this.selectedPeriod = '6m';
-        this.trendPeriodLabel = 'Last 6 months';
-    }
 
     this.cdr.detectChanges();
     this.loadUsageStatistics();

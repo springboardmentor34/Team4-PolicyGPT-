@@ -126,23 +126,23 @@
             All Users
           </option>
 
-          <option value="Administrator">
+          <option value="administrator">
             Administrator
           </option>
 
-          <option value="Citizen">
+          <option value="citizen">
             Citizen
           </option>
 
-          <option value="Government Official">
+          <option value="government_official">
             Government Official
           </option>
 
-          <option value="Researcher">
+          <option value="researcher">
             Researcher
           </option>
 
-          <option value="Organization">
+          <option value="organization">
             Organization
           </option>
 
@@ -525,9 +525,22 @@
 
         <div class="trend-summary">
 
-          <span>
-            {{ trendPeriodLabel }}
-          </span>
+          <label class="visually-hidden" for="trendPeriod">
+            Trend period
+          </label>
+
+          <select
+            id="trendPeriod"
+            [value]="selectedPeriod"
+            (change)="onPeriodChange($event)">
+
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="3m">Last 3 months</option>
+            <option value="6m">Last 6 months</option>
+            <option value="1y">Last year</option>
+
+          </select>
 
         </div>
 
