@@ -9,6 +9,7 @@ import { Auth } from '../../../core/services/auth';
 interface NavItem {
   label: string;
   route: string;
+  icon?: string;
 }
 
 @Component({
@@ -210,6 +211,11 @@ export class Navbar implements OnInit {
             route: '/reports',
           },
           {
+            label: 'Analytics Dashboard',
+            route: '/analytics',
+            icon: 'analytics',
+          },
+          {
             label: 'Department Analytics',
             route: '/department-analytics',
           },
@@ -254,6 +260,11 @@ export class Navbar implements OnInit {
             route: '/reports',
           },
           {
+            label: 'Analytics Dashboard',
+            route: '/analytics',
+            icon: 'analytics',
+          },
+          {
             label: 'Departments',
             route: '/departments',
           },
@@ -296,6 +307,11 @@ export class Navbar implements OnInit {
           {
             label: 'Reports',
             route: '/reports',
+          },
+          {
+            label: 'Analytics Dashboard',
+            route: '/analytics',
+            icon: 'analytics',
           },
           {
             label: 'Department Analytics',
@@ -361,6 +377,11 @@ export class Navbar implements OnInit {
           {
             label: 'Reports',
             route: '/reports',
+          },
+          {
+            label: 'Analytics Dashboard',
+            route: '/analytics',
+            icon: 'analytics',
           },
           {
             label: 'Feedback & Support',

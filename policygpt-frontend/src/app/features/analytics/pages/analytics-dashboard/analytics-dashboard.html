@@ -1,0 +1,168 @@
+<section class="analytics-page">
+  <header class="analytics-header">
+    <div>
+      <span class="eyebrow">ANALYTICS DASHBOARD</span>
+      <h1>PolicyGPT Analytics</h1>
+      <p>{{ roleScopeLabel }}</p>
+    </div>
+
+    <button type="button" class="icon-button" (click)="loadAnalytics()" [disabled]="loading" title="Refresh analytics">
+      <span class="material-symbol">refresh</span>
+      <span>{{ loading ? 'Refreshing' : 'Refresh' }}</span>
+    </button>
+  </header>
+
+  <section class="filter-toolbar">
+    <div class="filter-field">
+      <label for="period">Period</label>
+      <select id="period" [(ngModel)]="selectedPeriod" (change)="onPeriodChange()">
+        <option *ngFor="let period of periods" [value]="period.value">{{ period.label }}</option>
+      </select>
+    </div>
+
+    <div class="filter-field" *ngIf="isCustomRange">
+      <label for="startDate">Start Date</label>
+      <input id="startDate" type="date" [(ngModel)]="customStartDate">
+    </div>
+
+    <div class="filter-field" *ngIf="isCustomRange">
+      <label for="endDate">End Date</label>
+      <input id="endDate" type="date" [(ngModel)]="customEndDate">
+    </div>
+
+    <div class="filter-field">
+      <label for="department">Department</label>
+      <select id="department" [(ngModel)]="selectedDepartment" [disabled]="departmentLocked">
+        <option value="">{{ departmentLocked ? selectedDepartment : 'All Departments' }}</option>
+        <option *ngFor="let department of departmentOptions" [value]="department.value">
+          {{ department.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="category">Policy Category</label>
+      <select id="category" [(ngModel)]="selectedCategory">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categoryOptions" [value]="category.value">
+          {{ category.label }}
+        </option>
+      </select>
+    </div>
+
+    <button type="button" class="apply-button" (click)="applyFilters()" [disabled]="loading">
+      <span class="material-symbol">tune</span>
+      <span>Apply</span>
+    </button>
+  </section>
+
+  <div class="state-panel" *ngIf="loading">
+    <div class="loader"></div>
+    <h2>Loading analytics</h2>
+    <p>Preparing the latest scoped dashboard data.</p>
+  </div>
+
+  <div class="state-panel error-state" *ngIf="!loading && error">
+    <span class="material-symbol state-symbol">error_outline</span>
+    <h2>Analytics could not be loaded</h2>
+    <p>{{ error }}</p>
+    <button type="button" class="apply-button" (click)="retry()">Retry</button>
+  </div>
+
+  <div class="state-panel" *ngIf="!loading && !error && !hasDashboardData">
+    <span class="material-symbol state-symbol">query_stats</span>
+    <h2>No analytics data yet</h2>
+    <p>Metrics will appear here once matching policies, schemes or engagement records exist.</p>
+  </div>
+
+  <div class="dashboard-shell" *ngIf="!loading && !error && hasDashboardData">
+    <section class="kpi-grid">
+      <article class="kpi-card" *ngFor="let kpi of kpis">
+        <div class="kpi-icon">
+          <span class="material-symbol">{{ kpi.icon }}</span>
+        </div>
+        <div>
+          <span>{{ kpi.label }}</span>
+          <strong>{{ kpi.value }}</strong>
+          <small>{{ kpi.badge }}</small>
+        </div>
+      </article>
+    </section>
+
+    <section class="chart-grid">
+      <article class="chart-panel wide">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">POLICY MIX</span>
+            <h2>Policy Usage & Categories</h2>
+          </div>
+          <span>{{ policyStats?.by_category?.length ?? 0 }} categories</span>
+        </div>
+
+        <div class="chart-frame" *ngIf="policyStats?.by_category?.length || policyStats?.by_department?.length; else emptyPolicyChart">
+          <canvas #policyChart></canvas>
+        </div>
+        <ng-template #emptyPolicyChart>
+          <div class="mini-empty">No policy breakdown available.</div>
+        </ng-template>
+      </article>
+
+      <article class="chart-panel wide">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">ENGAGEMENT</span>
+            <h2>Citizen Engagement Trends</h2>
+          </div>
+          <span>{{ engagement?.total_engagement ?? 0 }} total</span>
+        </div>
+
+        <div class="chart-frame" *ngIf="engagement?.timeline?.length; else emptyEngagementChart">
+          <canvas #engagementChart></canvas>
+        </div>
+        <ng-template #emptyEngagementChart>
+          <div class="mini-empty">No engagement timeline available.</div>
+        </ng-template>
+      </article>
+
+      <article class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">ELIGIBILITY</span>
+            <h2>Eligibility Demographics</h2>
+          </div>
+        </div>
+
+        <div class="chart-frame compact" *ngIf="eligibility?.age_groups?.length; else emptyEligibilityChart">
+          <canvas #eligibilityChart></canvas>
+        </div>
+        <ng-template #emptyEligibilityChart>
+          <div class="mini-empty">No eligibility rules available.</div>
+        </ng-template>
+      </article>
+
+      <article class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">RULE BREAKDOWN</span>
+            <h2>Demographic Criteria</h2>
+          </div>
+        </div>
+
+        <div class="criteria-list">
+          <div class="criteria-row" *ngFor="let item of eligibility?.gender_distribution ?? []">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.count }}</strong>
+          </div>
+          <div class="criteria-row" *ngFor="let item of eligibility?.social_categories ?? []">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.count }}</strong>
+          </div>
+          <div class="criteria-row" *ngFor="let item of eligibility?.disability ?? []">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.count }}</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</section>

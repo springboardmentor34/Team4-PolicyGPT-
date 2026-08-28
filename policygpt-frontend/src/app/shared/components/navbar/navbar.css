@@ -43,6 +43,9 @@
 
 .nav-links a {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 
   padding: 10px 16px;
 
@@ -198,4 +201,10 @@
 
 .nav-register:hover {
   background: #0b3c67;
+}
+
+.material-symbol {
+  font-family: "Material Symbols Outlined", "Material Icons", sans-serif;
+  font-size: 17px;
+  line-height: 1;
 }

@@ -3,44 +3,103 @@ from datetime import date
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_current_user, require_roles
+from app.core.dependencies import require_roles
 from app.db.database import get_db
 from app.models.user import User
-from app.services.analytics_service import summary
+from app.schemas.analytics import (
+    AnalyticsSummaryResponse,
+    EligibilityStatsResponse,
+    EngagementSummaryResponse,
+    PolicyStatsResponse,
+)
+from app.services.analytics_service import (
+    get_analytics_summary,
+    get_eligibility_statistics,
+    get_engagement_summary,
+    get_policy_statistics,
+    get_search_trends,
+)
 from app.services.report_service import report_data
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
+ANALYTICS_ROLES = (
+    "administrator",
+    "government_official",
+    "researcher",
+    "organization",
+)
 
-@router.get("/summary")
-def get_summary(start_date: date | None = Query(None), end_date: date | None = Query(None), department: str | None = Query(None), category: str | None = Query(None), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return summary(db, current_user, start_date, end_date, department, category)
+
+def analytics_filters(
+    start_date: date | None = Query(None),
+    end_date: date | None = Query(None),
+    period: str | None = Query(None),
+    department: str | None = Query(None),
+    category: str | None = Query(None),
+) -> dict:
+    return {
+        "start_date": start_date,
+        "end_date": end_date,
+        "period": period,
+        "department": department,
+        "category": category,
+    }
+
+
+@router.get("/summary", response_model=AnalyticsSummaryResponse)
+def get_summary(
+    filters: dict = Depends(analytics_filters),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(*ANALYTICS_ROLES)),
+):
+    return get_analytics_summary(db, current_user, filters)
 
 
 @router.get("/engagement")
-def get_engagement(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    data = summary(db, current_user)
-    return {"engagement": data["feedback"] + data["applications"]}
+def get_engagement(
+    filters: dict = Depends(analytics_filters),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(*ANALYTICS_ROLES)),
+):
+    data = get_engagement_summary(db, current_user, filters)
+    return {"engagement": data["total_engagement"]}
+
+
+@router.get("/policy-stats", response_model=PolicyStatsResponse)
+def policy_stats(
+    filters: dict = Depends(analytics_filters),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(*ANALYTICS_ROLES)),
+):
+    return get_policy_statistics(db, current_user, filters)
+
+
+@router.get("/engagement-summary", response_model=EngagementSummaryResponse)
+def engagement_summary(
+    filters: dict = Depends(analytics_filters),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(*ANALYTICS_ROLES)),
+):
+    return get_engagement_summary(db, current_user, filters)
+
+
+@router.get("/eligibility-stats", response_model=EligibilityStatsResponse)
+def eligibility_stats(
+    filters: dict = Depends(analytics_filters),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(*ANALYTICS_ROLES)),
+):
+    return get_eligibility_statistics(db, current_user, filters)
 
 
 @router.get("/search-trends")
-def get_search_trends(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    from app.models.search_history import SearchHistory
-    from sqlalchemy import func
-    from app.models.user import UserRole
-    query = db.query(SearchHistory.query_text, func.count(SearchHistory.search_id).label("count"))
-    if current_user.role == UserRole.government_official:
-        if current_user.department_id is None:
-            return {"items": []}
-        query = query.join(User, SearchHistory.user_id == User.user_id).filter(User.department_id == current_user.department_id)
-    elif current_user.role == UserRole.organization:
-        if current_user.organization_id is None:
-            return {"items": []}
-        query = query.join(User, SearchHistory.user_id == User.user_id).filter(User.organization_id == current_user.organization_id)
-    elif current_user.role == UserRole.citizen:
-        query = query.filter(SearchHistory.user_id == current_user.user_id)
-    query = query.filter(SearchHistory.query_text.isnot(None)).group_by(SearchHistory.query_text).order_by(func.count(SearchHistory.search_id).desc()).limit(100)
-    return {"items": [{"query": row.query_text, "count": row.count} for row in query.all()]}
+def search_trends(
+    filters: dict = Depends(analytics_filters),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(*ANALYTICS_ROLES)),
+):
+    return get_search_trends(db, current_user, filters)
 
 
 @router.get("/departments")

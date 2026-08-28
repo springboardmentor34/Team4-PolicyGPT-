@@ -129,6 +129,15 @@ export const routes: Routes = [
       },
 
       // ==========================================
+      // ANALYTICS
+      // ==========================================
+      {
+        path: 'analytics',
+        loadChildren: () =>
+          import('./features/analytics/analytics.routes').then((m) => m.ANALYTICS_ROUTES),
+      },
+
+      // ==========================================
       // DEPARTMENT ANALYTICS
       // ==========================================
       {
