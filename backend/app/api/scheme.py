@@ -14,7 +14,9 @@ from app.crud.scheme import (
     update_scheme,
     update_scheme_status,
 )
+from app.core.dependencies import require_roles
 from app.db.database import get_db
+from app.models.user import User
 from app.models.scheme import SchemeStatus
 from app.schemas.scheme import (
     SchemeCreate,
@@ -44,14 +46,16 @@ router = APIRouter(
 def create_new_scheme(
     scheme_data: SchemeCreate,
     db: Session = Depends(get_db),
-    created_by: Optional[UUID] = None,
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> SchemeResponse:
     """Create a new scheme record with draft status."""
 
     return create_scheme(
         db=db,
         scheme_data=scheme_data,
-        created_by=created_by,
+        created_by=current_user.user_id,
     )
 
 
@@ -178,6 +182,9 @@ def update_existing_scheme(
     scheme_id: UUID,
     scheme_data: SchemeUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> SchemeResponse:
     """Update editable fields of an existing scheme."""
 
@@ -210,6 +217,9 @@ def update_existing_scheme(
 def delete_existing_scheme(
     scheme_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> None:
     """Hard-delete a scheme record."""
 
@@ -242,6 +252,9 @@ def update_scheme_lifecycle_status(
     scheme_id: UUID,
     status_data: SchemeStatusUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> SchemeResponse:
     """Update the lifecycle status of a scheme."""
 

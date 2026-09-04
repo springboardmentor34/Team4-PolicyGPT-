@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../config/api.config';
 
 export type FeedbackCategory = 'bug' | 'suggestion' | 'complaint' | 'query';
 export type FeedbackStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
@@ -25,7 +26,7 @@ export interface FeedbackCreateRequest {
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8000/feedback';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/feedback`;
 
   private get options(): { headers: HttpHeaders } {
     const token = localStorage.getItem('access_token');

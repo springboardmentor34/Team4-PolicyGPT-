@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { API_CONFIG } from '../../../core/config/api.config';
 
 export interface TrendItem {
   label: string;
@@ -36,7 +37,7 @@ export interface UsageData {
 export class UsageStatisticsService {
 
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/usage-statistics';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/usage-statistics`;
 
   getUsageStatistics(
     role: string,

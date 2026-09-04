@@ -12,8 +12,10 @@ from app.crud.eligibility_rule import (
     get_rules_by_scheme,
     update_rule,
 )
+from app.core.dependencies import require_roles
 from app.db.database import get_db
 from app.models.scheme import Scheme
+from app.models.user import User
 from app.schemas.eligibility_rule import (
     EligibilityRuleCreate,
     EligibilityRuleResponse,
@@ -35,6 +37,9 @@ def create_new_rule(
     rule_data: EligibilityRuleCreate,
     scheme_id: Optional[UUID] = Query(default=None),
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> EligibilityRuleResponse:
     """Create a new eligibility rule linked to a scheme."""
     target_scheme_id = rule_data.scheme_id or scheme_id
@@ -109,6 +114,9 @@ def update_existing_rule(
     rule_id: UUID,
     rule_data: EligibilityRuleUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> EligibilityRuleResponse:
     """Update editable fields of an existing eligibility rule."""
     rule = get_rule(db=db, rule_id=rule_id)
@@ -127,6 +135,9 @@ def update_existing_rule(
 def delete_existing_rule(
     rule_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("administrator", "government_official")
+    ),
 ) -> None:
     """Hard-delete an eligibility rule."""
     rule = get_rule(db=db, rule_id=rule_id)

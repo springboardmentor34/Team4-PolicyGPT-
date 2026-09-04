@@ -16,3 +16,7 @@ backend/.env
 
 # Logs
 *.log
+
+docs/
+
+/Infosys_Project_Requirements.pdf

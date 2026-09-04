@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class OfficialService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:8000';
+  private apiUrl = API_CONFIG.BASE_URL;
 
   getDashboardStats(): Observable<any> {
     return this.http.get(`${this.apiUrl}/official/dashboard`);

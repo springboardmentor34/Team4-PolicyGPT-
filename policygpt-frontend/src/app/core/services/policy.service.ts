@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Policy } from '../../features/policy/models/policy.model';
+import { API_CONFIG } from '../config/api.config';
 
 export interface PolicyListResponse {
   items: Policy[];
@@ -16,7 +17,7 @@ export interface PolicyListResponse {
 })
 export class PolicyService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/policies';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/policies`;
 
   private get options(): { headers: HttpHeaders } {
     const token = localStorage.getItem('access_token');

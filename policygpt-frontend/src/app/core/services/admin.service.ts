@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../config/api.config';
 
 export interface AdminDashboardResponse {
   adminName: string;
@@ -24,7 +25,7 @@ export interface AdminDashboardResponse {
 })
 export class AdminService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/admin';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/admin`;
 
   getDashboard(): Observable<AdminDashboardResponse> {
     const token = localStorage.getItem('access_token');

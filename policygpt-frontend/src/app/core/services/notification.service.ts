@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../config/api.config';
 
 export type NotificationType = 'info' | 'alert' | 'reminder' | 'approval';
 export type NotificationChannel = 'in_app' | 'email' | 'sms';
@@ -34,7 +35,7 @@ export interface NotificationCreateRequest {
 })
 export class NotificationService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8000/notifications';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/notifications`;
 
   private get options(): { headers: HttpHeaders } {
     const token = localStorage.getItem('access_token');

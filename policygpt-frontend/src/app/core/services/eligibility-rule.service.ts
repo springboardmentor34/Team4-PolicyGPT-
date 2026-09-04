@@ -6,13 +6,14 @@ import {
   EligibilityRuleCreate,
   EligibilityRuleUpdate,
 } from '../../features/eligibility/models/eligibility-rule.model';
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EligibilityRuleService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/eligibility-rules';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/eligibility-rules`;
 
   getRules(
     skip: number = 0,

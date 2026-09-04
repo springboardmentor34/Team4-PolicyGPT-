@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_CONFIG } from '../config/api.config';
 
 @Injectable({ providedIn: 'root' })
 export class UsageEventService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/usage-statistics/events';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/usage-statistics/events`;
 
   record(eventType: string, policyId?: string): void {
     const token = localStorage.getItem('access_token');
@@ -24,7 +25,7 @@ export class UsageEventService {
     // Only track if there's actually a query or active filters
     if (!queryText && Object.values(filters).every(v => !v)) return;
 
-    this.http.post('http://127.0.0.1:8000/usage-statistics/track/search', {
+    this.http.post(`${API_CONFIG.BASE_URL}/usage-statistics/track/search`, {
       query_text: queryText,
       filters_json: filters
     }, { headers }).subscribe({ error: () => undefined });
@@ -34,7 +35,7 @@ export class UsageEventService {
     const token = localStorage.getItem('access_token');
     if (!token) return;
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.post('http://127.0.0.1:8000/usage-statistics/track/view', {
+    this.http.post(`${API_CONFIG.BASE_URL}/usage-statistics/track/view`, {
       policy_id: policyId
     }, { headers }).subscribe({ error: () => undefined });
   }
@@ -43,7 +44,7 @@ export class UsageEventService {
     const token = localStorage.getItem('access_token');
     if (!token) return;
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.post('http://127.0.0.1:8000/usage-statistics/track/save', {
+    this.http.post(`${API_CONFIG.BASE_URL}/usage-statistics/track/save`, {
       policy_id: policyId
     }, { headers }).subscribe({ error: () => undefined });
   }

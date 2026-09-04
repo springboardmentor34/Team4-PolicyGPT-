@@ -21,3 +21,4 @@
 \i tables/saved_policies.sql
 \i tables/policy_views.sql
 \i tables/engagement_events.sql
+\i update_schema_migration.sql

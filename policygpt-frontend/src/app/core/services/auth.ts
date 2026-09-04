@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../config/api.config';
 
 export interface LoginRequest {
   email: string;
@@ -34,7 +35,7 @@ export interface ResetPasswordRequest {
   providedIn: 'root',
 })
 export class Auth {
-  private readonly baseUrl = 'http://localhost:8000';
+  private readonly baseUrl = API_CONFIG.BASE_URL;
 
   constructor(private http: HttpClient) {}
 

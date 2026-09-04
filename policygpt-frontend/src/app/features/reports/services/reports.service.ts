@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../../../core/config/api.config';
 
 export interface ApiReport {
   report_id: string;
@@ -13,7 +14,7 @@ export interface ApiReport {
 @Injectable({ providedIn: 'root' })
 export class ReportsService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://127.0.0.1:8000/reports';
+  private readonly apiUrl = `${API_CONFIG.BASE_URL}/reports`;
 
   private get options(): { headers: HttpHeaders } {
     const token = localStorage.getItem('access_token');
