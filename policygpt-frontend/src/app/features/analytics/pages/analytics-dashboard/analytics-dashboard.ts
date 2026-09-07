@@ -143,8 +143,13 @@ export class AnalyticsDashboard implements OnInit, AfterViewInit, OnDestroy {
     return !!(
       this.summary?.total_policies ||
       this.summary?.active_schemes ||
+      this.summary?.users ||
+      this.summary?.feedback ||
+      this.summary?.applications ||
       this.summary?.total_engagement ||
       this.policyStats?.by_category?.length ||
+      this.policyStats?.by_status?.some((item) => item.count > 0) ||
+      this.policyStats?.trends?.some((item) => item.count > 0) ||
       this.engagement?.timeline?.length ||
       this.eligibility?.age_groups?.some((item) => item.count > 0)
     );
