@@ -132,7 +132,7 @@
           </div>
         </div>
 
-        <div class="chart-frame compact" *ngIf="eligibility?.age_groups?.length; else emptyEligibilityChart">
+        <div class="chart-frame compact" *ngIf="eligibility?.age_groups?.some(item => item.count > 0); else emptyEligibilityChart">
           <canvas #eligibilityChart></canvas>
         </div>
         <ng-template #emptyEligibilityChart>
