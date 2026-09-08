@@ -1,198 +1,135 @@
-<div class="filter-header">
-  <div class="filter-icon">
-    <mat-icon>tune</mat-icon>
-  </div>
+<div class="filter-heading">
 
   <div>
-    <h2>Advanced Filters</h2>
+    <h2>Search Policies</h2>
 
     <p>
-      Narrow results using the available policy filters.
+      Find policies by name, department, state, category or status.
     </p>
   </div>
+
 </div>
 
 
 <div class="filter-grid">
 
-  <!-- Policy Name -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Policy Name</mat-label>
+  <!-- Keyword -->
 
-    <mat-select
-      [(ngModel)]="filter.policyName"
-      panelClass="policy-filter-panel">
+  <div class="filter-field keyword-field">
 
-      <mat-option value="">
-        All Policies
-      </mat-option>
+    <label for="policy-keyword">
+      Keyword
+    </label>
 
-      <mat-option
-        *ngFor="let policy of policyNames"
-        [value]="policy">
+    <input
+      id="policy-keyword"
+      type="text"
+      [(ngModel)]="filter.keyword"
+      placeholder="Search policy name or keywords"
+      (keyup.enter)="applyFilters()"
+    />
 
-        {{ policy }}
-
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
-
-
-  <!-- Scheme Name
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Scheme Name</mat-label>
-
-    <mat-select
-      [(ngModel)]="filter.schemeName"
-      panelClass="policy-filter-panel">
-
-      <mat-option value="">
-        All Schemes
-      </mat-option>
-
-      <mat-option
-        *ngFor="let scheme of schemeNames"
-        [value]="scheme">
-
-        {{ scheme }}
-
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field> -->
+  </div>
 
 
   <!-- Department -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Department</mat-label>
 
-    <mat-select
+  <div class="filter-field">
+
+    <label for="policy-department">
+      Department
+    </label>
+
+    <input
+      id="policy-department"
+      type="text"
       [(ngModel)]="filter.department"
-      panelClass="policy-filter-panel">
+      placeholder="e.g. Agriculture Department"
+    />
 
-      <mat-option value="">
-        All Departments
-      </mat-option>
-
-      <mat-option
-        *ngFor="let department of departments"
-        [value]="department">
-
-        {{ department }}
-
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
-
-
-  <!-- Ministry -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Ministry</mat-label>
-
-    <mat-select
-      [(ngModel)]="filter.ministry"
-      panelClass="policy-filter-panel">
-
-      <mat-option value="">
-        All Ministries
-      </mat-option>
-
-      <mat-option
-        *ngFor="let ministry of ministries"
-        [value]="ministry">
-
-        {{ ministry }}
-
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
+  </div>
 
 
   <!-- State -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>State</mat-label>
 
-    <mat-select
-      [(ngModel)]="filter.state"
-      panelClass="policy-filter-panel">
+  <div class="filter-field">
 
-      <mat-option value="">
-        All States
-      </mat-option>
-
-      <mat-option
-        *ngFor="let state of states"
-        [value]="state">
-
-        {{ state }}
-
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
-
-
-  <!-- Sector -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Sector</mat-label>
-
-    <mat-select
-      [(ngModel)]="filter.sector"
-      panelClass="policy-filter-panel">
-
-      <mat-option value="">
-        All Sectors
-      </mat-option>
-
-      <mat-option
-        *ngFor="let sector of sectors"
-        [value]="sector">
-
-        {{ sector }}
-
-      </mat-option>
-
-    </mat-select>
-  </mat-form-field>
-
-
-  <!-- Publication Date -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Publication Date</mat-label>
+    <label for="policy-state">
+      State
+    </label>
 
     <input
-      matInput
-      type="date"
-      [(ngModel)]="filter.publicationDate">
-  </mat-form-field>
+      id="policy-state"
+      type="text"
+      [(ngModel)]="filter.state"
+      placeholder="e.g. Telangana"
+    />
+
+  </div>
+
+
+  <!-- Category -->
+
+  <div class="filter-field">
+
+    <label for="policy-category">
+      Category
+    </label>
+
+    <input
+      id="policy-category"
+      type="text"
+      [(ngModel)]="filter.category"
+      placeholder="e.g. Education"
+    />
+
+  </div>
 
 
   <!-- Status -->
-  <mat-form-field appearance="outline" class="filter-field">
-    <mat-label>Status</mat-label>
 
-    <mat-select
-      [(ngModel)]="filter.status"
-      panelClass="policy-filter-panel">
+  <div class="filter-field">
 
-      <mat-option value="">
-        All Status
-      </mat-option>
+    <label for="policy-status">
+      Status
+    </label>
 
-      <mat-option
-        *ngFor="let status of statuses"
-        [value]="status">
+    <select
+      id="policy-status"
+      [(ngModel)]="filter.status">
 
-        {{ status }}
+      <option value="">
+        All Statuses
+      </option>
 
-      </mat-option>
+      @for (status of statuses; track status) {
 
-    </mat-select>
+        <option [value]="status">
+          {{ status }}
+        </option>
 
-  </mat-form-field>
+      }
+
+    </select>
+
+  </div>
+
+
+  <!-- Publication Date -->
+
+  <div class="filter-field">
+
+    <label for="policy-publication-date">
+      Publication Date
+    </label>
+
+    <input
+      id="policy-publication-date"
+      type="date"
+      [(ngModel)]="filter.publicationDate"
+    />
+
+  </div>
 
 </div>
 
@@ -200,25 +137,20 @@
 <div class="filter-actions">
 
   <button
-    mat-flat-button
-    color="primary"
-    class="apply-button"
     type="button"
+    class="search-button"
     (click)="applyFilters()">
 
-    <mat-icon>filter_alt</mat-icon>
-    Apply Filters
+    Search
 
   </button>
 
 
   <button
-    mat-stroked-button
-    class="clear-button"
     type="button"
+    class="clear-button"
     (click)="clearFilters()">
 
-    <mat-icon>restart_alt</mat-icon>
     Clear Filters
 
   </button>

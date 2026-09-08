@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
-import { PolicySearch } from '../../components/policy-search/policy-search';
+import { MatIconModule } from '@angular/material/icon';
+import {
+  MatPaginatorModule,
+  PageEvent
+} from '@angular/material/paginator';
+
 import { PolicyFilterComponent } from '../../components/policy-filter/policy-filter';
 import { PolicyToolbar } from '../../components/policy-toolbar/policy-toolbar';
 import { PolicyCard } from '../../components/policy-card/policy-card';
@@ -23,10 +25,8 @@ import { UsageEventService } from '../../../../core/services/usage-event.service
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     MatIconModule,
     MatPaginatorModule,
-    PolicySearch,
     PolicyFilterComponent,
     PolicyToolbar,
     PolicyCard
@@ -42,8 +42,6 @@ export class PolicyList implements OnInit {
 
   pagedPolicies: Policy[] = [];
 
-  searchKeyword = '';
-
   sortBy = 'newest';
 
   pageSize = 5;
@@ -51,93 +49,101 @@ export class PolicyList implements OnInit {
   currentPage = 0;
 
   currentFilter: PolicyFilter = {
-    policyName: '',
-    schemeName: '',
+    keyword: '',
     department: '',
-    ministry: '',
     state: '',
-    sector: '',
-    publicationDate: '',
-    status: ''
+    category: '',
+    status: '',
+    publicationDate: ''
   };
 
+
   constructor(
-  private router: Router,
-  private policyService: PolicyService,
-  private searchService: SearchService,
-  private cdr: ChangeDetectorRef,
-  private auth: Auth,
-  private usageEventService: UsageEventService
-) {}
+    private router: Router,
+    private policyService: PolicyService,
+    private searchService: SearchService,
+    private auth: Auth,
+    private usageEventService: UsageEventService
+  ) {}
 
- canCreatePolicy(): boolean {
 
-  const role = this.auth.getRoleFromToken()
-    ?.toLowerCase()
-    .trim();
+  canCreatePolicy(): boolean {
 
-  return (
-    role === 'admin' ||
-    role === 'administrator' ||
-    role === 'official' ||
-    role === 'officer' ||
-    role === 'government_official' ||
-    role === 'government official'
-  );
+    const role = this.auth
+      .getRoleFromToken()
+      ?.toLowerCase()
+      .trim();
 
-}
+    return (
+      role === 'admin' ||
+      role === 'administrator' ||
+      role === 'official' ||
+      role === 'officer' ||
+      role === 'government_official' ||
+      role === 'government official'
+    );
 
-  navigateToCreatePolicy(): void {
-    this.router.navigate(['/policies/add']);
   }
 
+
+  navigateToCreatePolicy(): void {
+
+    this.router.navigate(['/policies/add']);
+
+  }
+
+
   ngOnInit(): void {
-  this.loadPolicies();
-}
+
+    this.loadPolicies();
+
+  }
+
 
   loadPolicies(): void {
 
-  this.policyService.getPolicies().subscribe({
+    this.policyService.getPolicies().subscribe({
 
-    next: (data) => {
+      next: (data) => {
 
-      console.log('Policies received:', data);
+        console.log('Policies received:', data);
 
-      this.allPolicies = data;
+        this.allPolicies = data ?? [];
 
-      this.applySearchAndFilters();
+        this.applySearchAndFilters();
 
-      // Force the view to update
-      this.cdr.detectChanges();
+      },
 
-    },
+      error: (error) => {
 
-    error: (error) => {
+        console.error(
+          'Failed to load policies',
+          error
+        );
 
-      console.error('Failed to load policies', error);
+        this.allPolicies = [];
 
-      this.cdr.detectChanges();
+        this.policies = [];
 
-    }
+        this.pagedPolicies = [];
 
-  });
+      }
 
-}
-
-  onSearch(keyword: string): void {
-
-    this.searchKeyword = keyword;
-    this.applySearchAndFilters();
+    });
 
   }
+
 
   onFilter(filter: PolicyFilter): void {
 
-    this.currentFilter = filter;
+    this.currentFilter = {
+      ...filter
+    };
 
     this.applySearchAndFilters();
 
   }
+
 
   onSort(sort: string): void {
 
@@ -147,29 +153,56 @@ export class PolicyList implements OnInit {
 
   }
 
+
   applySearchAndFilters(): void {
 
     let result = this.searchService.filterPolicies(
       this.allPolicies,
-      this.searchKeyword,
       this.currentFilter
     );
+
 
     result = this.searchService.sortPolicies(
       result,
       this.sortBy
     );
 
-    this.policies = result;
-    
-    this.usageEventService.trackSearch(this.searchKeyword, this.currentFilter);
 
-    // Reset to first page after every search/filter/sort
+    this.policies = result;
+
+
+    this.usageEventService.trackSearch(
+      this.currentFilter.keyword,
+      this.currentFilter
+    );
+
+
     this.currentPage = 0;
 
     this.updatePagedPolicies();
 
   }
+
+
+  clearFilters(): void {
+
+    this.currentFilter = {
+      keyword: '',
+      department: '',
+      state: '',
+      category: '',
+      status: '',
+      publicationDate: ''
+    };
+
+    this.sortBy = 'newest';
+
+    this.currentPage = 0;
+
+    this.applySearchAndFilters();
+
+  }
+
 
   onPageChange(event: PageEvent): void {
 
@@ -181,34 +214,21 @@ export class PolicyList implements OnInit {
 
   }
 
+
   updatePagedPolicies(): void {
 
-    const startIndex = this.currentPage * this.pageSize;
+    const startIndex =
+      this.currentPage * this.pageSize;
 
-    const endIndex = startIndex + this.pageSize;
+    const endIndex =
+      startIndex + this.pageSize;
 
-    this.pagedPolicies = this.policies.slice(startIndex, endIndex);
+    this.pagedPolicies =
+      this.policies.slice(
+        startIndex,
+        endIndex
+      );
 
   }
-  clearFilters(): void {
-
-  this.searchKeyword = '';
-
-  this.sortBy = 'newest';
-
-  this.currentFilter = {
-    policyName: '',
-    schemeName: '',
-    department: '',
-    ministry: '',
-    state: '',
-    sector: '',
-    publicationDate: '',
-    status: ''
-  };
-
-  this.applySearchAndFilters();
-
-}
 
 }
