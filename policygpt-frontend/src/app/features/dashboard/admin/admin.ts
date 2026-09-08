@@ -21,7 +21,10 @@ export class Admin implements OnInit {
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
 
+
+  
   adminName: string = 'System Administrator';
+  today = new Date();
 
   totalUsers = 0;
   totalPolicies = 0;
