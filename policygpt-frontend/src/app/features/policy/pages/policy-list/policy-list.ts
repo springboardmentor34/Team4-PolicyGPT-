@@ -85,12 +85,29 @@ export class PolicyList implements OnInit {
 
   }
 
+  canApprovePolicies(): boolean {
+
+  const role = this.auth
+    .getRoleFromToken()
+    ?.toLowerCase()
+    .trim();
+
+  return (
+    role === 'admin' ||
+    role === 'administrator'
+  );
+
+}
+
 
   navigateToCreatePolicy(): void {
 
     this.router.navigate(['/policies/add']);
 
   }
+  navigateToPolicyApproval(): void {
+  this.router.navigate(['/policies/approval']);
+}
 
 
   ngOnInit(): void {

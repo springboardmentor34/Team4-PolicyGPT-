@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { Auth } from '../../../../core/services/auth';
 import { ReportsService } from '../../services/reports.service';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 import { jsPDF } from 'jspdf';
 import * as XLSX from 'xlsx';
 
@@ -127,6 +129,7 @@ export class ReportsDashboard {
     private readonly cdr: ChangeDetectorRef,
     private readonly auth: Auth,
     private readonly reportsService: ReportsService,
+      private readonly analyticsService: AnalyticsService,
   ) {
     this.currentRole = this.normalizeRole(
       this.auth.getRoleFromToken()
@@ -488,86 +491,395 @@ export class ReportsDashboard {
   // GENERATE REPORT
   // ============================================================
 
-  generateReport(): void {
+generateReport(): void {
+  if (!this.canGenerateReports()) {
+    return;
+  }
 
-    if (!this.canGenerateReports()) {
-      return;
-    }
+  if (!this.selectedReportType || this.isGenerating) {
+    return;
+  }
 
-    if (!this.selectedReportType || this.isGenerating) {
-      return;
-    }
+  const report = this.selectedReport;
 
-    const report = this.selectedReport;
+  if (!report || !this.canAccessReport(report)) {
+    return;
+  }
 
-    if (!report || !this.canAccessReport(report)) {
-      return;
-    }
+  /*
+   * Analytics reports are generated from the real analytics
+   * endpoints instead of /reports with report_type=usage.
+   */
+  if (report.id === 'analytics') {
+    this.generateAnalyticsReport();
+    return;
+  }
 
-    this.isGenerating = true;
+  this.isGenerating = true;
+  this.cdr.detectChanges();
 
-    this.cdr.detectChanges();
+  const reportId = Date.now();
 
-    const reportId = Date.now();
+  const generatingReport: ReportRecord = {
+    id: reportId,
+    reportTypeId: report.id,
+    name: report.title,
+    type: this.getReportTypeLabel(report),
+    generatedOn: this.getTodayDate(),
+    status: 'Generating',
+  };
 
-    const generatingReport: ReportRecord = {
-      id: reportId,
-      reportTypeId: report.id,
-      name: report.title,
-      type: this.getReportTypeLabel(report),
-      generatedOn: this.getTodayDate(),
-      status: 'Generating',
-    };
+  this.recentReports = [
+    generatingReport,
+    ...this.recentReports,
+  ];
 
-    this.recentReports = [
-      generatingReport,
-      ...this.recentReports,
-    ];
+  this.cdr.detectChanges();
 
-    this.cdr.detectChanges();
-
-    this.reportsService.create(this.toApiReportType(report.id), 'csv').subscribe({
+  this.reportsService
+    .create(this.toApiReportType(report.id), 'csv')
+    .subscribe({
       next: () => {
         this.recentReports = this.recentReports.map(item =>
-          item.id === reportId ? { ...item, status: 'Ready' } : item,
+          item.id === reportId
+            ? { ...item, status: 'Ready' }
+            : item,
         );
+
         this.isGenerating = false;
         this.cdr.detectChanges();
       },
+
       error: () => {
-        this.recentReports = this.recentReports.filter(item => item.id !== reportId);
+        this.recentReports =
+          this.recentReports.filter(
+            item => item.id !== reportId,
+          );
+
         this.isGenerating = false;
         this.cdr.detectChanges();
       },
     });
+}
+
+private generateAnalyticsReport(): void {
+  this.isGenerating = true;
+  this.cdr.detectChanges();
+
+  const filters = {
+    period: '30d',
+    start_date: null,
+    end_date: null,
+    department: null,
+    category: null,
+  };
+
+  forkJoin({
+    summary: this.analyticsService.getSummary(filters),
+    policyStats: this.analyticsService.getPolicyStats(filters),
+    engagement: this.analyticsService.getEngagementSummary(filters),
+    eligibility: this.analyticsService.getEligibilityStats(filters),
+  }).subscribe({
+    next: (data) => {
+      const report = this.reportTypes.find(
+        item => item.id === 'analytics',
+      );
+
+      if (!report) {
+        this.isGenerating = false;
+        return;
+      }
+
+      const analyticsRows =
+        this.buildAnalyticsRows(data);
+
+      const preview: ReportPreview = {
+        title: 'Analytics Reports',
+        description:
+          'Platform trends, policy usage, citizen engagement and eligibility analytics.',
+        type: 'Analytics Report',
+        reportingPeriod: 'Last 30 Days',
+        generatedOn: this.getTodayDate(),
+        metrics: this.buildAnalyticsMetrics(data),
+        records: analyticsRows,
+      };
+
+      /*
+       * Generate both usable exports locally.
+       * This avoids the broken /reports?report_type=usage endpoint.
+       */
+      this.exportPdf(preview);
+      this.exportExcel(preview);
+
+      const reportId = Date.now();
+
+      this.recentReports = [
+        {
+          id: reportId,
+          reportTypeId: 'analytics',
+          name: 'Platform Analytics Report',
+          type: 'Analytics Report',
+          generatedOn: this.getTodayDate(),
+          status: 'Ready',
+        },
+        ...this.recentReports,
+      ];
+
+      this.isGenerating = false;
+      this.cdr.detectChanges();
+    },
+
+    error: () => {
+      this.isGenerating = false;
+      this.cdr.detectChanges();
+    },
+  });
+}
+
+private buildAnalyticsMetrics(data: {
+  summary: any;
+  policyStats: any;
+  engagement: any;
+  eligibility: any;
+}): ReportMetric[] {
+  return [
+    {
+      label: 'Total Policies',
+      value: String(data.summary?.total_policies ?? 0),
+      icon: 'description',
+    },
+    {
+      label: 'Active Schemes',
+      value: String(data.summary?.active_schemes ?? 0),
+      icon: 'verified',
+    },
+    {
+      label: 'Users',
+      value: String(data.summary?.users ?? 0),
+      icon: 'groups',
+    },
+    {
+      label: 'Citizen Engagement',
+      value: String(data.summary?.total_engagement ?? 0),
+      icon: 'insights',
+    },
+    {
+      label: 'Applications',
+      value: String(data.summary?.applications ?? 0),
+      icon: 'assignment',
+    },
+    {
+      label: 'Feedback',
+      value: String(data.summary?.feedback ?? 0),
+      icon: 'feedback',
+    },
+    {
+      label: 'Policy Views',
+      value: String(data.engagement?.views ?? 0),
+      icon: 'visibility',
+    },
+    {
+      label: 'Policy Searches',
+      value: String(data.engagement?.searches ?? 0),
+      icon: 'search',
+    },
+  ];
+}
+
+private buildAnalyticsRows(data: {
+  summary: any;
+  policyStats: any;
+  engagement: any;
+  eligibility: any;
+}): Array<Record<string, unknown>> {
+  const rows: Array<Record<string, unknown>> = [];
+
+  rows.push({
+    metric: 'Total Policies',
+    value: data.summary?.total_policies ?? 0,
+    category: 'Policy',
+  });
+
+  rows.push({
+    metric: 'Active Schemes',
+    value: data.summary?.active_schemes ?? 0,
+    category: 'Scheme',
+  });
+
+  rows.push({
+    metric: 'Users',
+    value: data.summary?.users ?? 0,
+    category: 'Users',
+  });
+
+  rows.push({
+    metric: 'Total Engagement',
+    value: data.summary?.total_engagement ?? 0,
+    category: 'Engagement',
+  });
+
+  rows.push({
+    metric: 'Applications',
+    value: data.summary?.applications ?? 0,
+    category: 'Applications',
+  });
+
+  rows.push({
+    metric: 'Feedback',
+    value: data.summary?.feedback ?? 0,
+    category: 'Feedback',
+  });
+
+  rows.push({
+    metric: 'Views',
+    value: data.engagement?.views ?? 0,
+    category: 'Engagement',
+  });
+
+  rows.push({
+    metric: 'Searches',
+    value: data.engagement?.searches ?? 0,
+    category: 'Engagement',
+  });
+
+  rows.push({
+    metric: 'Saves',
+    value: data.engagement?.saves ?? 0,
+    category: 'Engagement',
+  });
+
+  rows.push({
+    metric: 'Eligibility Records',
+    value: this.countEligibilityRecords(
+      data.eligibility,
+    ),
+    category: 'Eligibility',
+  });
+
+  return rows;
+}
+
+private countEligibilityRecords(
+  eligibility: any,
+): number {
+  if (!eligibility) {
+    return 0;
   }
+
+  return [
+    ...(eligibility.age_groups ?? []),
+    ...(eligibility.gender_distribution ?? []),
+    ...(eligibility.social_categories ?? []),
+    ...(eligibility.disability ?? []),
+  ].reduce(
+    (total: number, item: any) =>
+      total + (Number(item?.count) || 0),
+    0,
+  );
+}
 
   // ============================================================
   // PREVIEW
   // ============================================================
 
-  previewReport(): void {
+ previewReport(): void {
+  if (!this.selectedReport) {
+    return;
+  }
 
-    if (!this.selectedReport) {
-      return;
-    }
+  if (!this.canAccessReport(this.selectedReport)) {
+    return;
+  }
 
-    if (!this.canAccessReport(this.selectedReport)) {
-      return;
-    }
+  if (this.isGenerating) {
+    return;
+  }
 
-    if (this.isGenerating) {
-      return;
-    }
+  /*
+   * Analytics has its own API endpoints.
+   */
+  if (this.selectedReport.id === 'analytics') {
+    this.previewAnalyticsReport();
+    return;
+  }
 
-    this.reportsService.preview(this.toApiReportType(this.selectedReport.id)).subscribe({
+  this.reportsService
+    .preview(
+      this.toApiReportType(
+        this.selectedReport.id,
+      ),
+    )
+    .subscribe({
       next: response => {
-        this.previewData = this.buildReportPreview(this.selectedReport!, response.data);
+        this.previewData =
+          this.buildReportPreview(
+            this.selectedReport!,
+            response.data,
+          );
+
+        this.isPreviewOpen = true;
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+        this.previewData =
+          this.buildReportPreview(
+            this.selectedReport!,
+            [],
+          );
+
         this.isPreviewOpen = true;
         this.cdr.detectChanges();
       },
     });
-  }
+}
+
+private previewAnalyticsReport(): void {
+  const filters = {
+    period: '30d',
+    start_date: null,
+    end_date: null,
+    department: null,
+    category: null,
+  };
+
+  forkJoin({
+    summary: this.analyticsService.getSummary(filters),
+    policyStats: this.analyticsService.getPolicyStats(filters),
+    engagement: this.analyticsService.getEngagementSummary(filters),
+    eligibility: this.analyticsService.getEligibilityStats(filters),
+  }).subscribe({
+    next: (data) => {
+      const report = this.reportTypes.find(
+        item => item.id === 'analytics',
+      );
+
+      if (!report) {
+        return;
+      }
+
+      this.previewData = {
+        title: 'Analytics Reports',
+        description:
+          'Platform trends, policy usage, citizen engagement and eligibility analytics.',
+        type: 'Analytics Report',
+        reportingPeriod: 'Last 30 Days',
+        generatedOn: this.getTodayDate(),
+        metrics: this.buildAnalyticsMetrics(data),
+        records: this.buildAnalyticsRows(data),
+      };
+
+      this.isPreviewOpen = true;
+      this.cdr.detectChanges();
+    },
+
+    error: () => {
+      this.previewData = null;
+      this.isPreviewOpen = false;
+      this.cdr.detectChanges();
+    },
+  });
+}
 
   closePreview(): void {
 
@@ -583,40 +895,109 @@ export class ReportsDashboard {
   // ============================================================
 
   exportReport(format: 'PDF' | 'Excel'): void {
+  if (!this.canExportReports()) {
+    return;
+  }
 
-    if (!this.canExportReports()) {
-      return;
-    }
+  const report = this.selectedReport;
 
-    const report = this.selectedReport;
+  if (!report || !this.canAccessReport(report)) {
+    return;
+  }
 
-    if (!report || !this.canAccessReport(report)) {
-      return;
-    }
+  if (this.isGenerating) {
+    return;
+  }
 
-    if (this.isGenerating) {
-      return;
-    }
+  /*
+   * Analytics export uses the real analytics APIs.
+   */
+  if (report.id === 'analytics') {
+    this.exportAnalyticsReport(format);
+    return;
+  }
 
-    this.reportsService.preview(this.toApiReportType(report.id)).subscribe({
+  this.reportsService
+    .preview(this.toApiReportType(report.id))
+    .subscribe({
       next: response => {
-        const preview = this.buildReportPreview(report, response.data);
+        const preview =
+          this.buildReportPreview(
+            report,
+            response.data,
+          );
+
         if (format === 'PDF') {
           this.exportPdf(preview);
         } else {
           this.exportExcel(preview);
         }
       },
+
       error: () => {
-        const preview = this.buildReportPreview(report, []);
+        const preview =
+          this.buildReportPreview(
+            report,
+            [],
+          );
+
         if (format === 'PDF') {
           this.exportPdf(preview);
         } else {
           this.exportExcel(preview);
         }
-      }
+      },
     });
-  }
+}
+private exportAnalyticsReport(
+  format: 'PDF' | 'Excel',
+): void {
+  const filters = {
+    period: '30d',
+    start_date: null,
+    end_date: null,
+    department: null,
+    category: null,
+  };
+
+  forkJoin({
+    summary: this.analyticsService.getSummary(filters),
+    policyStats: this.analyticsService.getPolicyStats(filters),
+    engagement: this.analyticsService.getEngagementSummary(filters),
+    eligibility: this.analyticsService.getEligibilityStats(filters),
+  }).subscribe({
+    next: (data) => {
+      const report = this.reportTypes.find(
+        item => item.id === 'analytics',
+      );
+
+      if (!report) {
+        return;
+      }
+
+      const preview: ReportPreview = {
+        title: 'Analytics Reports',
+        description:
+          'Platform trends, policy usage, citizen engagement and eligibility analytics.',
+        type: 'Analytics Report',
+        reportingPeriod: 'Last 30 Days',
+        generatedOn: this.getTodayDate(),
+        metrics: this.buildAnalyticsMetrics(data),
+        records: this.buildAnalyticsRows(data),
+      };
+
+      if (format === 'PDF') {
+        this.exportPdf(preview);
+      } else {
+        this.exportExcel(preview);
+      }
+    },
+
+    error: () => {
+      // Do nothing if analytics data cannot be loaded.
+    },
+  });
+}
 
   // ============================================================
   // DOWNLOAD EXISTING REPORT

@@ -26,39 +26,65 @@
     </div>
 
 
-    <div class="header-actions">
+   <div class="header-actions">
 
-      <div class="policy-count">
+  <div class="policy-count">
 
-        <strong>
-          {{ policies.length }}
-        </strong>
+    <strong>
+      {{ policies.length }}
+    </strong>
 
-        <span>
-          Policies
-        </span>
+    <span>
+      Policies
+    </span>
 
-      </div>
+  </div>
 
 
-      @if (canCreatePolicy()) {
+  <div class="policy-management-actions">
 
-        <button
-          type="button"
-          class="create-policy-button"
-          (click)="navigateToCreatePolicy()">
+    <!-- Admin + Government Official -->
 
-          <mat-icon>
-            add
-          </mat-icon>
+    @if (canCreatePolicy()) {
 
-          Create Policy
+      <button
+        type="button"
+        class="create-policy-button"
+        (click)="navigateToCreatePolicy()">
 
-        </button>
+        <mat-icon>
+          add
+        </mat-icon>
 
-      }
+        Add Policy
 
-    </div>
+      </button>
+
+    }
+
+
+    <!-- Admin Only -->
+
+    @if (canApprovePolicies()) {
+
+      <button
+        type="button"
+        class="approval-policy-button"
+        (click)="navigateToPolicyApproval()">
+
+        <mat-icon>
+          fact_check
+        </mat-icon>
+
+        Policy Approval
+
+      </button>
+
+    }
+
+  </div>
+
+</div>
 
   </header>
 

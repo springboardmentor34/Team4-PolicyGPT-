@@ -29,7 +29,36 @@
 
       </section>
 
+<div class="researcher-stats" *ngIf="!loading">
 
+  <div class="researcher-stat">
+    <mat-icon>description</mat-icon>
+
+    <div>
+      <strong>{{ totalPolicies }}</strong>
+      <span>Policies</span>
+    </div>
+  </div>
+
+  <div class="researcher-stat">
+    <mat-icon>account_balance</mat-icon>
+
+    <div>
+      <strong>{{ totalSchemes }}</strong>
+      <span>Schemes</span>
+    </div>
+  </div>
+
+  <div class="researcher-stat">
+    <mat-icon>category</mat-icon>
+
+    <div>
+      <strong>{{ sectors.length }}</strong>
+      <span>Policy Sectors</span>
+    </div>
+  </div>
+
+</div>
 
       <!-- SUGGESTED TOPICS -->
       <section class="suggested-section">
@@ -83,7 +112,8 @@
               <h2>Continue research</h2>
             </div>
 
-            <button type="button">
+            <button type="button"
+            (click)="navigate('/policies')">
               View all
               <mat-icon>arrow_forward</mat-icon>
             </button>
@@ -159,203 +189,242 @@
         </article>
 
 
-        <!-- POLICY LANDSCAPE -->
-        <article class="workspace-panel landscape-panel">
+       
+<!-- POLICY LANDSCAPE -->
+<article class="workspace-panel landscape-panel">
 
-          <div class="panel-header">
+  <div class="panel-header">
 
-            <div>
-              <span class="section-caption">POLICY LANDSCAPE</span>
-              <h2>Explore by sector</h2>
-            </div>
+    <div>
+      <span class="section-caption">
+        POLICY LANDSCAPE
+      </span>
 
-            <button
-              type="button"
-              (click)="navigate('/policies')"
-            >
-              Browse
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
+      <h2>Explore by sector</h2>
+    </div>
 
-          </div>
+    <button
+      type="button"
+      (click)="navigate('/policies')"
+    >
+      Browse
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
 
+  </div>
 
-          <div class="sector-list">
+  <!-- LOADING -->
+  <div
+    class="dashboard-loading"
+    *ngIf="loading"
+  >
+    <mat-icon>sync</mat-icon>
+    <span>Loading policy data...</span>
+  </div>
 
-            <button type="button" (click)="navigate('/policies')">
-              <span class="sector-name">
-                <span class="sector-dot agriculture"></span>
-                Agriculture
-              </span>
+  <!-- DATA -->
+  <div
+    class="sector-list"
+    *ngIf="!loading && sectors.length"
+  >
 
-              <span class="sector-value">24</span>
+    <button
+      type="button"
+      *ngFor="let sector of sectors"
+      (click)="navigate('/policies')"
+    >
 
-              <mat-icon>chevron_right</mat-icon>
-            </button>
+      <span class="sector-name">
 
-            <button type="button" (click)="navigate('/policies')">
-              <span class="sector-name">
-                <span class="sector-dot health"></span>
-                Healthcare
-              </span>
+        <span
+          class="sector-dot"
+          [class]="sector.name.toLowerCase().replace(' ', '-')"
+        ></span>
 
-              <span class="sector-value">21</span>
+        {{ sector.name }}
 
-              <mat-icon>chevron_right</mat-icon>
-            </button>
+      </span>
 
-            <button type="button" (click)="navigate('/policies')">
-              <span class="sector-name">
-                <span class="sector-dot education"></span>
-                Education
-              </span>
+      <span class="sector-value">
+        {{ sector.value }}
+      </span>
 
-              <span class="sector-value">19</span>
+      <mat-icon>
+        chevron_right
+      </mat-icon>
 
-              <mat-icon>chevron_right</mat-icon>
-            </button>
+    </button>
 
-            <button type="button" (click)="navigate('/policies')">
-              <span class="sector-name">
-                <span class="sector-dot employment"></span>
-                Employment
-              </span>
+  </div>
 
-              <span class="sector-value">18</span>
+  <!-- EMPTY -->
+  <div
+    class="dashboard-empty"
+    *ngIf="!loading && !sectors.length"
+  >
+    <mat-icon>analytics</mat-icon>
 
-              <mat-icon>chevron_right</mat-icon>
-            </button>
+    <span>
+      No policy category data available.
+    </span>
+  </div>
 
-          </div>
+</article>
 
-        </article>
 
       </section>
 
 
-      <!-- RECENT POLICIES -->
-      <section class="recent-section">
+      
+<!-- RECENT POLICIES -->
+<section class="recent-section">
 
-        <div class="recent-header">
+  <div class="recent-header">
 
-          <div>
-            <span class="section-caption">POLICY REPOSITORY</span>
-            <h2>Recently available policies</h2>
-          </div>
+    <div>
+      <span class="section-caption">
+        POLICY REPOSITORY
+      </span>
 
-          <button
-            type="button"
-            class="view-repository"
-            (click)="navigate('/policies')"
-          >
-            View policy repository
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
+      <h2>
+        Recently available policies
+      </h2>
+    </div>
 
-        </div>
+    <button
+      type="button"
+      class="view-repository"
+      (click)="navigate('/policies')"
+    >
+      View policy repository
 
+      <mat-icon>
+        arrow_forward
+      </mat-icon>
+    </button>
 
-        <div class="policy-table">
-
-          <div class="table-head">
-            <span>POLICY</span>
-            <span>DEPARTMENT</span>
-            <span>SECTOR</span>
-            <span>STATUS</span>
-            <span>UPDATED</span>
-            <span></span>
-          </div>
+  </div>
 
 
-          <button
-            type="button"
-            class="table-row"
-            (click)="navigate('/policies')"
-          >
-            <span class="policy-name">
-              <span class="table-icon">
-                <mat-icon>description</mat-icon>
-              </span>
-
-              <span>
-                <strong>PM-KISAN</strong>
-                <small>Pradhan Mantri Kisan Samman Nidhi</small>
-              </span>
-            </span>
-
-            <span>Agriculture</span>
-            <span>Agriculture</span>
-
-            <span>
-              <span class="status active">Active</span>
-            </span>
-
-            <span>Aug 2026</span>
-
-            <mat-icon>chevron_right</mat-icon>
-          </button>
+  <!-- LOADING -->
+  <div
+    class="dashboard-loading"
+    *ngIf="loading"
+  >
+    <mat-icon>sync</mat-icon>
+    <span>Loading policies...</span>
+  </div>
 
 
-          <button
-            type="button"
-            class="table-row"
-            (click)="navigate('/policies')"
-          >
-            <span class="policy-name">
-              <span class="table-icon">
-                <mat-icon>health_and_safety</mat-icon>
-              </span>
+  <!-- POLICY TABLE -->
+  <div
+    class="policy-table"
+    *ngIf="!loading && policies.length"
+  >
 
-              <span>
-                <strong>Ayushman Bharat</strong>
-                <small>National Health Protection Programme</small>
-              </span>
-            </span>
-
-            <span>Health Ministry</span>
-            <span>Healthcare</span>
-
-            <span>
-              <span class="status active">Active</span>
-            </span>
-
-            <span>Aug 2026</span>
-
-            <mat-icon>chevron_right</mat-icon>
-          </button>
+    <div class="table-head">
+      <span>POLICY</span>
+      <span>DEPARTMENT</span>
+      <span>SECTOR</span>
+      <span>STATUS</span>
+      <span>UPDATED</span>
+      <span></span>
+    </div>
 
 
-          <button
-            type="button"
-            class="table-row"
-            (click)="navigate('/policies')"
-          >
-            <span class="policy-name">
-              <span class="table-icon">
-                <mat-icon>school</mat-icon>
-              </span>
+    <button
+      type="button"
+      class="table-row"
+      *ngFor="let policy of policies"
+      (click)="openPolicy(policy)"
+    >
 
-              <span>
-                <strong>Skill India</strong>
-                <small>National Skill Development Initiative</small>
-              </span>
-            </span>
+      <span class="policy-name">
 
-            <span>Skill Development</span>
-            <span>Employment</span>
+        <span class="table-icon">
+          <mat-icon>
+            description
+          </mat-icon>
+        </span>
 
-            <span>
-              <span class="status active">Active</span>
-            </span>
+        <span>
 
-            <span>Jul 2026</span>
+          <strong>
+            {{ policy.title }}
+          </strong>
 
-            <mat-icon>chevron_right</mat-icon>
-          </button>
+          <small>
+            {{ policy.description }}
+          </small>
 
-        </div>
+        </span>
 
-      </section>
+      </span>
+
+
+      <span>
+        {{ policy.department }}
+      </span>
+
+
+      <span>
+        {{ policy.category }}
+      </span>
+
+
+      <span>
+
+        <span
+          class="status active"
+          [class.inactive]="
+            policy.status.toLowerCase() !== 'active'
+          "
+        >
+          {{ policy.status }}
+        </span>
+
+      </span>
+
+
+      <span>
+        {{ policy.updated }}
+      </span>
+
+
+      <mat-icon>
+        chevron_right
+      </mat-icon>
+
+    </button>
+
+  </div>
+
+
+  <!-- EMPTY -->
+  <div
+    class="dashboard-empty"
+    *ngIf="!loading && !policies.length"
+  >
+
+    <mat-icon>
+      description
+    </mat-icon>
+
+    <span>
+      No policies are currently available.
+    </span>
+
+    <button
+      type="button"
+      (click)="navigate('/policies')"
+    >
+      Open Policy Repository
+    </button>
+
+  </div>
+
+</section>
+
 
 
       <!-- QUICK TOOLS -->

@@ -1,46 +1,28 @@
-
 <form
   #eligibilityForm="ngForm"
   class="eligibility-form"
   novalidate
   (ngSubmit)="checkEligibility(eligibilityForm)"
 >
+
   <!-- Header -->
-  <div class="form-header">
-    <div class="form-header-content">
-      <div>
-        <h2 class="form-title">
-          Tell us about yourself
-        </h2>
-
-        <p class="form-description">
-          Enter your personal, financial, and demographic
-          details to identify government schemes that may
-          apply to you.
-        </p>
-      </div>
-
-      <div
-        class="form-icon"
-        aria-hidden="true"
-      >
-        <mat-icon>person_search</mat-icon>
-      </div>
-    </div>
+  <div class="filter-heading">
+    <h2>Eligibility Criteria</h2>
+    <p>
+      Enter your personal, financial, and demographic details
+      to find government schemes you may be eligible for.
+    </p>
   </div>
 
   <!-- Form Fields -->
-  <div class="form-grid">
+  <div class="filter-grid">
 
     <!-- Age -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Age</mat-label>
+    <div class="filter-field">
+      <label for="age">Age</label>
 
       <input
-        matInput
+        id="age"
         type="number"
         name="age"
         [(ngModel)]="form.age"
@@ -51,98 +33,80 @@
         placeholder="Enter your age"
       />
 
-      <mat-hint>
-        Between 1 and 120 years
-      </mat-hint>
-
       @if (age.invalid && (age.touched || submitted)) {
-        <mat-error>
+        <span class="field-error">
           @if (age.errors?.['required']) {
             Age is required.
           } @else if (age.errors?.['min'] || age.errors?.['max']) {
             Enter an age between 1 and 120.
           }
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- Gender -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Gender</mat-label>
+    <div class="filter-field">
+      <label for="gender">Gender</label>
 
-      <mat-select
+      <select
+        id="gender"
         name="gender"
         [(ngModel)]="form.gender"
         required
         #gender="ngModel"
       >
-        <mat-option value="Male">
-          Male
-        </mat-option>
-
-        <mat-option value="Female">
-          Female
-        </mat-option>
-
-        <mat-option value="Other">
-          Other
-        </mat-option>
-      </mat-select>
+        <option value="" disabled>Select gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
 
       @if (gender.invalid && (gender.touched || submitted)) {
-        <mat-error>
+        <span class="field-error">
           Gender is required.
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- Annual Household Income -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Annual Household Income</mat-label>
+    <div class="filter-field">
+      <label for="income">Annual Household Income</label>
 
-      <span matTextPrefix>₹&nbsp;</span>
+      <div class="input-prefix">
+        <span>₹</span>
 
-      <input
-        matInput
-        type="number"
-        name="income"
-        [(ngModel)]="form.income"
-        required
-        min="0"
-        #income="ngModel"
-        placeholder="Enter annual income"
-      />
-
-      <mat-hint>
-        Approximate annual household income
-      </mat-hint>
+        <input
+          id="income"
+          type="number"
+          name="income"
+          [(ngModel)]="form.income"
+          required
+          min="0"
+          #income="ngModel"
+          placeholder="Enter annual income"
+        />
+      </div>
 
       @if (income.invalid && (income.touched || submitted)) {
-        <mat-error>
+        <span class="field-error">
           @if (income.errors?.['required']) {
             Annual household income is required.
           } @else if (income.errors?.['min']) {
             Income cannot be negative.
           }
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- Occupation -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Occupation</mat-label>
+    <div class="filter-field">
+      <label for="occupation">Occupation</label>
 
       <input
-        matInput
+        id="occupation"
         type="text"
         name="occupation"
         [(ngModel)]="form.occupation"
@@ -151,65 +115,46 @@
         placeholder="e.g. Farmer, Student, Self-employed"
       />
 
-      @if (
-        occupation.invalid &&
-        (occupation.touched || submitted)
-      ) {
-        <mat-error>
+      @if (occupation.invalid && (occupation.touched || submitted)) {
+        <span class="field-error">
           Occupation is required.
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- Education -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Highest Education Level</mat-label>
+    <div class="filter-field">
+      <label for="education">Highest Education Level</label>
 
-      <mat-select
+      <select
+        id="education"
         name="education"
         [(ngModel)]="form.education"
         required
         #education="ngModel"
       >
-        <mat-option value="10th">
-          10th
-        </mat-option>
+        <option value="" disabled>Select education level</option>
+        <option value="10th">10th</option>
+        <option value="12th">12th</option>
+        <option value="Graduate">Graduate</option>
+        <option value="Post Graduate">Post Graduate</option>
+      </select>
 
-        <mat-option value="12th">
-          12th
-        </mat-option>
-
-        <mat-option value="Graduate">
-          Graduate
-        </mat-option>
-
-        <mat-option value="Post Graduate">
-          Post Graduate
-        </mat-option>
-      </mat-select>
-
-      @if (
-        education.invalid &&
-        (education.touched || submitted)
-      ) {
-        <mat-error>
+      @if (education.invalid && (education.touched || submitted)) {
+        <span class="field-error">
           Education level is required.
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- State -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>State</mat-label>
+    <div class="filter-field">
+      <label for="location">State</label>
 
       <input
-        matInput
+        id="location"
         type="text"
         name="location"
         [(ngModel)]="form.location"
@@ -218,139 +163,108 @@
         placeholder="Enter your current state"
       />
 
-      @if (
-        location.invalid &&
-        (location.touched || submitted)
-      ) {
-        <mat-error>
+      @if (location.invalid && (location.touched || submitted)) {
+        <span class="field-error">
           State is required.
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- Social Category -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Social Category</mat-label>
+    <div class="filter-field">
+      <label for="socialCategory">Social Category</label>
 
-      <mat-select
+      <select
+        id="socialCategory"
         name="socialCategory"
         [(ngModel)]="form.socialCategory"
         required
         #socialCategory="ngModel"
       >
-        <mat-option value="General">
-          General
-        </mat-option>
-
-        <mat-option value="OBC">
-          OBC
-        </mat-option>
-
-        <mat-option value="SC">
-          SC
-        </mat-option>
-
-        <mat-option value="ST">
-          ST
-        </mat-option>
-
-        <mat-option value="EWS">
-          EWS
-        </mat-option>
-      </mat-select>
+        <option value="" disabled>Select category</option>
+        <option value="General">General</option>
+        <option value="OBC">OBC</option>
+        <option value="SC">SC</option>
+        <option value="ST">ST</option>
+        <option value="EWS">EWS</option>
+      </select>
 
       @if (
         socialCategory.invalid &&
         (socialCategory.touched || submitted)
       ) {
-        <mat-error>
+        <span class="field-error">
           Social category is required.
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
+
 
     <!-- Disability Status -->
-    <mat-form-field
-      appearance="outline"
-      class="full-width"
-    >
-      <mat-label>Disability Status</mat-label>
+    <div class="filter-field">
+      <label for="disabilityStatus">Disability Status</label>
 
-      <mat-select
+      <select
+        id="disabilityStatus"
         name="disabilityStatus"
         [(ngModel)]="form.disabilityStatus"
         required
         #disabilityStatus="ngModel"
       >
-        <mat-option value="Yes">
-          Yes
-        </mat-option>
-
-        <mat-option value="No">
-          No
-        </mat-option>
-      </mat-select>
+        <option value="" disabled>Select status</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
 
       @if (
         disabilityStatus.invalid &&
         (disabilityStatus.touched || submitted)
       ) {
-        <mat-error>
+        <span class="field-error">
           Please select your disability status.
-        </mat-error>
+        </span>
       }
-    </mat-form-field>
+    </div>
 
   </div>
+
 
   <!-- Privacy Notice -->
   <div class="privacy-note">
-    <mat-icon aria-hidden="true">
-      lock
-    </mat-icon>
+    <mat-icon aria-hidden="true">lock</mat-icon>
 
     <span>
-      Your information is used only to determine
-      potential scheme eligibility.
+      Your information is used only to determine potential
+      scheme eligibility.
     </span>
   </div>
 
+
   <!-- Actions -->
-  <div class="form-actions">
+  <div class="filter-actions">
 
     <button
       type="button"
-      mat-stroked-button
-      class="reset-button"
+      class="clear-button"
       (click)="resetForm(eligibilityForm)"
       [disabled]="loading"
     >
-      <mat-icon>restart_alt</mat-icon>
-      <span>Reset</span>
+      Reset
     </button>
 
     <button
       type="submit"
-      mat-flat-button
-      color="primary"
-      class="submit-button"
+      class="search-button"
       [disabled]="loading"
     >
       @if (loading) {
-        <mat-icon>hourglass_top</mat-icon>
+        Checking...
       } @else {
-        <mat-icon>fact_check</mat-icon>
-      }
-
-      @if (loading) {
-        <span>Checking...</span>
-      } @else {
-        <span>Check Eligibility</span>
+        Check Eligibility
       }
     </button>
 
   </div>
+
 </form>

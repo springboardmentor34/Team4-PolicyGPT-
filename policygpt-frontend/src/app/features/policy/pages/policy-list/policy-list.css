@@ -86,6 +86,109 @@
   gap: 12px;
 }
 
+
+.policy-management-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+.create-policy-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  min-height: 44px;
+
+  padding: 0 16px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.create-policy-button:hover {
+  background: #1d4ed8;
+
+  box-shadow:
+    0 5px 12px rgba(37, 99, 235, 0.18);
+
+  transform: translateY(-1px);
+}
+
+.create-policy-button mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   POLICY APPROVAL BUTTON
+========================================================= */
+
+.approval-policy-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  min-height: 44px;
+
+  padding: 0 16px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.approval-policy-button:hover {
+  background: #f8fafc;
+
+  border-color: #94a3b8;
+
+  color: #1e293b;
+}
+
+.approval-policy-button mat-icon {
+  width: 18px;
+  height: 18px;
+
+  font-size: 18px;
+}
+
 .policy-count {
   display: flex;
 
@@ -432,9 +535,22 @@
     flex-direction: column;
 
     align-items: stretch;
+
+    width: 100%;
   }
 
   .policy-count {
+    width: 100%;
+  }
+
+  .policy-management-actions {
+    width: 100%;
+
+    flex-direction: column;
+  }
+
+  .create-policy-button,
+  .approval-policy-button {
     width: 100%;
   }
 

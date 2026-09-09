@@ -208,30 +208,71 @@ export class AnalyticsDashboard implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  applyFilters(): void {
-    this.loadAnalytics();
-  }
 
-  onPeriodChange(): void {
-    if (!this.isCustomRange) {
-      this.customStartDate = '';
-      this.customEndDate = '';
+applyFilters(): void {
+  this.error = '';
+
+  // Custom range must have both dates.
+  if (this.isCustomRange) {
+    if (!this.customStartDate || !this.customEndDate) {
+      this.error = 'Please select both start and end dates.';
+      return;
+    }
+
+    if (this.customStartDate > this.customEndDate) {
+      this.error = 'Start date cannot be after end date.';
+      return;
     }
   }
+
+  this.loadAnalytics();
+}
+
+onPeriodChange(): void {
+  // Clear custom dates whenever a predefined period is selected.
+  if (!this.isCustomRange) {
+    this.customStartDate = '';
+    this.customEndDate = '';
+  }
+
+  this.error = '';
+}
+
+private buildFilters() {
+  /*
+   * IMPORTANT:
+   * Do not remove department for officials.
+   * The selected/assigned department must be sent to the API.
+   */
+  const filters = {
+    period: this.isCustomRange
+      ? null
+      : this.selectedPeriod,
+
+    start_date: this.isCustomRange
+      ? this.customStartDate
+      : null,
+
+    end_date: this.isCustomRange
+      ? this.customEndDate
+      : null,
+
+    department: this.selectedDepartment || null,
+
+    category: this.selectedCategory || null,
+  };
+
+  return filters;
+}
+
+
+
 
   retry(): void {
     this.loadAnalytics();
   }
 
-  private buildFilters() {
-    return {
-      period: this.isCustomRange ? null : this.selectedPeriod,
-      start_date: this.isCustomRange ? this.customStartDate : null,
-      end_date: this.isCustomRange ? this.customEndDate : null,
-      department: this.departmentLocked ? null : this.selectedDepartment,
-      category: this.selectedCategory,
-    };
-  }
+ 
 
   private renderCharts(): void {
     if (!this.viewReady || this.loading || this.error) {
@@ -465,4 +506,12 @@ export class AnalyticsDashboard implements OnInit, AfterViewInit, OnDestroy {
   isOrganization(): boolean {
     return this.currentRole === 'organization';
   }
+
+  get selectedPeriodLabel(): string {
+  return (
+    this.periods.find(
+      period => period.value === this.selectedPeriod,
+    )?.label ?? 'Custom Range'
+  );
+}
 }

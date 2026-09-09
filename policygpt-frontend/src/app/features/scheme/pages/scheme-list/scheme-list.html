@@ -311,15 +311,19 @@
 
             }
 
-            <div class="card-footer">
-              <button
-                type="button"
-                class="card-rules-btn"
-                [routerLink]="['/schemes', scheme.scheme_id, 'eligibility']"
-              >
-                🎯 Manage Eligibility Rules
-              </button>
-            </div>
+           @if (canManageSchemes()) {
+  <div class="card-footer">
+
+    <button
+      type="button"
+      class="card-rules-btn"
+      [routerLink]="['/schemes', scheme.scheme_id, 'eligibility']"
+    >
+      🎯 Manage Eligibility Rules
+    </button>
+
+  </div>
+}
 
           </article>
 

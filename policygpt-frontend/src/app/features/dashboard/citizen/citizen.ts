@@ -1,13 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
 import { Router } from '@angular/router';
+
 import { Auth } from '../../../core/services/auth';
+import {
+  Scheme,
+  SchemeService
+} from '../../../core/services/scheme.service';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-citizen',
@@ -16,130 +24,154 @@ import { MatInputModule } from '@angular/material/input';
     CommonModule,
     MatCardModule,
     MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule
+    MatButtonModule
   ],
   templateUrl: './citizen.html',
   styleUrl: './citizen.css'
 })
-export class Citizen {
+export class Citizen implements OnInit {
 
-  private router = inject(Router);
-  private auth = inject(Auth);
+  private readonly router = inject(Router);
+  private readonly auth = inject(Auth);
+  private readonly schemeService = inject(SchemeService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  userName = '';
+  userName = 'Citizen';
 
-  searchQuery = '';
+  schemes: Scheme[] = [];
+  loadingSchemes = false;
 
-  constructor() {
-    this.userName =
-      this.auth.getFirstNameFromToken() ?? 'Citizen';
-  }
   quickActions = [
     {
       title: 'Browse Policies',
       icon: 'policy',
-      description: 'Explore government policies and schemes.',
+      description: 'Explore government policies and their details.',
       route: '/policies'
+    },
+    {
+      title: 'Browse Schemes',
+      icon: 'account_balance',
+      description: 'Discover government schemes and benefits.',
+      route: '/schemes'
     },
     {
       title: 'Eligibility Checker',
       icon: 'fact_check',
-      description: 'Find schemes you may be eligible for.',
+      description: 'Find government schemes you may be eligible for.',
       route: '/eligibility'
     },
     {
-      title: 'My Applications',
-      icon: 'description',
-      description: 'Track your submitted applications.',
-      route: '/applications'
+      title: 'Notifications',
+      icon: 'notifications',
+      description: 'View important updates and notifications.',
+      route: '/notifications'
     },
     {
-      title: 'Saved Policies',
-      icon: 'bookmark',
-      description: 'Access policies you saved for later.',
-      route: '/saved-policies'
+      title: 'Give Feedback',
+      icon: 'feedback',
+      description: 'Share your feedback about the citizen portal.',
+      route: '/feedback'
     }
   ];
 
-  dashboardStats = [
-    {
-      label: 'Saved Policies',
-      value: 6,
-      icon: 'bookmark',
-      route: '/saved-policies'
-    },
-    {
-      label: 'Applications',
-      value: 3,
-      icon: 'description',
-      route: '/applications'
-    },
-    {
-      label: 'Eligible Schemes',
-      value: 8,
-      icon: 'verified',
-      route: '/eligibility'
-    }
-  ];
+  ngOnInit(): void {
+    this.userName =
+      this.auth.getFirstNameFromToken() ?? 'Citizen';
 
-  recommendedPolicies = [
-    {
-      id: 2,
-      title: 'PM Kisan Support Policy',
-      category: 'Agriculture',
-      description: 'Financial assistance for eligible farmers.',
-      icon: 'agriculture'
-    },
-    {
-      id: 3,
-      title: 'Ayushman Bharat',
-      category: 'Health',
-      description: 'Health insurance coverage for economically weaker families.',
-      icon: 'health_and_safety'
-    },
-    {
-      id: 8,
-      title: 'PM Awas Yojana',
-      category: 'Housing',
-      description: 'Affordable housing assistance for eligible families.',
-      icon: 'home'
-    }
-  ];
-
-  recentUpdates = [
-    {
-      title: 'New policy documents available',
-      description: 'Explore recently published government policies.',
-      icon: 'campaign'
-    },
-    {
-      title: 'Check your eligibility',
-      description: 'Use the eligibility checker to discover suitable schemes.',
-      icon: 'fact_check'
-    }
-  ];
-
-  // General navigation used by the dashboard
-  navigate(route: string): void {
-    this.router.navigate([route]);
+    this.loadSchemes();
   }
 
-  // Navigate to the specific policy details page
-  viewPolicy(policyId: number): void {
-    this.router.navigate(['/policies', policyId]);
-  }
+  loadSchemes(): void {
+    this.loadingSchemes = true;
 
-  searchPolicies(): void {
-    if (this.searchQuery.trim()) {
-      this.router.navigate(['/policies'], {
-        queryParams: {
-          search: this.searchQuery.trim()
+    this.schemeService
+      .searchSchemes(
+        {
+          status: 'active'
+        },
+        0,
+        6
+      )
+      .subscribe({
+        next: (response) => {
+          this.schemes = response.items ?? [];
+          this.loadingSchemes = false;
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load government schemes:',
+            error
+          );
+
+          this.schemes = [];
+          this.loadingSchemes = false;
+
+          this.cdr.detectChanges();
         }
       });
-    } else {
-      this.router.navigate(['/policies']);
+  }
+
+  navigate(route: string): void {
+    if (!route) {
+      return;
+    }
+
+    this.router.navigateByUrl(route);
+  }
+
+  /*
+   * There is currently no /schemes/:schemeId route
+   * in scheme.routes.ts.
+   *
+   * Therefore View Details opens the scheme repository
+   * instead of navigating to a non-existent page.
+   */
+  viewScheme(): void {
+    this.navigate('/schemes');
+  }
+
+  getSchemeIcon(category: string | null): string {
+    const normalizedCategory =
+      category?.toLowerCase().trim();
+
+    switch (normalizedCategory) {
+      case 'agriculture':
+        return 'agriculture';
+
+      case 'health':
+      case 'healthcare':
+        return 'health_and_safety';
+
+      case 'education':
+        return 'school';
+
+      case 'housing':
+        return 'home';
+
+      case 'employment':
+        return 'work';
+
+      case 'finance':
+      case 'financial':
+        return 'payments';
+
+      case 'social welfare':
+      case 'social':
+        return 'groups';
+
+      case 'women':
+      case 'women empowerment':
+        return 'female';
+
+      case 'technology':
+      case 'digital':
+        return 'computer';
+
+      default:
+        return 'account_balance';
     }
   }
 }

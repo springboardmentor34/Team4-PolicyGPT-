@@ -40,7 +40,8 @@ export class Navbar implements OnInit {
   // ==========================================
 
   get isLoggedIn(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!localStorage.getItem('access_token')
+
   }
 
   private updateAuthState(): void {
@@ -182,14 +183,7 @@ export class Navbar implements OnInit {
             label: 'Policies',
             route: '/policies',
           },
-          {
-  label: 'Add Policy',
-  route: '/policies/add',
-},
-           {
-      label: 'Policy Approval',
-      route: '/policies/approval',
-    },
+          
           {
             label: 'Schemes',
             route: '/schemes',
@@ -202,10 +196,7 @@ export class Navbar implements OnInit {
             label: 'Feedback & Support',
             route: '/feedback',
           },
-          {
-            label: 'Notifications',
-            route: '/notifications',
-          },
+      
           {
             label: 'Reports',
             route: '/reports',
@@ -213,7 +204,6 @@ export class Navbar implements OnInit {
           {
             label: 'Analytics Dashboard',
             route: '/analytics',
-            icon: 'analytics',
           },
           {
             label: 'Department Analytics',
@@ -262,7 +252,6 @@ export class Navbar implements OnInit {
           {
             label: 'Analytics Dashboard',
             route: '/analytics',
-            icon: 'analytics',
           },
           {
             label: 'Departments',
@@ -311,7 +300,6 @@ export class Navbar implements OnInit {
           {
             label: 'Analytics Dashboard',
             route: '/analytics',
-            icon: 'analytics',
           },
           {
             label: 'Department Analytics',
@@ -353,7 +341,6 @@ export class Navbar implements OnInit {
             label: 'Notifications',
             route: '/notifications',
           },
-      
         ];
 
       // -------------------------------
@@ -381,7 +368,6 @@ export class Navbar implements OnInit {
           {
             label: 'Analytics Dashboard',
             route: '/analytics',
-            icon: 'analytics',
           },
           {
             label: 'Feedback & Support',
@@ -391,7 +377,6 @@ export class Navbar implements OnInit {
             label: 'Notifications',
             route: '/notifications',
           },
-        
         ];
 
       default:

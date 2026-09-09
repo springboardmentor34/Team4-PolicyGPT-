@@ -16,10 +16,15 @@
 
     <div class="header-right">
 
-      <button class="icon-button" type="button" aria-label="Notifications">
-        <mat-icon>notifications_none</mat-icon>
-        <span class="notification-dot"></span>
-      </button>
+     <button
+  class="icon-button"
+  type="button"
+  aria-label="Notifications"
+  (click)="openNotifications()"
+>
+  <mat-icon>notifications_none</mat-icon>
+  <span class="notification-dot"></span>
+</button>
 
       <div class="admin-profile">
         <div class="profile-avatar">
@@ -176,10 +181,15 @@
           <p>Recently active platform users</p>
         </div>
 
-        <button class="view-button" type="button">
-          View all
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
+        <button
+  class="view-button"
+  type="button"
+  disabled
+  title="User Management module is not available"
+>
+  View all
+  <mat-icon>arrow_forward</mat-icon>
+</button>
 
       </div>
 
@@ -257,10 +267,14 @@
           <p>Latest policy activity</p>
         </div>
 
-        <button class="view-button" type="button">
-          View all
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
+      <button
+  class="view-button"
+  type="button"
+  (click)="openPolicies()"
+>
+  View all
+  <mat-icon>arrow_forward</mat-icon>
+</button>
 
       </div>
 
@@ -319,9 +333,13 @@
 
     <div class="analytics-grid">
 
-      <article
-        class="analytics-card"
-        *ngFor="let item of analytics">
+     <article
+  class="analytics-card"
+  *ngFor="let item of analytics"
+  (click)="openAnalytics()"
+  role="button"
+  tabindex="0"
+>
 
         <div class="analytics-icon">
           <mat-icon>{{ item.icon }}</mat-icon>
@@ -360,9 +378,14 @@
           <p>Latest generated reports</p>
         </div>
 
-        <button class="small-icon-button" type="button">
-          <mat-icon>more_horiz</mat-icon>
-        </button>
+      <button
+  class="small-icon-button"
+  type="button"
+  aria-label="View all reports"
+  (click)="openReports()"
+>
+  <mat-icon>more_horiz</mat-icon>
+</button>
 
       </div>
 
@@ -385,7 +408,8 @@
           <button
             class="download-button"
             type="button"
-            aria-label="Download report">
+            aria-label="Download report"
+            (click)="openReports()">
 
             <mat-icon>download</mat-icon>
 
@@ -409,9 +433,14 @@
           <p>Latest platform actions</p>
         </div>
 
-        <button class="small-icon-button" type="button">
-          <mat-icon>more_horiz</mat-icon>
-        </button>
+       <button
+  class="small-icon-button"
+  type="button"
+  disabled
+  aria-label="Audit logs unavailable"
+>
+  <mat-icon>more_horiz</mat-icon>
+</button>
 
       </div>
 
