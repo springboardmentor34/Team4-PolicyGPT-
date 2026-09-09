@@ -7,7 +7,7 @@ export const DEPARTMENT_ROUTES: Routes = [
     path: '',
     component: Departments,
     canActivate: [
-      roleGuard(['official']),
+      roleGuard(['admin', 'official']),
     ],
   },
 ];

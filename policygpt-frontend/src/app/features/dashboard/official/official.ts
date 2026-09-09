@@ -1,6 +1,7 @@
 
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   inject,
   OnInit
@@ -38,6 +39,8 @@ export class Official implements OnInit {
 
   private readonly officialService =
     inject(OfficialService);
+
+  private readonly cdr = inject(ChangeDetectorRef);
 
 
   // =====================================================
@@ -215,6 +218,8 @@ export class Official implements OnInit {
           this.dashboardLoaded = true;
 
           this.loading = false;
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {

@@ -15,6 +15,13 @@ export interface RegisterRequest {
   role: string;
   phone?: string | null;
   state?: string | null;
+  department_id?: string | null;
+}
+
+export interface DepartmentOption {
+  department_id: string;
+  name: string;
+  ministry: string | null;
 }
 
 export interface TokenResponse {
@@ -51,6 +58,10 @@ export class Auth {
       `${this.baseUrl}/auth/register`,
       payload
     );
+  }
+
+  getDepartments(): Observable<DepartmentOption[]> {
+    return this.http.get<DepartmentOption[]>(`${this.baseUrl}/auth/departments`);
   }
 
   forgotPassword(

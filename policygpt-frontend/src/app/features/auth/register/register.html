@@ -169,11 +169,11 @@
 
       @for (
         department of departments;
-        track department.id
+        track department.department_id
       ) {
 
         <mat-option
-          [value]="department.id">
+          [value]="department.department_id">
 
           {{ department.name }}
 

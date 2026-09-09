@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -63,7 +63,8 @@ export class PolicyList implements OnInit {
     private policyService: PolicyService,
     private searchService: SearchService,
     private auth: Auth,
-    private usageEventService: UsageEventService
+    private usageEventService: UsageEventService,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
 
@@ -129,6 +130,8 @@ export class PolicyList implements OnInit {
 
         this.applySearchAndFilters();
 
+        this.changeDetector.detectChanges();
+
       },
 
       error: (error) => {
@@ -143,6 +146,8 @@ export class PolicyList implements OnInit {
         this.policies = [];
 
         this.pagedPolicies = [];
+
+        this.changeDetector.detectChanges();
 
       }
 

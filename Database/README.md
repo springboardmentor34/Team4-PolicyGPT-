@@ -21,6 +21,8 @@ Database/
 │
 └── tables/
     ├── users.sql
+    ├── departments.sql
+    ├── organizations.sql
     ├── schemes.sql
     ├── eligibility_rules.sql
     ├── notifications.sql
@@ -32,6 +34,11 @@ Database/
     ├── policies.sql
     ├── policy_versions.sql
     └── saved_policies.sql
+
+Additional current tables include `policy_views.sql` and `engagement_events.sql`.
+
+The repository also contains `update_schema_migration.sql`, which is included by
+`run_all.sql` after the table scripts.
 ```
 
 ## Prerequisites
@@ -75,13 +82,15 @@ This will automatically:
 1. Create required PostgreSQL extensions
 2. Create enum types
 3. Create all tables
-4. Create indexes
+4. Create indexes and seed the default departments idempotently
 
 ## Database Tables
 
 The database contains the following tables:
 
 * Users
+* Departments
+* Organizations
 * Schemes
 * Eligibility Rules
 * Notifications
@@ -93,5 +102,11 @@ The database contains the following tables:
 * Policies
 * Policy Versions
 * Saved Policies
+* Policy Views
+* Engagement Events
+
+The backend additionally runs `Base.metadata.create_all()` on startup and calls
+`backend/app/db/seed.py` to ensure the default departments exist without deleting
+existing data.
 
 

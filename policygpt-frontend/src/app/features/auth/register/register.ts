@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { USER_ROLES } from '../../../core/constants/roles';
 import { passwordMatchValidator } from '../../../core/validators/password-match.validator';
-import { Auth } from '../../../core/services/auth';
+import { Auth, DepartmentOption } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +29,7 @@ import { Auth } from '../../../core/services/auth';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register {
+export class Register implements OnInit {
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
   private router = inject(Router);
@@ -42,24 +42,7 @@ export class Register {
   roles = USER_ROLES;
 
   // Departments available to Government Officials
-  departments = [
-    {
-      id: 'education',
-      name: 'Education',
-    },
-    {
-      id: 'healthcare',
-      name: 'Healthcare',
-    },
-    {
-      id: 'agriculture',
-      name: 'Agriculture',
-    },
-    {
-      id: 'finance',
-      name: 'Finance',
-    },
-  ];
+  departments: DepartmentOption[] = [];
 
   private roleMap: Record<string, string> = {
     Administrator: 'administrator',
@@ -85,6 +68,17 @@ export class Register {
       validators: passwordMatchValidator,
     },
   );
+
+  ngOnInit(): void {
+    this.auth.getDepartments().subscribe({
+      next: (departments) => {
+        this.departments = departments;
+      },
+      error: () => {
+        this.errorMessage = 'Unable to load departments. Please try again later.';
+      },
+    });
+  }
 
   // =====================================================
   // CHECK SELECTED ROLE
@@ -148,7 +142,7 @@ export class Register {
 
     const password = this.registerForm.value.password ?? '';
 
-    const department = this.registerForm.value.department ?? '';
+    const department = this.registerForm.value.department ?? null;
 
     // ===================================================
     // REGISTRATION REQUEST
@@ -172,7 +166,7 @@ export class Register {
     // Department is sent ONLY for Government Officials
 
     if (role === 'Government Official' || role === 'government_official') {
-      registrationData.department = department;
+      registrationData.department_id = department;
     }
 
     console.log('Registration request:', registrationData);

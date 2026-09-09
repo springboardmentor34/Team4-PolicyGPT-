@@ -14,8 +14,14 @@ from app.api.v1.endpoints.feedback import router as feedback_router
 from app.api.reports import router as reports_router
 from app.api.analytics import router as analytics_router
 from app.api.usage_statistics import router as usage_statistics_router
+from app.api.official import router as official_router
+from app.db.database import SessionLocal
+from app.db.seed import seed_departments
 
 Base.metadata.create_all(bind=engine)
+
+with SessionLocal() as db:
+    seed_departments(db)
 
 
 app = FastAPI(
@@ -45,6 +51,7 @@ app.include_router(feedback_router)
 app.include_router(reports_router)
 app.include_router(analytics_router)
 app.include_router(usage_statistics_router)
+app.include_router(official_router)
 
 @app.get("/")
 def root():

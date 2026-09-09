@@ -13,6 +13,7 @@ from app.crud.user import (
 )
 
 from app.models.user import User
+from app.models.department import Department
 from app.schemas.auth import RegisterRequest, LoginRequest
 
 class AuthService:
@@ -40,6 +41,28 @@ class AuthService:
                 detail="Administrator accounts must be provisioned by an authorized administrator.",
             )
 
+        department = None
+        if user_data.role.value == "government_official":
+            if user_data.department_id is None:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="Government officials must be assigned to a department.",
+                )
+
+            department = db.query(Department).filter(
+                Department.department_id == user_data.department_id
+            ).first()
+            if department is None:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="The selected department does not exist.",
+                )
+        elif user_data.department_id is not None:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Department assignment is only valid for government officials.",
+            )
+
         hashed_password = hash_password(
             user_data.password
         )
@@ -50,7 +73,8 @@ class AuthService:
             password_hash=hashed_password,
             role=user_data.role,
             phone=user_data.phone,
-            state=user_data.state
+            state=user_data.state,
+            department_id=department.department_id if department else None,
         )
 
         return create_user(db, new_user)
