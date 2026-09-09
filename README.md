@@ -1,11 +1,14 @@
-# Today's Changelog & Technical Summary
+# PolicyGPT Project Summary
+
+PolicyGPT is an Angular 21 frontend backed by FastAPI, SQLAlchemy, and PostgreSQL. The current implementation provides role-aware authentication, policy and scheme workflows, eligibility matching, dashboards, analytics, notifications, reports, feedback, usage tracking, and department-aware government-official operations.
 
 ## 1. Authentication & API Integration
 
 ### Frontend & Backend API Route Connections
 
-* **Login Flow (`/login`):** Connected the Angular login form directly to the backend authentication endpoint (`/api/auth/login` or equivalent). Managed token/session handling upon successful user verification.
-* **Registration Flow (`/register`):** Integrated the registration form with the user signup API (`/api/auth/register`), mapping request payloads to match the updated database role definitions (`administrator`, `government_official`, `citizen`, etc.).
+* **Login Flow (`/login`):** The Angular login form calls `POST /auth/login`, stores the returned JWT as `access_token`, and routes by the token role claim.
+* **Registration Flow (`/register`):** The Angular registration form calls `POST /auth/register`. Government officials select a database-backed department from `GET /auth/departments`, and the selected UUID is persisted as `users.department_id`.
+* **Authorization:** The frontend `auth.interceptor.ts` adds the bearer token to protected HTTP requests. `api.config.ts` supplies the centralized local backend base URL.
 
 ---
 
@@ -42,23 +45,28 @@ UPDATE users SET role = 'government_official' WHERE role = 'officer';
 
 ---
 
-## 3. Frontend & UI Audit Findings
+## 3. Recent Runtime Fixes
+
+* Analytics dashboard responses now refresh first-load state correctly.
+* Government official dashboard statistics are resolved from the authenticated official's assigned department; admin data remains global.
+* Researcher dashboard loading and first-load state handling were corrected.
+* The policies page now renders the initial API response without requiring Search or Refresh.
+* Department access now permits administrators to view all seeded departments while officials remain department-scoped.
+
+## 4. Current Implementation Notes
 
 ### Unstyled Routes & Missing CSS Root Cause
 
 Identified why `/official`, `/policies`, `/policies/1`, and `/eligibility` lacked styling:
 
-* **Missing Bootstrap Imports:** Pages like `/official` and `/policies` relied on Bootstrap layout classes (`container`, `row`, `card`, `btn`), but Bootstrap CSS was not loaded in the Angular build setup.
+* The application uses Angular Material, Tailwind/PostCSS, and feature-local CSS; Bootstrap is not a runtime dependency.
 * **Placeholder Components:** `/policies/1` contained placeholder strings; `/eligibility` had an empty CSS file.
 * **Fix Strategy:** Plan to standardize all unstyled pages using Tailwind CSS + Angular Material (matching the setup on `/login` and `/register`).
 
 ### Milestone 1 Wireframe Audit
 
-* **Present Routes:** `/` (Login), `/register`, `/citizen`, `/official`, `/admin`, `/policies`, `/policies/1`, `/eligibility`.
-* **Missing Routes to Implement:**
-* Scheme Details Page
-* Reports Dashboard
-* Notification Screen
+* Current feature routes include `/login`, `/register`, `/citizen`, `/official`, `/admin`, `/researcher`, `/organization`, `/policies`, `/schemes`, `/eligibility`, `/notifications`, `/reports`, `/analytics`, `/department-analytics`, `/departments`, `/feedback`, and `/usage-statistics`.
+* Password recovery UI exists, but matching backend forgot/reset endpoints are not implemented.
 
 
 

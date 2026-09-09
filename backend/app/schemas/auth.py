@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from app.models.user import UserRole
 
@@ -10,6 +11,7 @@ class RegisterRequest(BaseModel):
     role: UserRole = UserRole.citizen
     phone: Optional[str] = None
     state: Optional[str] = None
+    department_id: Optional[UUID] = None
 
 
 class LoginRequest(BaseModel):

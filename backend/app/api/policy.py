@@ -47,11 +47,12 @@ def create_new_policy(
     """Create a new policy record with pending status."""
     if current_user.role.value == "government_official":
         department = current_user.department
-        if department is None or policy_data.department != department.name:
+        if department is None:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Government officials may only create policies in their department.",
             )
+        policy_data = policy_data.model_copy(update={"department": department.name})
     return create_policy(
         db=db,
         policy_data=policy_data,
