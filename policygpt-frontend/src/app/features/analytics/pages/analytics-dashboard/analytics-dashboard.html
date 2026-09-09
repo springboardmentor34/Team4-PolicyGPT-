@@ -30,15 +30,35 @@
       <input id="endDate" type="date" [(ngModel)]="customEndDate">
     </div>
 
-    <div class="filter-field">
-      <label for="department">Department</label>
-      <select id="department" [(ngModel)]="selectedDepartment" [disabled]="departmentLocked">
-        <option value="">{{ departmentLocked ? selectedDepartment : 'All Departments' }}</option>
-        <option *ngFor="let department of departmentOptions" [value]="department.value">
-          {{ department.label }}
-        </option>
-      </select>
-    </div>
+  
+<div class="filter-field">
+  <label for="department">Department</label>
+
+  <select
+    id="department"
+    [(ngModel)]="selectedDepartment"
+    [disabled]="departmentLocked"
+  >
+    <option value="" *ngIf="!departmentLocked">
+      All Departments
+    </option>
+
+    <option
+      *ngIf="departmentLocked && selectedDepartment"
+      [value]="selectedDepartment"
+    >
+      {{ selectedDepartment }}
+    </option>
+
+    <option
+      *ngFor="let department of departmentOptions"
+      [value]="department.value"
+    >
+      {{ department.label }}
+    </option>
+  </select>
+</div>
+
 
     <div class="filter-field">
       <label for="category">Policy Category</label>
@@ -55,6 +75,32 @@
       <span>Apply</span>
     </button>
   </section>
+
+  <div
+  class="active-filters"
+  *ngIf="selectedPeriod || selectedDepartment || selectedCategory"
+>
+  <span class="active-filter-label">Applied filters:</span>
+
+  <span class="filter-chip">
+    {{ selectedPeriodLabel }}
+  </span>
+
+  <span class="filter-chip" *ngIf="selectedDepartment">
+    Department: {{ selectedDepartment }}
+  </span>
+
+  <span class="filter-chip" *ngIf="selectedCategory">
+    Category: {{ selectedCategory }}
+  </span>
+
+  <span
+    class="filter-chip"
+    *ngIf="isCustomRange && customStartDate && customEndDate"
+  >
+    {{ customStartDate }} → {{ customEndDate }}
+  </span>
+</div>
 
   <div class="state-panel" *ngIf="loading">
     <div class="loader"></div>

@@ -1,264 +1,228 @@
 <div class="policy-page">
 
-  <!-- =====================================================
-       PAGE HEADER
-  ====================================================== -->
-
+  <!-- PAGE HEADER -->
   <header class="page-header">
 
     <div class="header-content">
 
       <div class="breadcrumb">
-        <mat-icon>account_balance</mat-icon>
+
+        <mat-icon>
+          account_balance
+        </mat-icon>
+
         Government Policy Repository
+
       </div>
 
       <h1>
-        Policy Search
+        Policy Repository
       </h1>
 
       <p>
-        Search, filter and review government policies from a
-        centralized policy repository.
+        Manage and explore government policies.
       </p>
 
     </div>
 
-    <div class="policy-count">
 
-      <strong>
-        {{ policies.length }}
-      </strong>
+   <div class="header-actions">
 
-      <span>
-        Policies
-      </span>
+  <div class="policy-count">
 
-    </div>
+    <strong>
+      {{ policies.length }}
+    </strong>
+
+    <span>
+      Policies
+    </span>
+
+  </div>
+
+
+  <div class="policy-management-actions">
+
+    <!-- Admin + Government Official -->
 
     @if (canCreatePolicy()) {
-      <button type="button" class="create-policy-button" (click)="navigateToCreatePolicy()">
-        <mat-icon>add</mat-icon>
-        Create Policy
+
+      <button
+        type="button"
+        class="create-policy-button"
+        (click)="navigateToCreatePolicy()">
+
+        <mat-icon>
+          add
+        </mat-icon>
+
+        Add Policy
+
       </button>
+
     }
+
+
+    <!-- Admin Only -->
+
+    @if (canApprovePolicies()) {
+
+      <button
+        type="button"
+        class="approval-policy-button"
+        (click)="navigateToPolicyApproval()">
+
+        <mat-icon>
+          fact_check
+        </mat-icon>
+
+        Policy Approval
+
+      </button>
+
+    }
+
+  </div>
+
+</div>
 
   </header>
 
 
-  <!-- =====================================================
-       SEARCH
-  ====================================================== -->
+  <!-- SEARCH CARD -->
 
   <section class="search-card">
 
-    <div class="search-heading">
+    <app-policy-filter
+      [policies]="allPolicies"
+      (filterApplied)="onFilter($event)"
+      (filtersCleared)="clearFilters()">
+    </app-policy-filter>
 
-      <div class="heading-icon">
-        <mat-icon>search</mat-icon>
-      </div>
+  </section>
+
+
+  <!-- RESULTS -->
+
+  <main class="results-area">
+
+    <div class="results-header">
 
       <div>
 
-        <h2>
-          Search Policies
-        </h2>
+        <div class="results-title">
+
+          <h2>
+            Policy Results
+          </h2>
+
+          <span>
+            {{ policies.length }}
+          </span>
+
+        </div>
 
         <p>
-          Search by policy name, scheme, department or keywords.
+          Government policies matching your search
         </p>
+
+      </div>
+
+
+      <div class="sort-container">
+
+        <app-policy-toolbar
+          (sortChanged)="onSort($event)">
+        </app-policy-toolbar>
 
       </div>
 
     </div>
 
-    <app-policy-search
-      (search)="onSearch($event)">
-    </app-policy-search>
 
-  </section>
+    <!-- EMPTY STATE -->
 
+    @if (pagedPolicies.length === 0) {
 
-  <!-- =====================================================
-       FILTER + RESULTS
-  ====================================================== -->
+      <div class="empty-state">
 
-  <div class="content-layout">
+        <div class="empty-icon">
 
-
-    <!-- ===================================================
-         FILTER SIDEBAR
-    ==================================================== -->
-
-    <aside class="filter-sidebar">
-
-      <div class="filter-header">
-
-        <div>
-
-          <h2>
-            Filters
-          </h2>
-
-          <p>
-            Refine your results
-          </p>
+          <mat-icon>
+            search_off
+          </mat-icon>
 
         </div>
 
-        <mat-icon>
-          tune
-        </mat-icon>
+        <h3>
+          No policies found
+        </h3>
+
+        <p>
+          No policies match your current search or filter criteria.
+        </p>
+
+        <button
+          type="button"
+          class="clear-results"
+          (click)="clearFilters()">
+
+          <mat-icon>
+            refresh
+          </mat-icon>
+
+          Clear Filters
+
+        </button>
 
       </div>
 
-      <div class="filter-content">
-
-        <app-policy-filter
-          (filterApplied)="onFilter($event)"
-          (filtersCleared)="clearFilters()">
-        </app-policy-filter>
-
-      </div>
-
-    </aside>
+    }
 
 
-    <!-- ===================================================
-         RESULTS
-    ==================================================== -->
+    <!-- POLICY RESULTS -->
 
-    <main class="results-area">
+    @else {
 
+      <div class="policy-results">
 
-      <!-- Results Header -->
+        @for (
+          policy of pagedPolicies;
+          track policy.policy_id
+        ) {
 
-      <div class="results-header">
+          <app-policy-card
+            [policy]="policy">
+          </app-policy-card>
 
-        <div>
-
-          <div class="results-title">
-
-            <h2>
-              Policy Results
-            </h2>
-
-            <span>
-              {{ policies.length }}
-            </span>
-
-          </div>
-
-          <p>
-            Government policies matching your search
-          </p>
-
-        </div>
-
-
-        <!-- Sort -->
-
-        <div class="sort-container">
-
-          <app-policy-toolbar
-            (sortChanged)="onSort($event)">
-          </app-policy-toolbar>
-
-        </div>
+        }
 
       </div>
 
 
-      <!-- =================================================
-           EMPTY STATE
-      ================================================== -->
+      <!-- PAGINATION -->
 
-      @if (pagedPolicies.length === 0) {
+      <div class="pagination">
 
-        <div class="empty-state">
+        <span class="pagination-label">
 
-          <div class="empty-icon">
+          {{ policies.length }} policies available
 
-            <mat-icon>
-              search_off
-            </mat-icon>
+        </span>
 
-          </div>
+        <mat-paginator
+          [length]="policies.length"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+          [pageIndex]="currentPage"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
 
-          <h3>
-            No policies found
-          </h3>
+      </div>
 
-          <p>
-            No policies match your current search or filter
-            criteria.
-          </p>
+    }
 
-          <button
-            type="button"
-            class="clear-results"
-            (click)="clearFilters()">
-
-            <mat-icon>
-              refresh
-            </mat-icon>
-
-            Clear Filters
-
-          </button>
-
-        </div>
-
-      }
-
-
-      <!-- =================================================
-           POLICY RESULTS
-      ================================================== -->
-
-      @else {
-
-        <div class="policy-results">
-
-          @for (
-            policy of pagedPolicies;
-            track policy.id
-          ) {
-
-            <app-policy-card
-              [policy]="policy">
-            </app-policy-card>
-
-          }
-
-        </div>
-
-
-        <!-- ===============================================
-             PAGINATION
-        ================================================ -->
-
-        <div class="pagination">
-
-          <span class="pagination-label">
-            {{ policies.length }} policies available
-          </span>
-
-          <mat-paginator
-            [length]="policies.length"
-            [pageSize]="pageSize"
-            [pageSizeOptions]="[5, 10, 20]"
-            [pageIndex]="currentPage"
-            (page)="onPageChange($event)"
-            showFirstLastButtons>
-          </mat-paginator>
-
-        </div>
-
-      }
-
-    </main>
-
-  </div>
+  </main>
 
 </div>

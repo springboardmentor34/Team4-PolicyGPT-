@@ -2,255 +2,323 @@
   display: block;
 }
 
-/* Main form surface */
+
+/* Main filter panel */
+
 .eligibility-form {
   width: 100%;
-  padding: 1.75rem;
+  box-sizing: border-box;
+
+  margin-bottom: 28px;
+  padding: 24px;
+
   border: 1px solid #e2e8f0;
-  border-radius: 1rem;
+  border-radius: 16px;
+
   background: #ffffff;
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 8px 24px rgba(15, 23, 42, 0.04);
+
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
-/* Header */
-.form-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1.5rem;
+
+/* Heading */
+
+.filter-heading {
+  margin-bottom: 20px;
 }
 
-.section-eyebrow {
-  margin: 0 0 0.4rem;
-  color: #2563eb;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.form-title {
+.filter-heading h2 {
   margin: 0;
-  color: #0f172a;
-  font-size: 1.4rem;
+
+  color: #1e293b;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.35;
 }
 
-.form-description {
-  max-width: 720px;
-  margin: 0.55rem 0 0;
+.filter-heading p {
+  margin: 6px 0 0;
+
+  max-width: 760px;
+
   color: #64748b;
-  font-size: 0.9rem;
+  font-size: 13px;
   line-height: 1.6;
 }
 
-.form-icon {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
 
-  width: 2.8rem;
-  height: 2.8rem;
+/* Form grid */
 
-  border: 1px solid #dbeafe;
-  border-radius: 0.8rem;
-
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.form-icon mat-icon {
-  width: 1.35rem;
-  height: 1.35rem;
-  font-size: 1.35rem;
-}
-
-.form-divider {
-  height: 1px;
-  margin: 1.5rem 0 1.75rem;
-  background: #e2e8f0;
-}
-
-/* Form layout */
-.form-grid {
+.filter-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.1rem 1.25rem;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
 }
 
-.full-width {
-  width: 100%;
-}
 
-/*
- * Angular Material field polish.
- * Keep the fields white so errors don't visually merge
- * with the page background.
- */
-mat-form-field {
-  width: 100%;
-}
+/* Individual field */
 
-mat-form-field .mat-mdc-text-field-wrapper {
-  background: #ffffff !important;
-  border-radius: 0.65rem;
-}
-
-mat-form-field .mat-mdc-form-field-flex {
-  background: #ffffff;
-}
-
-/* Better field spacing when mat-error appears */
-mat-form-field {
-  margin-bottom: 0.15rem;
-}
-
-/* Validation message */
-mat-error {
+.filter-field {
   display: flex;
-  align-items: flex-start;
-  gap: 0.25rem;
+  flex-direction: column;
+  gap: 7px;
 
-  margin-top: 0.2rem;
+  min-width: 0;
+}
+
+.filter-field label {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+
+/* Inputs and selects */
+
+.filter-field input,
+.filter-field select {
+  width: 100%;
+  box-sizing: border-box;
+
+  min-height: 42px;
+
+  padding: 9px 12px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #ffffff;
+  color: #0f172a;
+
+  font: inherit;
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.filter-field input::placeholder {
+  color: #94a3b8;
+}
+
+
+.filter-field input:focus,
+.filter-field select:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+.filter-field input:hover,
+.filter-field select:hover {
+  border-color: #94a3b8;
+}
+
+
+/* Currency input */
+
+.input-prefix {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 42px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-prefix:focus-within {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-prefix span {
+  padding-left: 12px;
+
+  color: #64748b;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-prefix input {
+  min-height: 40px;
+
+  border: 0;
+  box-shadow: none;
+
+  padding-left: 7px;
+}
+
+.input-prefix input:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+
+/* Validation */
+
+.field-error {
+  margin-top: -2px;
 
   color: #b42318;
-  font-size: 0.75rem;
+
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.4;
 }
 
-/* Hint text */
-mat-hint {
-  color: #64748b;
-  font-size: 0.72rem;
-}
 
-/*
- * Select trigger.
- * Gives the closed dropdown a clean white surface.
- */
-mat-select {
-  background: #ffffff;
-}
-
-/* Footer */
-.form-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-
-  margin-top: 0.75rem;
-  padding-top: 1.25rem;
-
-  border-top: 1px solid #e2e8f0;
-}
+/* Privacy note */
 
 .privacy-note {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 8px;
 
-  max-width: 520px;
-  margin: 0;
+  margin-top: 20px;
+  padding-top: 16px;
+
+  border-top: 1px solid #e2e8f0;
 
   color: #64748b;
-  font-size: 0.78rem;
+
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .privacy-note mat-icon {
   flex-shrink: 0;
 
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
 
-  margin-top: 0.05rem;
+  margin-top: 1px;
 
-  font-size: 1rem;
   color: #64748b;
+
+  font-size: 16px;
 }
 
-.form-actions {
+
+/* Actions */
+
+.filter-actions {
   display: flex;
-  align-items: center;
+
   justify-content: flex-end;
-  gap: 0.75rem;
 
-  flex-shrink: 0;
+  gap: 10px;
+
+  margin-top: 20px;
 }
 
-.reset-button,
-.submit-button {
-  min-height: 2.75rem;
-  border-radius: 0.55rem !important;
-  font-weight: 600;
+
+/* Buttons */
+
+.search-button,
+.clear-button {
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
 }
 
-.reset-button mat-icon,
-.submit-button mat-icon {
-  margin-right: 0.35rem;
+
+/* Primary */
+
+.search-button {
+  border: 1px solid #2563eb;
+
+  background: #2563eb;
+  color: #ffffff;
 }
 
-.submit-button {
-  min-width: 175px;
+.search-button:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
-/*
- * Angular Material select dropdown.
- *
- * The select panel is rendered in the overlay container,
- * so component-local styles alone are not sufficient.
- * The global rules below will be added to styles.css.
- */
 
-@media (max-width: 900px) {
-  .form-grid {
+/* Secondary */
+
+.clear-button {
+  border: 1px solid #cbd5e1;
+
+  background: #ffffff;
+  color: #334155;
+}
+
+.clear-button:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+
+/* Disabled */
+
+.search-button:disabled,
+.clear-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 640px) {
+  .eligibility-form {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .filter-grid {
     grid-template-columns: 1fr;
   }
 
-  .form-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .form-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-}
-
-@media (max-width: 600px) {
-  .eligibility-form {
-    padding: 1.25rem;
-    border-radius: 0.85rem;
-  }
-
-  .form-header {
-    gap: 1rem;
-  }
-
-  .form-icon {
-    width: 2.4rem;
-    height: 2.4rem;
-  }
-
-  .form-title {
-    font-size: 1.2rem;
-  }
-
-  .form-actions {
+  .filter-actions {
     flex-direction: column-reverse;
-    align-items: stretch;
-    width: 100%;
   }
 
-  .reset-button,
-  .submit-button {
+  .search-button,
+  .clear-button {
     width: 100%;
   }
 }

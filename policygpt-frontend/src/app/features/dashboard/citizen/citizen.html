@@ -1,3 +1,4 @@
+
 <div class="citizen-dashboard">
 
   <!-- Hero Section -->
@@ -17,8 +18,8 @@
         </h1>
 
         <p>
-          Discover government schemes, check your eligibility,
-          and manage your applications — all in one place.
+          Explore government policies and schemes, check your eligibility,
+          and stay informed about public services.
         </p>
 
       </div>
@@ -53,20 +54,20 @@
   </section>
 
 
-  <!-- Quick Actions -->
+  <!-- Citizen Services -->
   <section class="dashboard-section">
 
     <div class="section-heading">
 
       <div>
-        <span class="section-label">QUICK ACCESS</span>
+        <span class="section-label">CITIZEN SERVICES</span>
 
         <h2>
-          What would you like to do?
+          What would you like to explore?
         </h2>
 
         <p>
-          Access frequently used citizen services.
+          Access government information and services available to citizens.
         </p>
       </div>
 
@@ -110,79 +111,125 @@
   </section>
 
 
-  <!-- Recommended Policies -->
-  <section class="dashboard-section">
 
-    <div class="section-heading heading-with-action">
+<!-- Government Schemes -->
+<section class="dashboard-section">
 
-      <div>
+  <div class="section-heading heading-with-action">
 
-        <span class="section-label">
-          RECOMMENDED FOR YOU
-        </span>
+    <div>
 
-        <h2>
-          Government Schemes
-        </h2>
+      <span class="section-label">
+        GOVERNMENT BENEFITS
+      </span>
 
-        <p>
-          Explore schemes that may be relevant to you.
-        </p>
+      <h2>
+        Government Schemes
+      </h2>
 
-      </div>
-
-
-      <button
-        mat-button
-        class="view-all-button"
-        (click)="navigate('/policies')">
-
-        View All
-
-        <mat-icon>
-          arrow_forward
-        </mat-icon>
-
-      </button>
+      <p>
+        Explore currently active government schemes and benefits.
+      </p>
 
     </div>
 
 
+    <button
+      mat-button
+      class="view-all-button"
+      (click)="navigate('/schemes')">
+
+      View All
+
+      <mat-icon>
+        arrow_forward
+      </mat-icon>
+
+    </button>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (loadingSchemes) {
+
+    <div class="scheme-loading">
+
+      <mat-icon>
+        hourglass_empty
+      </mat-icon>
+
+      <p>
+        Loading government schemes...
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- Schemes -->
+  @if (!loadingSchemes && schemes.length > 0) {
+
     <div class="policy-grid">
 
-      @for(policy of recommendedPolicies; track policy.id) {
+      @for (scheme of schemes; track scheme.scheme_id) {
 
         <mat-card class="policy-card">
 
           <div class="policy-top">
 
             <div class="policy-icon">
+
               <mat-icon>
-                {{ policy.icon }}
+                {{ getSchemeIcon(scheme.category) }}
               </mat-icon>
+
             </div>
 
-            <span class="policy-category">
-              {{ policy.category }}
-            </span>
+
+            @if (scheme.category) {
+
+              <span class="policy-category">
+                {{ scheme.category }}
+              </span>
+
+            }
 
           </div>
 
 
           <h3>
-            {{ policy.title }}
+            {{ scheme.name }}
           </h3>
 
 
           <p>
-            {{ policy.description }}
+            {{ scheme.benefits || 'Government scheme available to eligible citizens.' }}
           </p>
+
+
+          @if (scheme.department) {
+
+            <div class="scheme-department">
+
+              <mat-icon>
+                account_balance
+              </mat-icon>
+
+              <span>
+                {{ scheme.department }}
+              </span>
+
+            </div>
+
+          }
 
 
           <button
             mat-button
             class="policy-button"
-            (click)="viewPolicy(policy.id)">
+            (click)="viewScheme()">
 
             View Details
 
@@ -198,14 +245,49 @@
 
     </div>
 
-  </section>
+  }
 
 
-  <!-- Information Cards -->
+  <!-- No schemes -->
+  @if (!loadingSchemes && schemes.length === 0) {
+
+    <div class="scheme-empty">
+
+      <mat-icon>
+        account_balance
+      </mat-icon>
+
+      <h3>
+        No active schemes available
+      </h3>
+
+      <p>
+        Government schemes will appear here when they become available.
+      </p>
+
+      <button
+        mat-button
+        (click)="navigate('/schemes')">
+
+        Browse Schemes
+
+        <mat-icon>
+          arrow_forward
+        </mat-icon>
+
+      </button>
+
+    </div>
+
+  }
+
+</section>
+
+
+
+  <!-- Eligibility Information -->
   <section class="info-grid">
 
-
-    <!-- Eligibility -->
     <mat-card class="info-card eligibility-info">
 
       <div class="info-icon">
@@ -218,12 +300,12 @@
       <div>
 
         <h3>
-          Not sure if you're eligible?
+          Not sure which scheme is right for you?
         </h3>
 
         <p>
-          Answer a few questions and let PolicyGPT
-          find schemes that match your profile.
+          Answer a few questions and find government schemes
+          that may match your profile.
         </p>
 
         <button
@@ -243,12 +325,11 @@
     </mat-card>
 
 
-    <!-- Applications -->
-    <mat-card class="info-card application-info">
+    <mat-card class="info-card">
 
       <div class="info-icon">
         <mat-icon>
-          description
+          account_balance
         </mat-icon>
       </div>
 
@@ -256,19 +337,19 @@
       <div>
 
         <h3>
-          Track your applications
+          Explore Government Schemes
         </h3>
 
         <p>
-          Keep track of your submitted applications
-          and their current status.
+          Browse available government schemes and learn about
+          their benefits, eligibility, and requirements.
         </p>
 
         <button
           mat-button
-          (click)="navigate('/applications')">
+          (click)="navigate('/schemes')">
 
-          My Applications
+          Browse Schemes
 
           <mat-icon>
             arrow_forward
@@ -279,7 +360,6 @@
       </div>
 
     </mat-card>
-
 
   </section>
 

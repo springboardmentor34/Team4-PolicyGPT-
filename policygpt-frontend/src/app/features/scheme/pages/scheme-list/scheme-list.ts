@@ -1,15 +1,7 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import {
-  Scheme,
-  SchemeService,
-} from '../../../../core/services/scheme.service';
+import { Scheme, SchemeService } from '../../../../core/services/scheme.service';
 import { Auth } from '../../../../core/services/auth';
 
 @Component({
@@ -108,16 +100,16 @@ export class SchemeList implements OnInit {
     this.loadSchemes();
   }
 
-canManageSchemes(): boolean {
-  const role = this.auth.getRoleFromToken()
-    ?.toLowerCase()
-    .trim();
+  canManageSchemes(): boolean {
+    const role = this.auth.getRoleFromToken()?.toLowerCase().trim();
 
-  return (
-    role === 'official' ||
-    role === 'government_official' ||
-    role === 'government official' ||
-    role === 'officer'
-  );
-}
+    return (
+      role === 'admin' ||
+      role === 'administrator' ||
+      role === 'official' ||
+      role === 'government_official' ||
+      role === 'government official' ||
+      role === 'officer'
+    );
+  }
 }

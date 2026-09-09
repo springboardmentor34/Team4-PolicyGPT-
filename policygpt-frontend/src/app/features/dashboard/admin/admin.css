@@ -620,6 +620,10 @@
   border: 1px solid #edf0f4;
   border-radius: 11px;
   background: #fafbfd;
+  cursor: pointer;
+}
+.analytics-card:hover {
+  transform: translateY(-2px);
 }
 
 .analytics-icon {

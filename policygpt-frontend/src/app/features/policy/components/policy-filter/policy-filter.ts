@@ -1,31 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-
 import { PolicyFilter as PolicyFilterModel } from '../../models/policy-filter.model';
-
+import { Policy } from '../../models/policy.model';
 @Component({
   selector: 'app-policy-filter',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule
   ],
   templateUrl: './policy-filter.html',
   styleUrl: './policy-filter.css'
 })
-export class PolicyFilterComponent {
+export class PolicyFilterComponent implements OnChanges {
+
+  @Input()
+  policies: Policy[] = [];
 
   @Output()
   filterApplied = new EventEmitter<PolicyFilterModel>();
@@ -34,117 +33,56 @@ export class PolicyFilterComponent {
   filtersCleared = new EventEmitter<void>();
 
   filter: PolicyFilterModel = {
-    policyName: '',
-    schemeName: '',
+    keyword: '',
     department: '',
-    ministry: '',
     state: '',
-    sector: '',
-    publicationDate: '',
-    status: ''
+    category: '',
+    status: '',
+    publicationDate: ''
   };
 
-  policyNames: string[] = [
-  'National Education Policy 2026',
-  'PM Kisan Support Policy',
-  'Ayushman Bharat',
-  'Digital India Mission',
-  'Startup India',
-  'Skill India Mission',
-  'National Solar Mission',
-  'PM Awas Yojana',
-  'Jal Jeevan Mission',
-  'National Food Security Mission'
-];
+  statuses: string[] = [];
 
-schemeNames: string[] = [
-  'Digital Learning Initiative',
-  'Farmer Assistance Scheme',
-  'Health Insurance',
-  'Digital Services',
-  'Startup Support',
-  'Skill Development',
-  'Solar Energy',
-  'Housing Scheme',
-  'Rural Water Supply',
-  'Food Security'
-];
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['policies']) {
+      this.loadStatuses();
+    }
+  }
 
-  departments: string[] = [
-    'Education Department',
-    'Agriculture Department',
-    'Health Department',
-    'IT Department',
-    'Industry Department',
-    'Skill Development Department',
-    'Energy Department',
-    'Housing Department',
-    'Water Resources Department',
-    'Food Department'
-  ];
-
-  ministries: string[] = [
-    'Ministry of Education',
-    'Ministry of Agriculture',
-    'Ministry of Health',
-    'Ministry of Electronics',
-    'Ministry of Commerce',
-    'Ministry of Skill Development',
-    'Ministry of Renewable Energy',
-    'Ministry of Housing',
-    'Ministry of Jal Shakti'
-  ];
-
-  states: string[] = [
-    'Telangana',
-    'Andhra Pradesh',
-    'Karnataka',
-    'Maharashtra',
-    'Delhi',
-    'Tamil Nadu',
-    'Rajasthan',
-    'Gujarat',
-    'Madhya Pradesh',
-    'Punjab'
-  ];
-
-  sectors: string[] = [
-    'Education',
-    'Agriculture',
-    'Healthcare',
-    'Technology',
-    'Business',
-    'Employment',
-    'Energy',
-    'Housing',
-    'Infrastructure'
-  ];
-
-  statuses: string[] = [
-    'Approved',
-    'Pending',
-    'Rejected'
-  ];
+  private loadStatuses(): void {
+    this.statuses = [
+      ...new Set(
+        this.policies
+          .map(policy => policy.status)
+          .filter(
+            (status): status is string =>
+              typeof status === 'string' && status.trim().length > 0
+          )
+          .map(status => status.trim())
+      )
+    ].sort((a, b) => a.localeCompare(b));
+  }
 
   applyFilters(): void {
-    this.filterApplied.emit({ ...this.filter });
+    this.filterApplied.emit({
+      ...this.filter,
+      keyword: this.filter.keyword.trim(),
+      department: this.filter.department.trim(),
+      state: this.filter.state.trim(),
+      category: this.filter.category.trim()
+    });
   }
 
   clearFilters(): void {
-
     this.filter = {
-      policyName: '',
-      schemeName: '',
+      keyword: '',
       department: '',
-      ministry: '',
       state: '',
-      sector: '',
-      publicationDate: '',
-      status: ''
+      category: '',
+      status: '',
+      publicationDate: ''
     };
 
     this.filtersCleared.emit();
-
   }
-
 }

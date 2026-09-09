@@ -1,6 +1,8 @@
+
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { API_CONFIG } from '../../../core/config/api.config';
 
 export interface ApiReport {
@@ -11,6 +13,13 @@ export interface ApiReport {
   data: Array<Record<string, unknown>>;
 }
 
+export interface AnalyticsReportData {
+  summary: Record<string, unknown>;
+  policyStats: Record<string, unknown>;
+  engagement: Record<string, unknown>;
+  eligibility: Record<string, unknown>;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ReportsService {
   private readonly http = inject(HttpClient);
@@ -18,26 +27,58 @@ export class ReportsService {
 
   private get options(): { headers: HttpHeaders } {
     const token = localStorage.getItem('access_token');
+
     let headers = new HttpHeaders();
-    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+
+    if (token) {
+      headers = headers.set(
+        'Authorization',
+        `Bearer ${token}`,
+      );
+    }
+
     return { headers };
   }
 
   list(): Observable<ApiReport[]> {
-    return this.http.get<ApiReport[]>(this.apiUrl, this.options);
+    return this.http.get<ApiReport[]>(
+      this.apiUrl,
+      this.options,
+    );
   }
 
-  create(reportType: string, format: 'pdf' | 'csv' | 'xlsx'): Observable<ApiReport> {
-    return this.http.post<ApiReport>(this.apiUrl, {
-      report_type: reportType,
-      format,
-    }, this.options);
+  create(
+    reportType: string,
+    format: 'pdf' | 'csv' | 'xlsx',
+  ): Observable<ApiReport> {
+    return this.http.post<ApiReport>(
+      this.apiUrl,
+      {
+        report_type: reportType,
+        format,
+      },
+      this.options,
+    );
   }
 
-  preview(reportType: string): Observable<{ report_type: string; data: Array<Record<string, unknown>> }> {
-    return this.http.get<{ report_type: string; data: Array<Record<string, unknown>> }>(
+  preview(
+    reportType: string,
+  ): Observable<{
+    report_type: string;
+    data: Array<Record<string, unknown>>;
+  }> {
+    return this.http.get<{
+      report_type: string;
+      data: Array<Record<string, unknown>>;
+    }>(
       `${this.apiUrl}/preview`,
-      { ...this.options, params: { report_type: reportType } },
+      {
+        ...this.options,
+        params: {
+          report_type: reportType,
+        },
+      },
     );
   }
 }
+

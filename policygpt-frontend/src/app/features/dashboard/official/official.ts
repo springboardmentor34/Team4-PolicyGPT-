@@ -1,29 +1,43 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
-import { OfficialService } from '../../../core/services/official.service';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  inject,
+  OnInit
+} from '@angular/core';
+
+import { Router } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
+import {
+  OfficialService,
+  OfficialDashboardResponse,
+  DepartmentReport
+} from '../../../core/services/official.service';
+
 @Component({
   selector: 'app-official',
   standalone: true,
+
   imports: [
     CommonModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule
   ],
+
   templateUrl: './official.html',
-  styleUrl: './official.css',
+  styleUrl: './official.css'
 })
 export class Official implements OnInit {
 
-  private router = inject(Router);
-  private officialService = inject(OfficialService);
+  private readonly router = inject(Router);
+
+  private readonly officialService =
+    inject(OfficialService);
 
 
   // =====================================================
@@ -33,8 +47,11 @@ export class Official implements OnInit {
   officialName = 'Government Official';
 
   totalPolicies = 0;
+
   activeSchemes = 0;
+
   totalDepartments = 0;
+
   notifications = 0;
 
 
@@ -43,7 +60,10 @@ export class Official implements OnInit {
   // =====================================================
 
   loading = true;
+
   errorMessage = '';
+
+  dashboardLoaded = false;
 
 
   // =====================================================
@@ -57,12 +77,14 @@ export class Official implements OnInit {
       icon: 'check_circle',
       route: '/policies'
     },
+
     {
       title: 'Pending Policies',
       count: 0,
       icon: 'pending',
-      route: '/policies'
+      route: '/policies/approval'
     },
+
     {
       title: 'Rejected Policies',
       count: 0,
@@ -77,45 +99,56 @@ export class Official implements OnInit {
   // =====================================================
 
   managementActions = [
+
     {
       title: 'Policy Repository',
-      description: 'View, search and manage government policies.',
+      description:
+        'View, search and manage government policies.',
       icon: 'policy',
       route: '/policies',
       label: 'View Policies'
     },
+
     {
       title: 'Add Policy',
-      description: 'Create and submit a new government policy.',
+      description:
+        'Create and submit a new government policy.',
       icon: 'add_circle',
       route: '/policies/add',
       label: 'Add Policy'
     },
-  
+
     {
       title: 'Policy Comparison',
-      description: 'Compare multiple policies side by side.',
+      description:
+        'Compare multiple policies side by side.',
       icon: 'compare_arrows',
       route: '/policies/comparison',
       label: 'Compare Policies'
     },
+
     {
       title: 'Scheme Management',
-      description: 'View, search and manage government schemes.',
+      description:
+        'View, search and manage government schemes.',
       icon: 'account_balance',
       route: '/schemes',
       label: 'Manage Schemes'
     },
+
     {
       title: 'Create Scheme',
-      description: 'Add a new government scheme to the repository.',
+      description:
+        'Add a new government scheme to the repository.',
       icon: 'add_business',
       route: '/schemes/create',
       label: 'Create Scheme'
     },
+
     {
       title: 'Eligibility Checker',
-      description: 'Check scheme eligibility and matching results.',
+      description:
+        'Check scheme eligibility and matching results.',
       icon: 'verified',
       route: '/eligibility',
       label: 'Open Checker'
@@ -134,7 +167,7 @@ export class Official implements OnInit {
   // DEPARTMENT REPORTS
   // =====================================================
 
-  departmentReports: any[] = [];
+  departmentReports: DepartmentReport[] = [];
 
 
   // =====================================================
@@ -149,7 +182,9 @@ export class Official implements OnInit {
   // =====================================================
 
   ngOnInit(): void {
+
     this.loadDashboardStats();
+
     this.loadDepartmentReports();
   }
 
@@ -161,80 +196,153 @@ export class Official implements OnInit {
   loadDashboardStats(): void {
 
     this.loading = true;
+
     this.errorMessage = '';
 
-    this.officialService.getDashboardStats().subscribe({
+    this.officialService
+      .getDashboardStats()
+      .subscribe({
 
-      next: (data) => {
+        next: (data) => {
 
-        console.log('Official dashboard response:', data);
+          console.log(
+            'Official dashboard response:',
+            data
+          );
 
-        this.totalPolicies =
-          data.totalPolicies ?? 0;
+          this.applyDashboardData(data);
 
-        this.activeSchemes =
-          data.activeSchemes ?? 0;
+          this.dashboardLoaded = true;
 
-        this.totalDepartments =
-          data.totalDepartments ?? 0;
+          this.loading = false;
+        },
 
-        this.notifications =
-          data.notifications ?? 0;
+        error: (error) => {
 
+          console.error(
+            'Official dashboard API error:',
+            error
+          );
 
-        // Policy statistics
+          this.dashboardLoaded = false;
 
-        this.policyStats = [
-          {
-            title: 'Approved Policies',
-            count: data.approvedPolicies ?? 0,
-            icon: 'check_circle',
-            route: '/policies'
-          },
-          {
-            title: 'Pending Policies',
-            count: data.pendingPolicies ?? 0,
-            icon: 'pending',
-            route: '/policies/approval'
-          },
-          {
-            title: 'Rejected Policies',
-            count: data.rejectedPolicies ?? 0,
-            icon: 'cancel',
-            route: '/policies'
-          }
-        ];
+          this.loading = false;
+
+          this.errorMessage =
+            this.getErrorMessage(error);
+        }
+
+      });
+  }
 
 
-        // Scheme usage
+  // =====================================================
+  // APPLY DASHBOARD RESPONSE
+  // =====================================================
 
-        this.schemeUsage =
-          data.schemeUsage ?? [];
+  private applyDashboardData(
+    data: OfficialDashboardResponse
+  ): void {
+
+    /*
+     * Support both camelCase and snake_case
+     * responses from FastAPI/backend.
+     */
+
+    this.totalPolicies =
+      this.toNumber(
+        data.totalPolicies ??
+        data.total_policies
+      );
+
+    this.activeSchemes =
+      this.toNumber(
+        data.activeSchemes ??
+        data.active_schemes
+      );
+
+    this.totalDepartments =
+      this.toNumber(
+        data.totalDepartments ??
+        data.total_departments
+      );
+
+    this.notifications =
+      this.toNumber(
+        data.notifications
+      );
 
 
-        // Recent activity
+    // ===================================================
+    // POLICY STATUS
+    // ===================================================
 
-        this.recentActivity =
-          data.recentActivity ?? [];
+    this.policyStats = [
 
+      {
+        title: 'Approved Policies',
 
-        this.loading = false;
+        count: this.toNumber(
+          data.approvedPolicies ??
+          data.approved_policies
+        ),
+
+        icon: 'check_circle',
+
+        route: '/policies'
       },
 
-      error: (error) => {
+      {
+        title: 'Pending Policies',
 
-        console.error(
-          'Failed to load official dashboard:',
-          error
-        );
+        count: this.toNumber(
+          data.pendingPolicies ??
+          data.pending_policies
+        ),
 
-        this.errorMessage =
-          'Unable to load government dashboard data.';
+        icon: 'pending',
 
-        this.loading = false;
+        route: '/policies/approval'
+      },
+
+      {
+        title: 'Rejected Policies',
+
+        count: this.toNumber(
+          data.rejectedPolicies ??
+          data.rejected_policies
+        ),
+
+        icon: 'cancel',
+
+        route: '/policies'
       }
 
-    });
+    ];
+
+
+    // ===================================================
+    // SCHEME USAGE
+    // ===================================================
+
+    this.schemeUsage =
+      Array.isArray(data.schemeUsage)
+        ? data.schemeUsage
+        : Array.isArray(data.scheme_usage)
+          ? data.scheme_usage
+          : [];
+
+
+    // ===================================================
+    // RECENT ACTIVITY
+    // ===================================================
+
+    this.recentActivity =
+      Array.isArray(data.recentActivity)
+        ? data.recentActivity
+        : Array.isArray(data.recent_activity)
+          ? data.recent_activity
+          : [];
   }
 
 
@@ -244,32 +352,77 @@ export class Official implements OnInit {
 
   loadDepartmentReports(): void {
 
-    this.officialService.getDepartmentReports().subscribe({
+    this.officialService
+      .getDepartmentReports()
+      .subscribe({
 
-      next: (data) => {
+        next: (data) => {
 
-        console.log(
-          'Department reports response:',
-          data
-        );
+          console.log(
+            'Department reports response:',
+            data
+          );
 
-        this.departmentReports =
-          data ?? [];
+          this.departmentReports =
+            this.normalizeDepartmentReports(data);
+        },
 
-      },
+        error: (error) => {
 
-      error: (error) => {
+          console.error(
+            'Department reports API error:',
+            error
+          );
 
-        console.error(
-          'Failed to load department reports:',
-          error
-        );
+          this.departmentReports = [];
+        }
 
-        this.departmentReports = [];
+      });
+  }
 
-      }
 
-    });
+  // =====================================================
+  // NORMALIZE DEPARTMENT DATA
+  // =====================================================
+
+  private normalizeDepartmentReports(
+    data: any
+  ): DepartmentReport[] {
+
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    return data.map(
+      (item: any): DepartmentReport => ({
+
+        departmentId: String(
+          item.departmentId ??
+          item.department_id ??
+          item.id ??
+          ''
+        ),
+
+        department:
+          item.department ??
+          item.departmentName ??
+          item.department_name ??
+          'Unknown Department',
+
+        policies: this.toNumber(
+          item.policies ??
+          item.policy_count ??
+          item.totalPolicies
+        ),
+
+        schemes: this.toNumber(
+          item.schemes ??
+          item.scheme_count ??
+          item.totalSchemes
+        )
+
+      })
+    );
   }
 
 
@@ -303,8 +456,8 @@ export class Official implements OnInit {
   retry(): void {
 
     this.loadDashboardStats();
-    this.loadDepartmentReports();
 
+    this.loadDepartmentReports();
   }
 
 
@@ -314,8 +467,60 @@ export class Official implements OnInit {
 
   navigate(route: string): void {
 
-    this.router.navigateByUrl(route);
+    if (!route) {
+      return;
+    }
 
+    this.router.navigateByUrl(route);
+  }
+
+
+  // =====================================================
+  // HELPERS
+  // =====================================================
+
+  private toNumber(
+    value: unknown
+  ): number {
+
+    const numberValue =
+      Number(value);
+
+    return Number.isFinite(numberValue)
+      ? numberValue
+      : 0;
+  }
+
+
+  private getErrorMessage(
+    error: any
+  ): string {
+
+    if (error?.status === 401) {
+
+      return 'Your session has expired. Please log in again.';
+    }
+
+    if (error?.status === 403) {
+
+      return 'You do not have permission to access the government dashboard.';
+    }
+
+    if (error?.status === 404) {
+
+      return 'Government dashboard API endpoint was not found.';
+    }
+
+    if (error?.status === 0) {
+
+      return 'Unable to connect to the backend server.';
+    }
+
+    return (
+      error?.error?.detail ??
+      error?.error?.message ??
+      'Unable to load government dashboard data.'
+    );
   }
 
 }

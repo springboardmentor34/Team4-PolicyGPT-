@@ -1,11 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { SchemeService } from '../../../core/services/scheme.service';
 import { EligibilityRuleService } from '../../../core/services/eligibility-rule.service';
+
 import { Scheme } from '../models/scheme.model';
 import { EligibilityRule } from '../models/eligibility-rule.model';
 import { UserProfile } from '../models/user-profile.model';
+
 import {
   EligibilityResult,
   EligibilityStatus,
@@ -28,13 +31,15 @@ export class Eligibility {
     }).pipe(
       map(({ schemesResponse, rules }) => {
         const schemes = schemesResponse.items;
+
         const results = schemes.map((scheme) => {
-          const rule = rules.find(
-            (r) => r.scheme_id === scheme.scheme_id
+          const schemeRules = rules.filter(
+            (rule) => rule.scheme_id === scheme.scheme_id
           );
-          return this.evaluateSchemeWithRule(
+
+          return this.evaluateScheme(
             scheme,
-            rule,
+            schemeRules,
             profile
           );
         });
@@ -87,251 +92,150 @@ export class Eligibility {
     );
   }
 
-  private evaluateSchemeWithRule(
+  private buildRecommendationReason(
+  scheme: Scheme,
+  rules: EligibilityRule[],
+  reasons: string[],
+  status: EligibilityStatus
+): string {
+
+  // No rules configured
+  if (rules.length === 0) {
+    return `No eligibility rules have been configured for this scheme.`;
+  }
+
+  const passedRequirements = reasons
+    .filter((reason) => reason.startsWith('✓'))
+    .map((reason) => reason.substring(2).trim());
+
+  const failedRequirements = reasons
+    .filter((reason) => reason.startsWith('✗'))
+    .map((reason) => reason.substring(2).trim());
+
+  if (status === 'Eligible') {
+
+    if (passedRequirements.length === 0) {
+      return `You satisfy all configured eligibility requirements for this scheme.`;
+    }
+
+    return (
+      `You satisfy all configured eligibility requirements. ` +
+      passedRequirements.join(' ')
+    );
+  }
+
+  if (status === 'Potentially Eligible') {
+
+    const messageParts: string[] = [];
+
+    if (passedRequirements.length > 0) {
+      messageParts.push(
+        `Requirements satisfied: ${passedRequirements.join(' ')}`
+      );
+    }
+
+    if (failedRequirements.length > 0) {
+      messageParts.push(
+        `Requirements not satisfied: ${failedRequirements.join(' ')}`
+      );
+    }
+
+    return messageParts.join(' ');
+  }
+
+  if (failedRequirements.length > 0) {
+    return (
+      `You do not currently satisfy the configured eligibility requirements. ` +
+      `Requirements not satisfied: ${failedRequirements.join(' ')}`
+    );
+  }
+
+  return `Your profile does not satisfy the configured eligibility requirements for this scheme.`;
+}
+
+  private evaluateScheme(
     scheme: Scheme,
-    rule: EligibilityRule | undefined,
+    rules: EligibilityRule[],
     profile: UserProfile
   ): SchemeEligibilityResult {
-    if (!rule) {
+    /*
+     * No eligibility rule configured.
+     */
+    if (rules.length === 0) {
       return {
         scheme,
         status: 'Potentially Eligible',
         score: 50,
         reasons: [
-          'No explicit eligibility rules configured on backend for this scheme yet.',
+          'No explicit eligibility rules are configured for this scheme.'
         ],
         recommendationReason:
-          'Potentially eligible. Please contact the department for detailed manual guidelines.',
+          'Eligibility cannot be fully verified because this scheme has no configured eligibility rules.',
       };
     }
 
-    let score = 0;
-    const reasons: string[] = [];
-    let checkedConstraints = 0;
-    let satisfiedConstraints = 0;
+    /*
+     * Evaluate every rule attached to the scheme.
+     *
+     * A scheme is eligible only when ALL configured
+     * mandatory conditions are satisfied.
+     */
+    const evaluations = rules.map((rule) =>
+      this.evaluateRule(rule, profile)
+    );
 
-    // 1. Min Age check
-    if (
-      rule.min_age !== undefined &&
-      rule.min_age !== null
-    ) {
-      checkedConstraints++;
+    const totalConditions = evaluations.reduce(
+      (total, evaluation) =>
+        total + evaluation.totalConditions,
+      0
+    );
 
-      if (profile.age >= rule.min_age) {
-        satisfiedConstraints++;
+    const satisfiedConditions = evaluations.reduce(
+      (total, evaluation) =>
+        total + evaluation.satisfiedConditions,
+      0
+    );
 
-        reasons.push(
-          `Satisfied minimum age requirement of ${rule.min_age} years (your age: ${profile.age}).`
-        );
-      } else {
-        reasons.push(
-          `Minimum age requirement is ${rule.min_age} years (your age: ${profile.age}).`
-        );
-      }
-    }
+    const failedConditions = evaluations.reduce(
+      (total, evaluation) =>
+        total + evaluation.failedConditions,
+      0
+    );
 
-    // 2. Max Age check
-    if (
-      rule.max_age !== undefined &&
-      rule.max_age !== null
-    ) {
-      checkedConstraints++;
+    const reasons = evaluations.flatMap(
+      (evaluation) => evaluation.reasons
+    );
 
-      if (profile.age <= rule.max_age) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Satisfied maximum age limit of ${rule.max_age} years (your age: ${profile.age}).`
-        );
-      } else {
-        reasons.push(
-          `Maximum age limit is ${rule.max_age} years (your age: ${profile.age}).`
-        );
-      }
-    }
-
-    // 3. Gender check
-    if (rule.gender && rule.gender.trim()) {
-      checkedConstraints++;
-      const ruleGen = rule.gender.trim().toLowerCase();
-      const profGen = profile.gender.trim().toLowerCase();
-
-      if (
-        ruleGen === 'all' ||
-        ruleGen === 'any' ||
-        profGen === ruleGen
-      ) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Gender requirement matches (${rule.gender}).`
-        );
-      } else {
-        reasons.push(
-          `Gender requirement is ${rule.gender} (your profile: ${profile.gender}).`
-        );
-      }
-    }
-
-    // 4. Max Income check
-    if (
-      rule.max_income !== undefined &&
-      rule.max_income !== null
-    ) {
-      checkedConstraints++;
-
-      if (profile.income <= rule.max_income) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Income is below the limit of ₹${rule.max_income} (your income: ₹${profile.income}).`
-        );
-      } else {
-        reasons.push(
-          `Income exceeds the limit of ₹${rule.max_income} (your income: ₹${profile.income}).`
-        );
-      }
-    }
-
-    // 5. Occupation check
-    if (rule.occupation && rule.occupation.trim()) {
-      checkedConstraints++;
-      const ruleOcc = rule.occupation.trim().toLowerCase();
-      const profOcc = profile.occupation.trim().toLowerCase();
-
-      if (
-        profOcc.includes(ruleOcc) ||
-        ruleOcc.includes(profOcc)
-      ) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Occupation matches scheme focus (${rule.occupation}).`
-        );
-      } else {
-        reasons.push(
-          `Scheme targets occupation: ${rule.occupation} (your profile: ${profile.occupation}).`
-        );
-      }
-    }
-
-    // 6. Education level check
-    if (
-      rule.education_level &&
-      rule.education_level.trim()
-    ) {
-      checkedConstraints++;
-      const ruleEdu = rule.education_level.trim().toLowerCase();
-      const profEdu = profile.education.trim().toLowerCase();
-
-      if (
-        profEdu.includes(ruleEdu) ||
-        ruleEdu.includes(profEdu)
-      ) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Education level matches (${rule.education_level}).`
-        );
-      } else {
-        reasons.push(
-          `Education level requirement: ${rule.education_level} (your profile: ${profile.education}).`
-        );
-      }
-    }
-
-    // 7. Location check
-    if (rule.location && rule.location.trim()) {
-      checkedConstraints++;
-      const ruleLoc = rule.location.trim().toLowerCase();
-      const profLoc = profile.location.trim().toLowerCase();
-
-      if (
-        ruleLoc === 'all' ||
-        ruleLoc === 'all india' ||
-        profLoc.includes(ruleLoc) ||
-        ruleLoc.includes(profLoc)
-      ) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Location requirement satisfies (${rule.location}).`
-        );
-      } else {
-        reasons.push(
-          `Scheme targets location: ${rule.location} (your profile: ${profile.location}).`
-        );
-      }
-    }
-
-    // 8. Social Category check
-    if (
-      rule.social_category &&
-      rule.social_category.trim()
-    ) {
-      checkedConstraints++;
-      const ruleCat = rule.social_category.trim().toLowerCase();
-      const profCat = profile.socialCategory.trim().toLowerCase();
-
-      if (
-        ruleCat === 'all' ||
-        ruleCat === 'any' ||
-        profCat === ruleCat
-      ) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Social category requirement satisfies (${rule.social_category}).`
-        );
-      } else {
-        reasons.push(
-          `Social category requirement: ${rule.social_category} (your profile: ${profile.socialCategory}).`
-        );
-      }
-    }
-
-    // 9. Disability Status check
-    if (
-      rule.disability_status !== undefined &&
-      rule.disability_status !== null
-    ) {
-      checkedConstraints++;
-      const profDis =
-        profile.disabilityStatus.toLowerCase() === 'yes';
-
-      if (profDis === rule.disability_status) {
-        satisfiedConstraints++;
-
-        reasons.push(
-          `Disability status matches target criteria.`
-        );
-      } else {
-        reasons.push(`Disability support check failed.`);
-      }
-    }
-
-    // Calculate score
-    score =
-      checkedConstraints > 0
+    const score =
+      totalConditions > 0
         ? Math.round(
-            (satisfiedConstraints / checkedConstraints) * 100
+            (satisfiedConditions / totalConditions) * 100
           )
         : 100;
 
-    let status: EligibilityStatus = 'Not Eligible';
+    /*
+     * IMPORTANT:
+     *
+     * Every configured condition must pass for
+     * the scheme to be considered Eligible.
+     */
+    let status: EligibilityStatus;
 
-    if (score >= 75) {
+    if (failedConditions === 0) {
       status = 'Eligible';
-    } else if (score >= 45) {
+    } else if (satisfiedConditions > 0) {
       status = 'Potentially Eligible';
+    } else {
+      status = 'Not Eligible';
     }
 
     const recommendationReason =
-      status === 'Eligible'
-        ? 'Your profile strongly matches the configured criteria.'
-        : status === 'Potentially Eligible'
-          ? 'Your profile partially matches the criteria. Review the scheme requirements before applying.'
-          : 'Your current profile does not match the configured criteria.';
+  this.buildRecommendationReason(
+    scheme,
+    rules,
+    reasons,
+    status
+  );
 
     return {
       scheme,
@@ -339,6 +243,266 @@ export class Eligibility {
       score,
       reasons,
       recommendationReason,
+    };
+  }
+
+  private evaluateRule(
+    rule: EligibilityRule,
+    profile: UserProfile
+  ): {
+    totalConditions: number;
+    satisfiedConditions: number;
+    failedConditions: number;
+    reasons: string[];
+  } {
+    let totalConditions = 0;
+    let satisfiedConditions = 0;
+    let failedConditions = 0;
+
+    const reasons: string[] = [];
+
+    const pass = (message: string): void => {
+      totalConditions++;
+      satisfiedConditions++;
+      reasons.push(`✓ ${message}`);
+    };
+
+    const fail = (message: string): void => {
+      totalConditions++;
+      failedConditions++;
+      reasons.push(`✗ ${message}`);
+    };
+
+    /*
+     * AGE
+     */
+    if (
+      rule.min_age !== null &&
+      rule.min_age !== undefined
+    ) {
+      if (profile.age >= rule.min_age) {
+       pass(
+  `Your age (${profile.age}) meets the minimum required age of ${rule.min_age} years.`
+);
+      } else {
+        fail(
+  `Your age (${profile.age}) is below the minimum required age of ${rule.min_age} years.`
+);
+      }
+    }
+
+    if (
+      rule.max_age !== null &&
+      rule.max_age !== undefined
+    ) {
+      if (profile.age <= rule.max_age) {
+      pass(
+  `Your age (${profile.age}) is within the maximum allowed age of ${rule.max_age} years.`
+);
+      } else {
+       fail(
+  `Your age (${profile.age}) exceeds the maximum allowed age of ${rule.max_age} years.`
+);
+      }
+    }
+
+    /*
+     * GENDER
+     */
+    if (
+      rule.gender &&
+      rule.gender.trim()
+    ) {
+      const requiredGender =
+        rule.gender.trim().toLowerCase();
+
+      const userGender =
+        profile.gender.trim().toLowerCase();
+
+      if (
+        requiredGender === 'all' ||
+        requiredGender === 'any' ||
+        requiredGender === userGender
+      ) {
+        pass(
+  `Your gender (${profile.gender}) matches the configured requirement of ${rule.gender}.`
+);
+      } else {
+      fail(
+  `Your gender (${profile.gender}) does not match the configured requirement of ${rule.gender}.`
+);
+      }
+    }
+
+    /*
+     * INCOME
+     */
+    if (
+      rule.max_income !== null &&
+      rule.max_income !== undefined
+    ) {
+      if (profile.income <= rule.max_income) {
+       pass(
+  `Your annual income of ₹${profile.income.toLocaleString('en-IN')} is within the maximum allowed income of ₹${rule.max_income.toLocaleString('en-IN')}.`
+);
+      } else {
+     fail(
+  `Your annual income of ₹${profile.income.toLocaleString('en-IN')} exceeds the maximum allowed income of ₹${rule.max_income.toLocaleString('en-IN')}.`
+);
+      }
+    }
+
+    /*
+     * OCCUPATION
+     */
+    if (
+      rule.occupation &&
+      rule.occupation.trim()
+    ) {
+      const requiredOccupation =
+        rule.occupation.trim().toLowerCase();
+
+      const userOccupation =
+        profile.occupation.trim().toLowerCase();
+
+      const occupationMatches =
+        requiredOccupation === 'all' ||
+        requiredOccupation === 'any' ||
+        userOccupation === requiredOccupation ||
+        userOccupation.includes(requiredOccupation) ||
+        requiredOccupation.includes(userOccupation);
+
+      if (occupationMatches) {
+       pass(
+  `Your occupation (${profile.occupation}) matches the configured requirement of ${rule.occupation}.`
+);
+      } else {
+     fail(
+  `Your occupation (${profile.occupation}) does not match the configured requirement of ${rule.occupation}.`
+);
+      }
+    }
+
+    /*
+     * EDUCATION
+     */
+    if (
+      rule.education_level &&
+      rule.education_level.trim()
+    ) {
+      const requiredEducation =
+        rule.education_level.trim().toLowerCase();
+
+      const userEducation =
+        profile.education.trim().toLowerCase();
+
+      const educationMatches =
+        requiredEducation === 'all' ||
+        requiredEducation === 'any' ||
+        requiredEducation === userEducation;
+
+      if (educationMatches) {
+       pass(
+  `Your education level (${profile.education}) matches the configured requirement of ${rule.education_level}.`
+);
+      } else {
+     fail(
+  `Your education level (${profile.education}) does not match the configured requirement of ${rule.education_level}.`
+);
+      }
+    }
+
+    /*
+     * LOCATION / STATE
+     */
+    if (
+      rule.location &&
+      rule.location.trim()
+    ) {
+      const requiredLocation =
+        rule.location.trim().toLowerCase();
+
+      const userLocation =
+        profile.location.trim().toLowerCase();
+
+      const locationMatches =
+        requiredLocation === 'all' ||
+        requiredLocation === 'all india' ||
+        userLocation === requiredLocation ||
+        userLocation.includes(requiredLocation) ||
+        requiredLocation.includes(userLocation);
+
+      if (locationMatches) {
+    pass(
+  `Your location (${profile.location}) matches the configured location requirement of ${rule.location}.`
+);
+      } else {
+       fail(
+  `Your location (${profile.location}) does not match the configured location requirement of ${rule.location}.`
+);
+      }
+    }
+
+    /*
+     * SOCIAL CATEGORY
+     */
+    if (
+      rule.social_category &&
+      rule.social_category.trim()
+    ) {
+      const requiredCategory =
+        rule.social_category.trim().toLowerCase();
+
+      const userCategory =
+        profile.socialCategory.trim().toLowerCase();
+
+      const categoryMatches =
+        requiredCategory === 'all' ||
+        requiredCategory === 'any' ||
+        requiredCategory === userCategory;
+
+      if (categoryMatches) {
+   pass(
+  `Your social category (${profile.socialCategory}) matches the configured requirement of ${rule.social_category}.`
+);
+      } else {
+       fail(
+  `Your social category (${profile.socialCategory}) does not match the configured requirement of ${rule.social_category}.`
+);
+      }
+    }
+
+    /*
+     * DISABILITY
+     */
+    if (
+      rule.disability_status !== null &&
+      rule.disability_status !== undefined
+    ) {
+      const userHasDisability =
+        profile.disabilityStatus
+          .trim()
+          .toLowerCase() === 'yes';
+
+      if (
+        userHasDisability ===
+        rule.disability_status
+      ) {
+       pass(
+  `Your disability status matches the configured requirement.`
+);
+      } else {
+       fail(
+  `Your disability status does not match the configured requirement.`
+);
+      }
+    }
+
+    return {
+      totalConditions,
+      satisfiedConditions,
+      failedConditions,
+      reasons,
     };
   }
 }
